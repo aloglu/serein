@@ -633,14 +633,17 @@ async function renderAbout() {
 async function renderHome(todayPoem, today, publishedPoems) {
   const template = await readTemplate("index.html");
   let body = `<p class="empty">No poem is published for today.</p>`;
+  let pageTitle = "A Poem Per Day";
 
   if (todayPoem) {
+    pageTitle = `${todayPoem.title} | A Poem Per Day`;
     body = `<h1>${htmlEscape(todayPoem.title)}</h1>
       <p class="meta">${renderAuthorMeta(todayPoem)}</p>
       <div class="content-block">${renderPoemMarkdown(todayPoem.poem, todayPoem.highlights)}</div>`;
   }
 
   const html = template
+    .replace("{{PAGE_TITLE}}", htmlEscape(pageTitle))
     .replace("{{ASSET_PATH}}", assetPath("/"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/"))
     .replace("{{FAVICON_32_PATH}}", favicon32Path("/"))
