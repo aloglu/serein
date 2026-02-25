@@ -29,6 +29,29 @@ const INLINE_HIGHLIGHT_COLORS = new Set([
 
 const watchMode = process.argv.includes("--watch");
 
+function readArgValue(flagName) {
+  const exactIndex = process.argv.indexOf(flagName);
+  if (exactIndex >= 0) {
+    return process.argv[exactIndex + 1] || "";
+  }
+  const inline = process.argv.find((arg) => arg.startsWith(`${flagName}=`));
+  if (inline) {
+    return inline.slice(flagName.length + 1);
+  }
+  return "";
+}
+
+function parseAsOfDateArg() {
+  const raw = String(readArgValue("--as-of") || "").trim();
+  if (!raw) {
+    return "";
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(raw)) {
+    throw new Error(`Invalid --as-of value '${raw}'. Expected YYYY-MM-DD.`);
+  }
+  return raw;
+}
+
 marked.setOptions({
   gfm: true,
   breaks: true
@@ -682,20 +705,22 @@ async function copyAssets() {
 export async function build() {
   await ensureDist();
   const poems = await loadPoems();
-  const todayInIstanbul = yyyyMmDdInTimeZone(ISTANBUL_TZ);
-  const publishedPoems = poems.filter((poem) => poem.date <= todayInIstanbul);
-  const todayPoem = publishedPoems.find((poem) => poem.date === todayInIstanbul) || null;
+  const asOfDate = parseAsOfDateArg();
+  const effectiveDate = asOfDate || yyyyMmDdInTimeZone(ISTANBUL_TZ);
+  const publishedPoems = poems.filter((poem) => poem.date <= effectiveDate);
+  const todayPoem = publishedPoems.find((poem) => poem.date === effectiveDate) || null;
 
   await Promise.all([
-    renderHome(todayPoem, todayInIstanbul, publishedPoems),
+    renderHome(todayPoem, effectiveDate, publishedPoems),
     renderPoemPages(publishedPoems),
-    renderArchive(publishedPoems, todayInIstanbul),
+    renderArchive(publishedPoems, effectiveDate),
     renderAbout(),
     renderSearchData(publishedPoems),
     copyAssets()
   ]);
 
-  console.log(`Built Serein with ${publishedPoems.length}/${poems.length} published poems (TZ: ${ISTANBUL_TZ}, today: ${todayInIstanbul}).`);
+  const mode = asOfDate ? `as-of override: ${asOfDate}` : `TZ: ${ISTANBUL_TZ}, today: ${effectiveDate}`;
+  console.log(`Built Serein with ${publishedPoems.length}/${poems.length} published poems (${mode}).`);
 }
 
 const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
