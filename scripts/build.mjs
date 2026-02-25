@@ -333,7 +333,7 @@ function renderPoemMarkdown(markdown, highlights = []) {
 }
 
 function validatePoem(poem, filename) {
-  const required = ["id", "title", "author", "date", "poem"];
+  const required = ["title", "author", "date", "poem"];
 
   for (const field of required) {
     if (!poem[field] || typeof poem[field] !== "string") {
