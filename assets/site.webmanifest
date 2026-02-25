@@ -1,0 +1,20 @@
+{
+  "name": "Serein",
+  "short_name": "Serein",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#EFE2D0",
+  "theme_color": "#EFE2D0",
+  "icons": [
+    {
+      "src": "/assets/branding/icon-circle-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/branding/icon-circle-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
