@@ -11,10 +11,15 @@ export function slugifyForFilename(input) {
 }
 
 export function expectedPoemFilename(poem) {
+  return expectedPoemFilenameWithExtension(poem, ".md");
+}
+
+export function expectedPoemFilenameWithExtension(poem, extension = ".md") {
   const date = String(poem?.date || "").trim();
   const titleSlug = slugifyForFilename(poem?.title || "");
   if (!date || !titleSlug) {
     return null;
   }
-  return `${date}-${titleSlug}.json`;
+  const ext = String(extension || ".md");
+  return `${date}-${titleSlug}${ext.startsWith(".") ? ext : `.${ext}`}`;
 }

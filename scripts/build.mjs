@@ -96,6 +96,70 @@ async function readTemplate(name) {
   return normalized;
 }
 
+function normalizeNewlines(input) {
+  return String(input || "").replace(/\r\n/g, "\n");
+}
+
+function stripWrappingQuotes(input) {
+  const raw = String(input || "").trim();
+  if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
+    return raw.slice(1, -1);
+  }
+  return raw;
+}
+
+function parsePoemMarkdownFile(rawContent, filename) {
+  const source = normalizeNewlines(rawContent);
+  const lines = source.split("\n");
+  if (lines[0]?.trim() !== "---") {
+    throw new Error(`Missing frontmatter in ${filename}. Expected file to start with '---'.`);
+  }
+
+  let endIndex = -1;
+  for (let i = 1; i < lines.length; i += 1) {
+    if (lines[i].trim() === "---") {
+      endIndex = i;
+      break;
+    }
+  }
+  if (endIndex < 0) {
+    throw new Error(`Unterminated frontmatter in ${filename}. Missing closing '---'.`);
+  }
+
+  const poem = {
+    title: "",
+    author: "",
+    publication: "",
+    date: "",
+    source: "",
+    poem: ""
+  };
+
+  const metaLines = lines.slice(1, endIndex);
+
+  for (const line of metaLines) {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      continue;
+    }
+
+    const kv = line.match(/^([A-Za-z][A-Za-z0-9_-]*):\s*(.*)$/);
+    if (!kv) {
+      continue;
+    }
+
+    const key = kv[1].toLowerCase();
+    const value = kv[2];
+
+    if (key in poem && key !== "poem") {
+      poem[key] = stripWrappingQuotes(value);
+    }
+  }
+
+  poem.poem = lines.slice(endIndex + 1).join("\n").replace(/^\n+/, "");
+  return poem;
+}
+
 function yyyyMmDdInTimeZone(timeZone) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone,
@@ -345,10 +409,6 @@ function validatePoem(poem, filename) {
     throw new Error(`Invalid date '${poem.date}' in ${filename}. Expected YYYY-MM-DD.`);
   }
 
-  if (!Array.isArray(poem.tags)) {
-    poem.tags = [];
-  }
-
   if (!Array.isArray(poem.highlights)) {
     poem.highlights = [];
   }
@@ -366,19 +426,19 @@ async function loadPoems() {
   const poems = [];
 
   for (const entry of files) {
-    if (!entry.isFile() || !entry.name.endsWith(".json")) {
+    if (!entry.isFile()) {
+      continue;
+    }
+    if (entry.name.endsWith(".json")) {
+      throw new Error(`Found unsupported poem file '${entry.name}'. Only Markdown (.md) poem files are allowed.`);
+    }
+    if (!entry.name.endsWith(".md")) {
       continue;
     }
 
     const fullPath = path.join(dataDir, entry.name);
     const raw = await readFile(fullPath, "utf8");
-    const parsed = JSON.parse(raw);
-    if (parsed.publication == null && parsed.book != null) {
-      parsed.publication = parsed.book;
-    }
-    if (parsed.source == null && parsed.sourceUrl != null) {
-      parsed.source = parsed.sourceUrl;
-    }
+    const parsed = parsePoemMarkdownFile(raw, entry.name);
     validatePoem(parsed, entry.name);
     validateCustomMarkdownSyntax(parsed.poem, entry.name);
     const expectedFilename = expectedPoemFilename(parsed);
