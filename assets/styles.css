@@ -87,7 +87,7 @@ main > h1 + .content-block {
 .content-block .poetry-line {
   --poetry-cols: 3;
   display: grid;
-  grid-template-columns: repeat(var(--poetry-cols), minmax(0, 1fr));
+  grid-template-columns: var(--poetry-template, repeat(var(--poetry-cols), minmax(0, 1fr)));
   gap: 0.6rem;
   margin: 0.2rem 0 0.75rem;
   align-items: baseline;
@@ -99,16 +99,29 @@ main > h1 + .content-block {
 
 .content-block .poetry-left {
   justify-self: start;
-  text-align: left;
 }
 
 .content-block .poetry-center {
   justify-self: center;
-  text-align: center;
 }
 
 .content-block .poetry-right {
   justify-self: end;
+}
+
+.content-block .poetry-spacer {
+  min-width: var(--poetry-spacer-width, 0.6rem);
+}
+
+.content-block .poetry-text-left {
+  text-align: left;
+}
+
+.content-block .poetry-text-center {
+  text-align: center;
+}
+
+.content-block .poetry-text-right {
   text-align: right;
 }
 

@@ -314,7 +314,7 @@ function parsePoetryLineDirective(line) {
 
   const source = match[1];
   const segments = [];
-  const tokenPattern = /\|([<^>])((?:\\\||[^|])*)\|/g;
+  const tokenPattern = /\|([<^>~])((?:\\\||[^|])*)\|/g;
   let lastIndex = 0;
 
   for (const token of source.matchAll(tokenPattern)) {
@@ -323,9 +323,26 @@ function parsePoetryLineDirective(line) {
       return null;
     }
 
+    const align = token[1];
+    const text = token[2].replace(/\\\|/g, "|");
+    if (align === "~") {
+      const spacerWidth = parsePoetrySpacerWidth(text);
+      if (!spacerWidth) {
+        return null;
+      }
+      segments.push({
+        align,
+        spacerWidth
+      });
+      lastIndex = tokenIndex + token[0].length;
+      continue;
+    }
+
+    const { textAlign, text: parsedText } = parsePoetryTextAlignOverride(text);
     segments.push({
-      align: token[1],
-      text: token[2].replace(/\\\|/g, "|")
+      align,
+      text: parsedText,
+      textAlign
     });
     lastIndex = tokenIndex + token[0].length;
   }
@@ -335,6 +352,32 @@ function parsePoetryLineDirective(line) {
   }
 
   return segments;
+}
+
+function parsePoetryTextAlignOverride(raw) {
+  const source = String(raw || "");
+  const match = source.match(/^\s*(left|center|right)\s*:\s*([\s\S]*)$/i);
+  if (!match) {
+    return { textAlign: null, text: source };
+  }
+  return {
+    textAlign: match[1].toLowerCase(),
+    text: match[2]
+  };
+}
+
+function parsePoetrySpacerWidth(raw) {
+  const value = String(raw || "").trim();
+  if (!value) {
+    return "0.6rem";
+  }
+  if (/^\d+(?:\.\d+)?$/.test(value)) {
+    return `${value}ch`;
+  }
+  if (/^\d+(?:\.\d+)?(?:px|rem|em|ch|vw|vh|%)$/i.test(value)) {
+    return value.toLowerCase();
+  }
+  return null;
 }
 
 function withAlignedPoetryLines(markdown) {
@@ -366,14 +409,26 @@ function withAlignedPoetryLines(markdown) {
       continue;
     }
 
+    const template = segments
+      .map((segment) => (segment.align === "~" ? segment.spacerWidth : "minmax(0, 1fr)"))
+      .join(" ");
     const content = segments
-      .map(({ align, text }) => {
+      .map((segment) => {
+        const { align } = segment;
+        if (align === "~") {
+          return `<span class="poetry-segment poetry-spacer" style="--poetry-spacer-width: ${segment.spacerWidth};"></span>`;
+        }
+
+        const { text } = segment;
         const alignClass = align === "<" ? "poetry-left" : align === "^" ? "poetry-center" : "poetry-right";
+        const textAlignClass = segment.textAlign ? ` poetry-text-${segment.textAlign}` : "";
         const inner = marked.parseInline(text || "").trim() || "&nbsp;";
-        return `<span class="poetry-segment ${alignClass}">${inner}</span>`;
+        return `<span class="poetry-segment ${alignClass}${textAlignClass}">${inner}</span>`;
       })
       .join("");
-    transformed.push(`<div class="poetry-line" style="--poetry-cols: ${segments.length};">${content}</div>`);
+    transformed.push(
+      `<div class="poetry-line" style="--poetry-cols: ${segments.length}; --poetry-template: ${template};">${content}</div>`
+    );
   }
 
   return transformed.join("\n");
@@ -406,7 +461,7 @@ function validateCustomMarkdownSyntax(markdown, filename) {
 
     if (!parsePoetryLineDirective(line)) {
       throw new Error(
-        `Invalid ::line syntax in ${filename}:${i + 1}. Expected tokens like |<text| |^text| |>text|.`
+        `Invalid ::line syntax in ${filename}:${i + 1}. Expected tokens like |<text| |^text| |>text|, optional text-align prefix (left:, center:, right:), or spacer |~10ch|.`
       );
     }
   }
