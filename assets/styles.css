@@ -95,18 +95,20 @@ main > h1 + .content-block {
 
 .content-block .poetry-segment {
   min-width: 0;
+  width: 100%;
+  display: block;
 }
 
 .content-block .poetry-left {
-  justify-self: start;
+  text-align: left;
 }
 
 .content-block .poetry-center {
-  justify-self: center;
+  text-align: center;
 }
 
 .content-block .poetry-right {
-  justify-self: end;
+  text-align: right;
 }
 
 .content-block .poetry-spacer {
