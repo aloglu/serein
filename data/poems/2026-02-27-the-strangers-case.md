@@ -22,7 +22,7 @@ For other ruffians, as their fancies wrought,
 With self same hand, self reasons, and self right,
 Would shark on you, and men like ravenous fishes
 Would feed on one another.
-*[...]*
+[...]
 Say now the king,
 As he is clement if th’offender mourn,
 Should so much come too short of your great trespass
