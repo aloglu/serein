@@ -28,13 +28,14 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{APPLE_TOUCH_ICON_PATH}}">
 </head>
 <body>
-  <main>
+  <main data-default-as-of="{{DEFAULT_AS_OF}}">
     <h1>Archive</h1>
     <div class="content-block">
-      <div class="archive-tree">
-        {{ROWS}}
-      </div>
+      <div id="archive-tree" class="archive-tree"><p class="empty">Loading archive...</p></div>
     </div>
+    <noscript>
+      <p class="empty">Please enable JavaScript to browse the archive.</p>
+    </noscript>
   </main>
   {{FOOTER}}
   <script src="{{SCRIPT_PATH}}" defer></script>

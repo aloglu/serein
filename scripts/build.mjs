@@ -11,7 +11,6 @@ const distDir = path.join(root, "dist");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
 const siteUrl = String(process.env.SITE_URL || "").trim().replace(/\/+$/, "");
-const ISTANBUL_TZ = "Europe/Istanbul";
 const INLINE_HIGHLIGHT_COLORS = new Set([
   "yellow",
   "light-yellow",
@@ -182,18 +181,6 @@ function parsePoemMarkdownFile(rawContent, filename) {
 
   poem.poem = lines.slice(endIndex + 1).join("\n").replace(/^\n+/, "");
   return poem;
-}
-
-function yyyyMmDdInTimeZone(timeZone) {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit"
-  }).formatToParts(new Date());
-
-  const get = (type) => parts.find((p) => p.type === type)?.value || "";
-  return `${get("year")}-${get("month")}-${get("day")}`;
 }
 
 function parseDateParts(yyyyMmDd) {
@@ -648,78 +635,10 @@ async function renderPoemPages(publishedPoems) {
   }
 }
 
-function monthLabel(monthNumber) {
-  const month = Number(monthNumber);
-  if (!Number.isInteger(month) || month < 1 || month > 12) {
-    return monthNumber;
-  }
-  const dt = new Date(Date.UTC(2024, month - 1, 1));
-  return new Intl.DateTimeFormat("en-US", { month: "long", timeZone: "UTC" }).format(dt);
-}
-
-function renderArchiveRow(poem, fromRoute) {
-  const href = `${relativePrefix(fromRoute)}${poem.route.slice(1)}/`;
-  const parts = parseDateParts(poem.date);
-  const day = parts ? parts.day : "--";
-  return `<li><span class="archive-day">${htmlEscape(day)}</span><span aria-hidden="true">&middot;</span><a href="${htmlEscape(href)}">${htmlEscape(poem.title)}</a></li>`;
-}
-
-function groupPoemsByYearMonth(publishedPoems) {
-  const groups = new Map();
-
-  for (const poem of publishedPoems.slice().sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title))) {
-    const parts = parseDateParts(poem.date);
-    if (!parts) {
-      continue;
-    }
-
-    if (!groups.has(parts.year)) {
-      groups.set(parts.year, new Map());
-    }
-    const yearMap = groups.get(parts.year);
-    if (!yearMap.has(parts.month)) {
-      yearMap.set(parts.month, []);
-    }
-    yearMap.get(parts.month).push(poem);
-  }
-
-  return groups;
-}
-
-function renderArchiveTree(publishedPoems, today) {
-  const todayParts = parseDateParts(today);
-  const currentYear = todayParts?.year || "";
-  const currentMonth = todayParts?.month || "";
-  const grouped = groupPoemsByYearMonth(publishedPoems);
-  const years = Array.from(grouped.keys()).sort((a, b) => b.localeCompare(a));
-
-  if (years.length === 0) {
-    return "<p>No published poems yet.</p>";
-  }
-
-  return years
-    .map((year) => {
-      const monthsMap = grouped.get(year);
-      const months = Array.from(monthsMap.keys()).sort((a, b) => b.localeCompare(a));
-      const yearOpen = year === currentYear ? " open" : "";
-      const monthBlocks = months
-        .map((month) => {
-          const poems = monthsMap.get(month);
-          const monthOpen = year === currentYear && month === currentMonth ? " open" : "";
-          const rows = poems.map((poem) => renderArchiveRow(poem, "/archive")).join("");
-          return `<details class="archive-month"${monthOpen}><summary>${htmlEscape(monthLabel(month))}</summary><ul class="archive-poems">${rows}</ul></details>`;
-        })
-        .join("");
-      return `<details class="archive-year"${yearOpen}><summary>${htmlEscape(year)}</summary><div class="archive-months">${monthBlocks}</div></details>`;
-    })
-    .join("");
-}
-
-async function renderArchive(publishedPoems, today) {
+async function renderArchive(defaultAsOf = "") {
   const template = await readTemplate("archive.html");
-  const rows = renderArchiveTree(publishedPoems, today);
   const html = template
-    .replace("{{ROWS}}", rows)
+    .replace("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replace("{{ASSET_PATH}}", assetPath("/archive"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/archive"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/archive"))
@@ -751,23 +670,12 @@ async function renderAbout() {
   await writeRoutedPage("/about", html);
 }
 
-async function renderHome(todayPoem, today, publishedPoems) {
+async function renderHome(defaultAsOf = "") {
   const template = await readTemplate("index.html");
-  let body = `<p class="empty">No poem is published for today.</p>`;
-  let pageTitle = "A Poem Per Day";
-  let pageDescription = "A Poem Per Day.";
-
-  if (todayPoem) {
-    pageTitle = `${todayPoem.title} | A Poem Per Day`;
-    pageDescription = `${todayPoem.title} by ${todayPoem.author}.`;
-    body = `<h1>${htmlEscape(todayPoem.title)}</h1>
-      <p class="meta">${renderAuthorMeta(todayPoem)}</p>
-      <div class="content-block">${renderPoemMarkdown(todayPoem.poem, todayPoem.highlights)}</div>`;
-  }
-
   const html = template
-    .replaceAll("{{PAGE_TITLE}}", htmlEscape(pageTitle))
-    .replaceAll("{{PAGE_DESCRIPTION}}", htmlEscape(pageDescription))
+    .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
+    .replaceAll("{{PAGE_DESCRIPTION}}", "A Poem Per Day.")
+    .replace("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replace("{{ASSET_PATH}}", assetPath("/"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/"))
@@ -778,14 +686,13 @@ async function renderHome(todayPoem, today, publishedPoems) {
     .replace("{{ROBOTS_META}}", '<meta name="robots" content="index, follow">')
     .replace("{{CANONICAL_TAG}}", canonicalTag("/"))
     .replace("{{OG_URL_TAG}}", ogUrlTag("/"))
-    .replace("{{BODY}}", body)
     .replace("{{FOOTER}}", renderFooter("/"));
 
   await writeRoutedPage("/", html);
 }
 
-async function renderSearchData(publishedPoems) {
-  const lightweight = publishedPoems.map((poem) => ({
+async function renderSearchData(poems) {
+  const lightweight = poems.map((poem) => ({
     id: poem.id,
     title: poem.title,
     author: poem.author,
@@ -796,6 +703,26 @@ async function renderSearchData(publishedPoems) {
   }));
 
   await writeFile(path.join(distDir, "search-index.json"), JSON.stringify(lightweight, null, 2), "utf8");
+}
+
+async function renderPoemsData(poems) {
+  const full = poems.map((poem) => {
+    const parts = parseDateParts(poem.date) || { year: "", month: "", day: "" };
+    return {
+      id: poem.id,
+      title: poem.title,
+      author: poem.author,
+      publication: poem.publication,
+      source: poem.source,
+      date: poem.date,
+      route: poem.route,
+      dateParts: parts,
+      authorMetaHtml: renderAuthorMeta(poem),
+      poemHtml: renderPoemMarkdown(poem.poem, poem.highlights)
+    };
+  });
+
+  await writeFile(path.join(distDir, "poems-data.json"), JSON.stringify(full, null, 2), "utf8");
 }
 
 async function copyAssets() {
@@ -842,22 +769,19 @@ export async function build() {
   await ensureDist();
   const poems = await loadPoems();
   const asOfDate = parseAsOfDateArg();
-  const effectiveDate = asOfDate || yyyyMmDdInTimeZone(ISTANBUL_TZ);
-  const publishedPoems = poems.filter((poem) => poem.date <= effectiveDate);
-  const todayPoem = publishedPoems.find((poem) => poem.date === effectiveDate) || null;
 
   await Promise.all([
-    renderHome(todayPoem, effectiveDate, publishedPoems),
-    renderPoemPages(publishedPoems),
-    renderArchive(publishedPoems, effectiveDate),
+    renderHome(asOfDate),
+    renderPoemPages(poems),
+    renderArchive(asOfDate),
     renderAbout(),
-    renderSearchData(publishedPoems),
-    renderSeoFiles(publishedPoems),
+    renderSearchData(poems),
+    renderPoemsData(poems),
+    renderSeoFiles(poems),
     copyAssets()
   ]);
 
-  const mode = asOfDate ? `as-of override: ${asOfDate}` : `TZ: ${ISTANBUL_TZ}, today: ${effectiveDate}`;
-  console.log(`Built Serein with ${publishedPoems.length}/${poems.length} published poems (${mode}).`);
+  console.log(`Built Serein with ${poems.length} poems (local-date rendering enabled on / and /archive).`);
 }
 
 const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
