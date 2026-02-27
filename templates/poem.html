@@ -29,12 +29,13 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{APPLE_TOUCH_ICON_PATH}}">
 </head>
 <body>
-  <main>
+  <main data-poem-date="{{DATE}}">
     <h1>{{TITLE}}</h1>
     <p class="meta">{{AUTHOR_META}}</p>
-    <article class="content-block">{{POEM_TEXT}}</article>
+    <article id="poem-content" class="content-block">{{POEM_TEXT}}</article>
   </main>
   {{FOOTER}}
+  <script src="{{SCRIPT_PATH}}" defer></script>
 </body>
 </html>
 

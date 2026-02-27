@@ -608,6 +608,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/" } = {
     .replace("{{FAVICON_32_PATH}}", favicon32Path(routePath))
     .replace("{{FAVICON_512_PATH}}", favicon512Path(routePath))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath(routePath))
+    .replace("{{SCRIPT_PATH}}", scriptPath(routePath))
     .replace("{{ROBOTS_META}}", noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">')
     .replace("{{CANONICAL_TAG}}", canonicalTag(routePath))
     .replace("{{OG_URL_TAG}}", ogUrlTag(routePath))
@@ -735,6 +736,65 @@ async function copyAssets() {
   await copyFile(path.join(assetsDir, "branding", "icon-circle.ico"), path.join(distDir, "favicon.ico"));
 }
 
+async function renderNotFoundPage() {
+  const routePath = "/";
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#EFE2D0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="A Poem Per Day">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="description" content="Page not found.">
+  <title>404 | A Poem Per Day</title>
+  <script>
+    (() => {
+      const path = window.location.pathname.replace(/\\/+/g, "/").replace(/\\/$/, "");
+      const segs = path.split("/").filter(Boolean);
+      const candidates = [];
+      for (let i = 0; i <= segs.length + 2; i += 1) {
+        candidates.push("../".repeat(i) + "assets/styles.css");
+      }
+      candidates.push("/assets/styles.css");
+      const unique = Array.from(new Set(candidates));
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      let idx = 0;
+      const next = () => {
+        if (idx >= unique.length) return;
+        link.href = unique[idx];
+        idx += 1;
+      };
+      link.onerror = next;
+      document.head.appendChild(link);
+      next();
+    })();
+  </script>
+  ${fontPreloads(routePath)}
+  <link rel="manifest" href="${manifestPath(routePath)}">
+  <link rel="icon" type="image/png" sizes="512x512" href="${favicon512Path(routePath)}">
+  <link rel="icon" type="image/png" sizes="32x32" href="${favicon32Path(routePath)}">
+  <link rel="apple-touch-icon" sizes="180x180" href="${appleTouchPath(routePath)}">
+</head>
+<body>
+  <main>
+    <h1>Page Not Found</h1>
+    <article class="content-block">
+      <p>The page you requested does not exist.</p>
+      <p><a href="/">Go to Today</a> or browse the <a href="/archive/">archive</a>.</p>
+    </article>
+  </main>
+  <footer class="site-footer"><a href="/">Today</a><span aria-hidden="true">&bull;</span><a href="/archive/">Archive</a><span aria-hidden="true">&bull;</span><a href="/about/">About</a></footer>
+</body>
+</html>
+`;
+  await writeFile(path.join(distDir, "404.html"), html, "utf8");
+}
+
 async function renderSeoFiles(publishedPoems) {
   const robotsLines = ["User-agent: *", "Allow: /"];
   if (siteUrl) {
@@ -778,6 +838,7 @@ export async function build() {
     renderSearchData(poems),
     renderPoemsData(poems),
     renderSeoFiles(poems),
+    renderNotFoundPage(),
     copyAssets()
   ]);
 

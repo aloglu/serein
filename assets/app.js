@@ -103,6 +103,32 @@ function initCountdown() {
   window.setInterval(render, 1000);
 }
 
+function initPoemAccessGuard() {
+  const main = document.querySelector("main[data-poem-date]");
+  const poemDate = main?.getAttribute("data-poem-date") || "";
+  if (!main || !/^\d{4}-\d{2}-\d{2}$/.test(poemDate)) {
+    return;
+  }
+
+  const effectiveDate = effectiveDateFromQueryOrNow();
+  if (poemDate <= effectiveDate) {
+    return;
+  }
+
+  const titleEl = main.querySelector("h1");
+  const metaEl = main.querySelector(".meta");
+  const contentEl = document.getElementById("poem-content");
+  if (titleEl) {
+    titleEl.textContent = "Not Available Yet";
+  }
+  if (metaEl) {
+    metaEl.textContent = "";
+  }
+  if (contentEl) {
+    contentEl.innerHTML = "<p>This poem becomes available at midnight in your local time.</p>";
+  }
+}
+
 function selectPoemForDate(poems, dateStr) {
   const visible = poems.filter((poem) => poem.date <= dateStr);
   const exact = visible.find((poem) => poem.date === dateStr) || null;
@@ -204,6 +230,7 @@ async function loadPoemsData() {
 
 async function init() {
   initCountdown();
+  initPoemAccessGuard();
 
   const hasHomeView = Boolean(document.getElementById("home-content"));
   const hasArchiveView = Boolean(document.getElementById("archive-tree"));
