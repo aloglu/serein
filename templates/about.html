@@ -32,7 +32,11 @@
     <h1>About</h1>
     <article class="content-block">
       <p>The proprietors of this project are the poets, but it is maintained by <a href="https://alog.lu" target="_blank" rel="noreferrer">Abdullah Alo&#287;lu</a>, whose appreciation of the art came embarrassingly late.</p>
-      <p>The daily poem resets at midnight in your local time. The next day&rsquo;s poem will be available in <strong id="next-poem-countdown">--</strong>.</p>
+      <p id="countdown-line">The daily poem resets at midnight in your local time. The next day&rsquo;s poem will be available in <strong id="next-poem-countdown">--</strong>.</p>
+      <noscript>
+        <style>#countdown-line { display: none; }</style>
+        <p>The daily poem resets at midnight in your local time. The next day&rsquo;s poem will be available in, well, who knows. You have JavaScript disabled.</p>
+      </noscript>
       <p>You can browse the archive <a href="../archive/">here</a>. If you want to send poems, feel free to <a href="mailto:poems@alog.lu">get in touch</a>.</p>
       <p>You can find the project&rsquo;s source files on <a href="https://github.com/aloglu/serein" target="_blank" rel="noreferrer">GitHub</a>.</p>
     </article>

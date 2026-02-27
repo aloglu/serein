@@ -29,15 +29,11 @@
 </head>
 <body>
   <main data-default-as-of="{{DEFAULT_AS_OF}}">
-    <div id="home-view">
-      <h1 id="home-title">A Poem Per Day</h1>
-      <p id="home-meta" class="meta"></p>
-      <article id="home-content" class="content-block">
-        <p class="empty">Loading poem...</p>
-      </article>
-    </div>
+    <h1 id="home-title">{{FALLBACK_TITLE}}</h1>
+    <p id="home-meta" class="meta">{{FALLBACK_META}}</p>
+    <article id="home-content" class="content-block">{{FALLBACK_POEM_HTML}}</article>
     <noscript>
-      <p class="empty">Please enable JavaScript to view the daily poem.</p>
+      <p class="meta">You are viewing the static version.</p>
     </noscript>
   </main>
 

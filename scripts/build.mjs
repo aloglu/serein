@@ -34,10 +34,6 @@ function readArgValue(flagName) {
   if (exactIndex >= 0) {
     return process.argv[exactIndex + 1] || "";
   }
-  const inline = process.argv.find((arg) => arg.startsWith(`${flagName}=`));
-  if (inline) {
-    return inline.slice(flagName.length + 1);
-  }
   return "";
 }
 
@@ -58,6 +54,11 @@ marked.setOptions({
 });
 
 async function ensureDist() {
+  const isTransientCleanupError = (error) => {
+    const code = String(error?.code || "");
+    return code === "EBUSY" || code === "EPERM" || code === "UNKNOWN";
+  };
+
   await mkdir(distDir, { recursive: true });
   const entries = await readdir(distDir, { withFileTypes: true });
   for (const entry of entries) {
@@ -68,7 +69,7 @@ async function ensureDist() {
         try {
           await rm(path.join(fullPath, assetEntry.name), { recursive: true, force: true });
         } catch (error) {
-          if (error?.code !== "EBUSY") {
+          if (!isTransientCleanupError(error)) {
             throw error;
           }
         }
@@ -79,7 +80,7 @@ async function ensureDist() {
     try {
       await rm(fullPath, { recursive: true, force: true });
     } catch (error) {
-      if (error?.code !== "EBUSY") {
+      if (!isTransientCleanupError(error)) {
         throw error;
       }
     }
@@ -195,6 +196,18 @@ function parseDateParts(yyyyMmDd) {
   };
 }
 
+function yyyyMmDdInTimeZone(timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+
+  const get = (type) => parts.find((p) => p.type === type)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
 function toRoutePath(yyyyMmDd) {
   const parts = parseDateParts(yyyyMmDd);
   if (!parts) {
@@ -239,7 +252,7 @@ function favicon512Path(routePath) {
 }
 
 function appleTouchPath(routePath) {
-  return `${relativePrefix(routePath)}assets/branding/icon-circle-180.png`;
+  return `${relativePrefix(routePath)}assets/branding/icon-ios-180.png`;
 }
 
 function absoluteRouteUrl(routePath) {
@@ -556,6 +569,15 @@ async function loadPoems() {
   return poems;
 }
 
+function preparePoems(poems) {
+  return poems.map((poem) => ({
+    ...poem,
+    authorMetaHtml: renderAuthorMeta(poem),
+    poemHtml: renderPoemMarkdown(poem.poem, poem.highlights),
+    searchText: markdownStrip(poem.poem)
+  }));
+}
+
 function renderFooter(routePath) {
   const prefix = relativePrefix(routePath);
   const links = [];
@@ -593,15 +615,17 @@ function renderAuthorMeta(poem) {
 
 function renderPoemShell(template, poem, { noindex = true, routePath = "/" } = {}) {
   const description = `${poem.title} by ${poem.author}.`;
+  const authorMeta = poem.authorMetaHtml || renderAuthorMeta(poem);
+  const poemHtml = poem.poemHtml || renderPoemMarkdown(poem.poem, poem.highlights);
   return template
     .replaceAll("{{TITLE}}", htmlEscape(poem.title))
     .replaceAll("{{AUTHOR}}", htmlEscape(poem.author))
     .replaceAll("{{DESCRIPTION}}", htmlEscape(description))
     .replaceAll("{{PUBLICATION}}", htmlEscape(poem.publication))
     .replaceAll("{{DATE}}", htmlEscape(poem.date))
-    .replaceAll("{{AUTHOR_META}}", renderAuthorMeta(poem))
+    .replaceAll("{{AUTHOR_META}}", authorMeta)
     .replaceAll("{{PUBLICATION_META}}", renderPublicationMeta(poem))
-    .replaceAll("{{POEM_TEXT}}", renderPoemMarkdown(poem.poem, poem.highlights))
+    .replaceAll("{{POEM_TEXT}}", poemHtml)
     .replace("{{ASSET_PATH}}", assetPath(routePath))
     .replace("{{FONT_PRELOADS}}", fontPreloads(routePath))
     .replace("{{MANIFEST_PATH}}", manifestPath(routePath))
@@ -636,10 +660,14 @@ async function renderPoemPages(publishedPoems) {
   }
 }
 
-async function renderArchive(defaultAsOf = "") {
+async function renderArchive(poems, defaultAsOf = "") {
   const template = await readTemplate("archive.html");
+  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
+  const rows = renderArchiveTree(fallbackPoems, fallbackDate);
   const html = template
     .replace("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replace("{{FALLBACK_ARCHIVE_ROWS}}", rows)
     .replace("{{ASSET_PATH}}", assetPath("/archive"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/archive"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/archive"))
@@ -671,12 +699,23 @@ async function renderAbout() {
   await writeRoutedPage("/about", html);
 }
 
-async function renderHome(defaultAsOf = "") {
+async function renderHome(poems, defaultAsOf = "") {
   const template = await readTemplate("index.html");
+  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
+  const fallbackPoem = fallbackPoems.find((poem) => poem.date === fallbackDate) || fallbackPoems[fallbackPoems.length - 1] || null;
+  const fallbackTitle = fallbackPoem ? htmlEscape(fallbackPoem.title) : "A Poem Per Day";
+  const fallbackMeta = fallbackPoem ? fallbackPoem.authorMetaHtml || renderAuthorMeta(fallbackPoem) : "";
+  const fallbackBody = fallbackPoem
+    ? fallbackPoem.poemHtml || renderPoemMarkdown(fallbackPoem.poem, fallbackPoem.highlights)
+    : '<p class="empty">No poem is published for today.</p>';
   const html = template
     .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
     .replaceAll("{{PAGE_DESCRIPTION}}", "A Poem Per Day.")
     .replace("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replace("{{FALLBACK_TITLE}}", fallbackTitle)
+    .replace("{{FALLBACK_META}}", fallbackMeta)
+    .replace("{{FALLBACK_POEM_HTML}}", fallbackBody)
     .replace("{{ASSET_PATH}}", assetPath("/"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/"))
@@ -692,6 +731,73 @@ async function renderHome(defaultAsOf = "") {
   await writeRoutedPage("/", html);
 }
 
+function monthLabel(monthNumber) {
+  const month = Number(monthNumber);
+  if (!Number.isInteger(month) || month < 1 || month > 12) {
+    return monthNumber;
+  }
+  const dt = new Date(Date.UTC(2024, month - 1, 1));
+  return new Intl.DateTimeFormat("en-US", { month: "long", timeZone: "UTC" }).format(dt);
+}
+
+function renderArchiveRow(poem, fromRoute) {
+  const href = `${relativePrefix(fromRoute)}${poem.route.slice(1)}/`;
+  const parts = parseDateParts(poem.date);
+  const day = parts ? parts.day : "--";
+  return `<li><span class="archive-day">${htmlEscape(day)}</span><span aria-hidden="true">&middot;</span><a href="${htmlEscape(href)}">${htmlEscape(poem.title)}</a></li>`;
+}
+
+function groupPoemsByYearMonth(publishedPoems) {
+  const groups = new Map();
+
+  for (const poem of publishedPoems.slice().sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title))) {
+    const parts = parseDateParts(poem.date);
+    if (!parts) {
+      continue;
+    }
+
+    if (!groups.has(parts.year)) {
+      groups.set(parts.year, new Map());
+    }
+    const yearMap = groups.get(parts.year);
+    if (!yearMap.has(parts.month)) {
+      yearMap.set(parts.month, []);
+    }
+    yearMap.get(parts.month).push(poem);
+  }
+
+  return groups;
+}
+
+function renderArchiveTree(publishedPoems, today) {
+  const todayParts = parseDateParts(today);
+  const currentYear = todayParts?.year || "";
+  const currentMonth = todayParts?.month || "";
+  const grouped = groupPoemsByYearMonth(publishedPoems);
+  const years = Array.from(grouped.keys()).sort((a, b) => b.localeCompare(a));
+
+  if (years.length === 0) {
+    return "<p>No published poems yet.</p>";
+  }
+
+  return years
+    .map((year) => {
+      const monthsMap = grouped.get(year);
+      const months = Array.from(monthsMap.keys()).sort((a, b) => b.localeCompare(a));
+      const yearOpen = year === currentYear ? " open" : "";
+      const monthBlocks = months
+        .map((month) => {
+          const poems = monthsMap.get(month);
+          const monthOpen = year === currentYear && month === currentMonth ? " open" : "";
+          const rows = poems.map((poem) => renderArchiveRow(poem, "/archive")).join("");
+          return `<details class="archive-month"${monthOpen}><summary>${htmlEscape(monthLabel(month))}</summary><ul class="archive-poems">${rows}</ul></details>`;
+        })
+        .join("");
+      return `<details class="archive-year"${yearOpen}><summary>${htmlEscape(year)}</summary><div class="archive-months">${monthBlocks}</div></details>`;
+    })
+    .join("");
+}
+
 async function renderSearchData(poems) {
   const lightweight = poems.map((poem) => ({
     id: poem.id,
@@ -700,7 +806,7 @@ async function renderSearchData(poems) {
     publication: poem.publication,
     date: poem.date,
     route: poem.route,
-    text: markdownStrip(poem.poem)
+    text: poem.searchText || markdownStrip(poem.poem)
   }));
 
   await writeFile(path.join(distDir, "search-index.json"), JSON.stringify(lightweight, null, 2), "utf8");
@@ -718,8 +824,8 @@ async function renderPoemsData(poems) {
       date: poem.date,
       route: poem.route,
       dateParts: parts,
-      authorMetaHtml: renderAuthorMeta(poem),
-      poemHtml: renderPoemMarkdown(poem.poem, poem.highlights)
+      authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
+      poemHtml: poem.poemHtml || renderPoemMarkdown(poem.poem, poem.highlights)
     };
   });
 
@@ -737,7 +843,6 @@ async function copyAssets() {
 }
 
 async function renderNotFoundPage() {
-  const routePath = "/";
   const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -751,34 +856,13 @@ async function renderNotFoundPage() {
   <meta name="robots" content="noindex, nofollow">
   <meta name="description" content="Page not found.">
   <title>404 | A Poem Per Day</title>
-  <script>
-    (() => {
-      const path = window.location.pathname.replace(/\\/+/g, "/").replace(/\\/$/, "");
-      const segs = path.split("/").filter(Boolean);
-      const candidates = [];
-      for (let i = 0; i <= segs.length + 2; i += 1) {
-        candidates.push("../".repeat(i) + "assets/styles.css");
-      }
-      candidates.push("/assets/styles.css");
-      const unique = Array.from(new Set(candidates));
-      const link = document.createElement("link");
-      link.rel = "stylesheet";
-      let idx = 0;
-      const next = () => {
-        if (idx >= unique.length) return;
-        link.href = unique[idx];
-        idx += 1;
-      };
-      link.onerror = next;
-      document.head.appendChild(link);
-      next();
-    })();
-  </script>
-  ${fontPreloads(routePath)}
-  <link rel="manifest" href="${manifestPath(routePath)}">
-  <link rel="icon" type="image/png" sizes="512x512" href="${favicon512Path(routePath)}">
-  <link rel="icon" type="image/png" sizes="32x32" href="${favicon32Path(routePath)}">
-  <link rel="apple-touch-icon" sizes="180x180" href="${appleTouchPath(routePath)}">
+  <link rel="stylesheet" href="/assets/styles.css">
+  <link rel="preload" href="/assets/fonts/libre-baskerville-400.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="/assets/fonts/libre-baskerville-700.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" sizes="512x512" href="/assets/branding/icon-circle-512.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/branding/icon-circle-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/branding/icon-ios-180.png">
 </head>
 <body>
   <main>
@@ -827,13 +911,13 @@ async function renderSeoFiles(publishedPoems) {
 
 export async function build() {
   await ensureDist();
-  const poems = await loadPoems();
+  const poems = preparePoems(await loadPoems());
   const asOfDate = parseAsOfDateArg();
 
   await Promise.all([
-    renderHome(asOfDate),
+    renderHome(poems, asOfDate),
     renderPoemPages(poems),
-    renderArchive(asOfDate),
+    renderArchive(poems, asOfDate),
     renderAbout(),
     renderSearchData(poems),
     renderPoemsData(poems),

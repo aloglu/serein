@@ -27,10 +27,12 @@ function defaultAsOfFromDom() {
   return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
 }
 
-function effectiveDateFromQueryOrNow() {
-  const queryDate = new URLSearchParams(window.location.search).get("as_of") || "";
-  if (/^\d{4}-\d{2}-\d{2}$/.test(queryDate)) {
-    return queryDate;
+function effectiveDateFromQueryOrNow({ allowQueryOverride = true } = {}) {
+  if (allowQueryOverride) {
+    const queryDate = new URLSearchParams(window.location.search).get("as_of") || "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(queryDate)) {
+      return queryDate;
+    }
   }
   const defaultAsOf = defaultAsOfFromDom();
   if (defaultAsOf) {
@@ -110,8 +112,8 @@ function initPoemAccessGuard() {
     return;
   }
 
-  const effectiveDate = effectiveDateFromQueryOrNow();
-  if (poemDate <= effectiveDate) {
+  const todayLocal = localDateString();
+  if (poemDate <= todayLocal) {
     return;
   }
 
@@ -130,10 +132,27 @@ function initPoemAccessGuard() {
 }
 
 function selectPoemForDate(poems, dateStr) {
-  const visible = poems.filter((poem) => poem.date <= dateStr);
-  const exact = visible.find((poem) => poem.date === dateStr) || null;
-  const current = exact || visible[visible.length - 1] || null;
-  return { visible, current };
+  let visibleCount = 0;
+  let current = null;
+
+  for (let i = 0; i < poems.length; i += 1) {
+    const poem = poems[i];
+    if (poem.date <= dateStr) {
+      visibleCount = i + 1;
+      if (poem.date === dateStr) {
+        current = poem;
+      }
+    }
+  }
+
+  if (!current && visibleCount > 0) {
+    current = poems[visibleCount - 1];
+  }
+
+  return {
+    visible: poems.slice(0, visibleCount),
+    current
+  };
 }
 
 function groupByYearMonth(poems) {
@@ -221,7 +240,7 @@ function renderArchive(poems, effectiveDate) {
 }
 
 async function loadPoemsData() {
-  const response = await fetch(poemsDataPath(), { cache: "no-store" });
+  const response = await fetch(poemsDataPath());
   if (!response.ok) {
     throw new Error(`Could not load poems data (${response.status}).`);
   }
