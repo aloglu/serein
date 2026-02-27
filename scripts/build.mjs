@@ -630,7 +630,7 @@ function renderArchiveRow(poem, fromRoute) {
 function groupPoemsByYearMonth(publishedPoems) {
   const groups = new Map();
 
-  for (const poem of publishedPoems.slice().sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title))) {
+  for (const poem of publishedPoems.slice().sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title))) {
     const parts = parseDateParts(poem.date);
     if (!parts) {
       continue;
@@ -663,7 +663,7 @@ function renderArchiveTree(publishedPoems, today) {
   return years
     .map((year) => {
       const monthsMap = grouped.get(year);
-      const months = Array.from(monthsMap.keys()).sort((a, b) => a.localeCompare(b));
+      const months = Array.from(monthsMap.keys()).sort((a, b) => b.localeCompare(a));
       const yearOpen = year === currentYear ? " open" : "";
       const monthBlocks = months
         .map((month) => {
