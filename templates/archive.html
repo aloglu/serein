@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add("js");</script>
   <meta name="theme-color" content="#EFE2D0">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -28,7 +29,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{APPLE_TOUCH_ICON_PATH}}">
 </head>
 <body>
-  <main data-default-as-of="{{DEFAULT_AS_OF}}">
+  <main data-default-as-of="{{DEFAULT_AS_OF}}" data-dynamic-page="1">
     <h1>Archive</h1>
     <div class="content-block">
       <div id="archive-tree" class="archive-tree">{{FALLBACK_ARCHIVE_ROWS}}</div>

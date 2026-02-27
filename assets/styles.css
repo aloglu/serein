@@ -48,6 +48,10 @@ body {
   font-family: "Libre Baskerville", Georgia, serif;
 }
 
+html.js main[data-dynamic-page="1"]:not([data-ready="1"]) {
+  visibility: hidden;
+}
+
 a {
   color: inherit;
   position: relative;

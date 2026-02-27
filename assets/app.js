@@ -22,21 +22,12 @@ function localDateString(now = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function defaultAsOfFromDom() {
-  const value = document.querySelector("main")?.getAttribute("data-default-as-of") || "";
-  return /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : "";
-}
-
 function effectiveDateFromQueryOrNow({ allowQueryOverride = true } = {}) {
   if (allowQueryOverride) {
     const queryDate = new URLSearchParams(window.location.search).get("as_of") || "";
     if (/^\d{4}-\d{2}-\d{2}$/.test(queryDate)) {
       return queryDate;
     }
-  }
-  const defaultAsOf = defaultAsOfFromDom();
-  if (defaultAsOf) {
-    return defaultAsOf;
   }
   return localDateString();
 }
@@ -253,6 +244,12 @@ async function init() {
 
   const hasHomeView = Boolean(document.getElementById("home-content"));
   const hasArchiveView = Boolean(document.getElementById("archive-tree"));
+  const dynamicMain = document.querySelector('main[data-dynamic-page="1"]');
+  const markReady = () => {
+    if (dynamicMain) {
+      dynamicMain.setAttribute("data-ready", "1");
+    }
+  };
   if (!hasHomeView && !hasArchiveView) {
     return;
   }
@@ -271,6 +268,8 @@ async function init() {
     if (target) {
       target.innerHTML = `<p class="empty">${escapeHtml(error.message || "Failed to load poems.")}</p>`;
     }
+  } finally {
+    markReady();
   }
 }
 
