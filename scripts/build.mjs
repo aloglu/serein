@@ -10,6 +10,7 @@ const dataDir = path.join(root, "data", "poems");
 const distDir = path.join(root, "dist");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
+const siteUrl = String(process.env.SITE_URL || "").trim().replace(/\/+$/, "");
 const ISTANBUL_TZ = "Europe/Istanbul";
 const INLINE_HIGHLIGHT_COLORS = new Set([
   "yellow",
@@ -252,6 +253,37 @@ function favicon512Path(routePath) {
 
 function appleTouchPath(routePath) {
   return `${relativePrefix(routePath)}assets/branding/icon-circle-180.png`;
+}
+
+function absoluteRouteUrl(routePath) {
+  if (!siteUrl) {
+    return "";
+  }
+  if (routePath === "/") {
+    return `${siteUrl}/`;
+  }
+  return `${siteUrl}${routePath}/`;
+}
+
+function canonicalTag(routePath) {
+  const href = absoluteRouteUrl(routePath);
+  return href ? `<link rel="canonical" href="${href}">` : "";
+}
+
+function ogUrlTag(routePath) {
+  const content = absoluteRouteUrl(routePath);
+  return content ? `<meta property="og:url" content="${content}">` : "";
+}
+
+function fontPath(routePath, filename) {
+  return `${relativePrefix(routePath)}assets/fonts/${filename}`;
+}
+
+function fontPreloads(routePath) {
+  return [
+    `<link rel="preload" href="${fontPath(routePath, "libre-baskerville-400.ttf")}" as="font" type="font/ttf" crossorigin>`,
+    `<link rel="preload" href="${fontPath(routePath, "libre-baskerville-700.ttf")}" as="font" type="font/ttf" crossorigin>`
+  ].join("\n  ");
 }
 
 function withLegacyHighlights(markdown, highlights = []) {
@@ -573,20 +605,25 @@ function renderAuthorMeta(poem) {
 }
 
 function renderPoemShell(template, poem, { noindex = true, routePath = "/" } = {}) {
+  const description = `${poem.title} by ${poem.author}.`;
   return template
     .replaceAll("{{TITLE}}", htmlEscape(poem.title))
     .replaceAll("{{AUTHOR}}", htmlEscape(poem.author))
+    .replaceAll("{{DESCRIPTION}}", htmlEscape(description))
     .replaceAll("{{PUBLICATION}}", htmlEscape(poem.publication))
     .replaceAll("{{DATE}}", htmlEscape(poem.date))
     .replaceAll("{{AUTHOR_META}}", renderAuthorMeta(poem))
     .replaceAll("{{PUBLICATION_META}}", renderPublicationMeta(poem))
     .replaceAll("{{POEM_TEXT}}", renderPoemMarkdown(poem.poem, poem.highlights))
     .replace("{{ASSET_PATH}}", assetPath(routePath))
+    .replace("{{FONT_PRELOADS}}", fontPreloads(routePath))
     .replace("{{MANIFEST_PATH}}", manifestPath(routePath))
     .replace("{{FAVICON_32_PATH}}", favicon32Path(routePath))
     .replace("{{FAVICON_512_PATH}}", favicon512Path(routePath))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath(routePath))
-    .replace("{{ROBOTS_META}}", noindex ? '<meta name="robots" content="noindex, nofollow">' : "")
+    .replace("{{ROBOTS_META}}", noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">')
+    .replace("{{CANONICAL_TAG}}", canonicalTag(routePath))
+    .replace("{{OG_URL_TAG}}", ogUrlTag(routePath))
     .replace("{{FOOTER}}", renderFooter(routePath));
 }
 
@@ -606,7 +643,7 @@ async function renderPoemPages(publishedPoems) {
   const template = await readTemplate("poem.html");
 
   for (const poem of publishedPoems) {
-    const html = renderPoemShell(template, poem, { noindex: true, routePath: poem.route });
+    const html = renderPoemShell(template, poem, { noindex: false, routePath: poem.route });
     await writeRoutedPage(poem.route, html);
   }
 }
@@ -684,12 +721,15 @@ async function renderArchive(publishedPoems, today) {
   const html = template
     .replace("{{ROWS}}", rows)
     .replace("{{ASSET_PATH}}", assetPath("/archive"))
+    .replace("{{FONT_PRELOADS}}", fontPreloads("/archive"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/archive"))
     .replace("{{FAVICON_32_PATH}}", favicon32Path("/archive"))
     .replace("{{FAVICON_512_PATH}}", favicon512Path("/archive"))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/archive"))
     .replace("{{SCRIPT_PATH}}", scriptPath("/archive"))
-    .replace("{{ROBOTS_META}}", '<meta name="robots" content="noindex, nofollow">')
+    .replace("{{ROBOTS_META}}", '<meta name="robots" content="index, follow">')
+    .replace("{{CANONICAL_TAG}}", canonicalTag("/archive"))
+    .replace("{{OG_URL_TAG}}", ogUrlTag("/archive"))
     .replace("{{FOOTER}}", renderFooter("/archive"));
 
   await writeRoutedPage("/archive", html);
@@ -699,11 +739,14 @@ async function renderAbout() {
   const template = await readTemplate("about.html");
   const html = template
     .replace("{{ASSET_PATH}}", assetPath("/about"))
+    .replace("{{FONT_PRELOADS}}", fontPreloads("/about"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/about"))
     .replace("{{FAVICON_32_PATH}}", favicon32Path("/about"))
     .replace("{{FAVICON_512_PATH}}", favicon512Path("/about"))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/about"))
     .replace("{{SCRIPT_PATH}}", scriptPath("/about"))
+    .replace("{{CANONICAL_TAG}}", canonicalTag("/about"))
+    .replace("{{OG_URL_TAG}}", ogUrlTag("/about"))
     .replace("{{FOOTER}}", renderFooter("/about"));
   await writeRoutedPage("/about", html);
 }
@@ -712,22 +755,29 @@ async function renderHome(todayPoem, today, publishedPoems) {
   const template = await readTemplate("index.html");
   let body = `<p class="empty">No poem is published for today.</p>`;
   let pageTitle = "A Poem Per Day";
+  let pageDescription = "A Poem Per Day.";
 
   if (todayPoem) {
     pageTitle = `${todayPoem.title} | A Poem Per Day`;
+    pageDescription = `${todayPoem.title} by ${todayPoem.author}.`;
     body = `<h1>${htmlEscape(todayPoem.title)}</h1>
       <p class="meta">${renderAuthorMeta(todayPoem)}</p>
       <div class="content-block">${renderPoemMarkdown(todayPoem.poem, todayPoem.highlights)}</div>`;
   }
 
   const html = template
-    .replace("{{PAGE_TITLE}}", htmlEscape(pageTitle))
+    .replaceAll("{{PAGE_TITLE}}", htmlEscape(pageTitle))
+    .replaceAll("{{PAGE_DESCRIPTION}}", htmlEscape(pageDescription))
     .replace("{{ASSET_PATH}}", assetPath("/"))
+    .replace("{{FONT_PRELOADS}}", fontPreloads("/"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/"))
     .replace("{{FAVICON_32_PATH}}", favicon32Path("/"))
     .replace("{{FAVICON_512_PATH}}", favicon512Path("/"))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/"))
     .replace("{{SCRIPT_PATH}}", scriptPath("/"))
+    .replace("{{ROBOTS_META}}", '<meta name="robots" content="index, follow">')
+    .replace("{{CANONICAL_TAG}}", canonicalTag("/"))
+    .replace("{{OG_URL_TAG}}", ogUrlTag("/"))
     .replace("{{BODY}}", body)
     .replace("{{FOOTER}}", renderFooter("/"));
 
@@ -752,9 +802,40 @@ async function copyAssets() {
   await copyFile(path.join(assetsDir, "styles.css"), path.join(distDir, "assets", "styles.css"));
   await copyFile(path.join(assetsDir, "app.js"), path.join(distDir, "assets", "app.js"));
   await copyFile(path.join(assetsDir, "site.webmanifest"), path.join(distDir, "site.webmanifest"));
+  await cp(path.join(assetsDir, "fonts"), path.join(distDir, "assets", "fonts"), { recursive: true });
   await cp(path.join(assetsDir, "highlights"), path.join(distDir, "assets", "highlights"), { recursive: true });
   await cp(path.join(assetsDir, "branding"), path.join(distDir, "assets", "branding"), { recursive: true });
   await copyFile(path.join(assetsDir, "branding", "icon-circle.ico"), path.join(distDir, "favicon.ico"));
+}
+
+async function renderSeoFiles(publishedPoems) {
+  const robotsLines = ["User-agent: *", "Allow: /"];
+  if (siteUrl) {
+    robotsLines.push(`Sitemap: ${siteUrl}/sitemap.xml`);
+  }
+  await writeFile(path.join(distDir, "robots.txt"), `${robotsLines.join("\n")}\n`, "utf8");
+
+  if (!siteUrl) {
+    return;
+  }
+
+  const routePaths = ["/", "/archive", "/about", ...publishedPoems.map((poem) => poem.route)];
+  const uniqueRoutes = Array.from(new Set(routePaths));
+  const urls = uniqueRoutes
+    .map((routePath) => {
+      const loc = absoluteRouteUrl(routePath);
+      if (!loc) {
+        return "";
+      }
+      return `<url><loc>${htmlEscape(loc)}</loc></url>`;
+    })
+    .filter(Boolean)
+    .join("");
+
+  const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urls}</urlset>
+`;
+  await writeFile(path.join(distDir, "sitemap.xml"), sitemapXml, "utf8");
 }
 
 export async function build() {
@@ -771,6 +852,7 @@ export async function build() {
     renderArchive(publishedPoems, effectiveDate),
     renderAbout(),
     renderSearchData(publishedPoems),
+    renderSeoFiles(publishedPoems),
     copyAssets()
   ]);
 
