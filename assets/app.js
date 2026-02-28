@@ -141,6 +141,22 @@ function initPoemAccessGuard() {
   const titleEl = main.querySelector("h1");
   const metaEl = main.querySelector(".meta");
   const contentEl = document.getElementById("poem-content");
+  const setMetaContent = (selector, value) => {
+    const el = document.querySelector(selector);
+    if (el) {
+      el.setAttribute("content", value);
+    }
+  };
+
+  const blockedTitle = "Not Available Yet | A Poem Per Day";
+  const blockedDescription = "This poem is not available yet.";
+  document.title = blockedTitle;
+  setMetaContent('meta[name="description"]', blockedDescription);
+  setMetaContent('meta[property="og:title"]', blockedTitle);
+  setMetaContent('meta[name="twitter:title"]', blockedTitle);
+  setMetaContent('meta[property="og:description"]', blockedDescription);
+  setMetaContent('meta[name="twitter:description"]', blockedDescription);
+
   if (titleEl) {
     titleEl.textContent = "Not Available Yet";
   }
