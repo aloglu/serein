@@ -68,6 +68,33 @@ function formatCountdown(secondsRemaining) {
   return `${pluralize(hours, "hour", "hours")} and ${pluralize(minutes, "minute", "minutes")}`;
 }
 
+function formatFutureAvailabilityCountdown(secondsRemaining) {
+  const safe = Math.max(0, Math.floor(secondsRemaining));
+  if (safe < 60) {
+    return pluralize(safe, "second", "seconds");
+  }
+
+  const days = Math.floor(safe / 86400);
+  const hours = Math.floor((safe % 86400) / 3600);
+  const minutes = Math.floor((safe % 3600) / 60);
+  const parts = [];
+
+  if (days > 0) {
+    parts.push(pluralize(days, "day", "days"));
+  }
+  if (hours > 0) {
+    parts.push(pluralize(hours, "hour", "hours"));
+  }
+  if (minutes > 0) {
+    parts.push(pluralize(minutes, "minute", "minutes"));
+  }
+
+  if (parts.length === 0) {
+    return pluralize(Math.max(1, safe), "second", "seconds");
+  }
+  return parts.join(", ");
+}
+
 function secondsUntilNextLocalMidnight(now = new Date()) {
   const nextMidnight = new Date(
     now.getFullYear(),
@@ -108,6 +135,9 @@ function initPoemAccessGuard() {
     return;
   }
 
+  const [year, month, day] = poemDate.split("-").map((part) => Number(part));
+  const availableAt = new Date(year, month - 1, day, 0, 0, 0, 0);
+
   const titleEl = main.querySelector("h1");
   const metaEl = main.querySelector(".meta");
   const contentEl = document.getElementById("poem-content");
@@ -118,7 +148,21 @@ function initPoemAccessGuard() {
     metaEl.textContent = "";
   }
   if (contentEl) {
-    contentEl.innerHTML = "<p>This poem becomes available at midnight in your local time.</p>";
+    const countdownId = "future-availability-countdown";
+    contentEl.innerHTML = `<p>This poem will become available in <strong id="${countdownId}">--</strong> in your local time.</p>`;
+    const countdownEl = document.getElementById(countdownId);
+    if (countdownEl) {
+      const render = () => {
+        const secondsLeft = (availableAt.getTime() - Date.now()) / 1000;
+        if (secondsLeft <= 0) {
+          window.location.reload();
+          return;
+        }
+        countdownEl.textContent = formatFutureAvailabilityCountdown(secondsLeft);
+      };
+      render();
+      window.setInterval(render, 1000);
+    }
   }
 }
 
