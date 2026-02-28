@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>document.documentElement.classList.add("js");</script>
   <meta name="theme-color" content="#EFE2D0">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -21,6 +22,29 @@
   <meta name="twitter:description" content="{{DESCRIPTION}}">
   {{ROBOTS_META}}
   <title>{{TITLE}} | A Poem Per Day</title>
+  <script>
+    (() => {
+      const poemDate = "{{DATE}}";
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, "0");
+      const d = String(now.getDate()).padStart(2, "0");
+      const today = `${y}-${m}-${d}`;
+      if (poemDate <= today) return;
+      const blockedTitle = "Not Available Yet | A Poem Per Day";
+      const blockedDescription = "This poem is not available yet.";
+      document.title = blockedTitle;
+      const setMeta = (selector, value) => {
+        const el = document.querySelector(selector);
+        if (el) el.setAttribute("content", value);
+      };
+      setMeta('meta[name="description"]', blockedDescription);
+      setMeta('meta[property="og:title"]', blockedTitle);
+      setMeta('meta[name="twitter:title"]', blockedTitle);
+      setMeta('meta[property="og:description"]', blockedDescription);
+      setMeta('meta[name="twitter:description"]', blockedDescription);
+    })();
+  </script>
   <link rel="stylesheet" href="{{ASSET_PATH}}">
   {{FONT_PRELOADS}}
   <link rel="manifest" href="{{MANIFEST_PATH}}">
@@ -29,7 +53,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{APPLE_TOUCH_ICON_PATH}}">
 </head>
 <body>
-  <main data-poem-date="{{DATE}}">
+  <main data-poem-date="{{DATE}}" data-poem-page="1">
     <h1>{{TITLE}}</h1>
     <p class="meta">{{AUTHOR_META}}</p>
     <article id="poem-content" class="content-block">{{POEM_TEXT}}</article>

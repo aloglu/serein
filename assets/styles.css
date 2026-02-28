@@ -52,6 +52,10 @@ html.js main[data-dynamic-page="1"]:not([data-ready="1"]) {
   visibility: hidden;
 }
 
+html.js main[data-poem-page="1"]:not([data-ready="1"]) {
+  visibility: hidden;
+}
+
 a {
   color: inherit;
   position: relative;

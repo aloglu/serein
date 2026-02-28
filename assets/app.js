@@ -126,12 +126,19 @@ function initCountdown() {
 function initPoemAccessGuard() {
   const main = document.querySelector("main[data-poem-date]");
   const poemDate = main?.getAttribute("data-poem-date") || "";
+  const markReady = () => {
+    if (main) {
+      main.setAttribute("data-ready", "1");
+    }
+  };
   if (!main || !/^\d{4}-\d{2}-\d{2}$/.test(poemDate)) {
+    markReady();
     return;
   }
 
   const todayLocal = localDateString();
   if (poemDate <= todayLocal) {
+    markReady();
     return;
   }
 
@@ -180,6 +187,7 @@ function initPoemAccessGuard() {
       window.setInterval(render, 1000);
     }
   }
+  markReady();
 }
 
 function selectPoemForDate(poems, dateStr) {
