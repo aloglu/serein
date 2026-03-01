@@ -311,6 +311,29 @@ function rfc822FromYyyyMmDd(yyyyMmDd) {
   return dt.toUTCString();
 }
 
+function cdataSafe(input) {
+  return String(input || "").replaceAll("]]>", "]]]]><![CDATA[>");
+}
+
+function decodeBasicHtmlEntities(input) {
+  return String(input || "")
+    .replaceAll("&nbsp;", " ")
+    .replaceAll("&amp;", "&")
+    .replaceAll("&lt;", "<")
+    .replaceAll("&gt;", ">")
+    .replaceAll("&quot;", '"')
+    .replaceAll("&#39;", "'");
+}
+
+function htmlToPlainWithLineBreaks(input) {
+  const withBreaks = String(input || "")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(p|div|h1|h2|h3|h4|h5|h6|li|blockquote)>/gi, "\n")
+    .replace(/<li[^>]*>/gi, "- ")
+    .replace(/<[^>]+>/g, "");
+  return decodeBasicHtmlEntities(withBreaks).replace(/\n{3,}/g, "\n\n").trim();
+}
+
 function fontPath(routePath, filename) {
   return `${relativePrefix(routePath)}assets/fonts/${filename}`;
 }
@@ -1007,24 +1030,30 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       }
 
       const pubDate = rfc822FromYyyyMmDd(poem.date);
-      const poemText = markdownStrip(poem.poem || "");
-      const compact = poemText.length > 400 ? `${poemText.slice(0, 397)}...` : poemText;
-      const meta = poem.publication ? `${poem.author} (${poem.publication})` : poem.author;
-      const description = compact ? `${meta}: ${compact}` : meta;
+      const itemTitle = `${poem.title} by ${poem.author}`;
+      const poemHtml = poem.poemHtml || renderPoemMarkdown(poem.poem, poem.highlights);
+      const plainPoem = htmlToPlainWithLineBreaks(poemHtml);
+      const sourceLine = poem.source
+        ? `<p>Source: <a href="${htmlEscape(poem.source)}">${htmlEscape(poem.source)}</a></p>`
+        : "";
+      const contentHtml = `<p><strong>${htmlEscape(poem.title)}</strong> by ${htmlEscape(poem.author)}</p>${poemHtml}${sourceLine}`;
+      const plainDescription = `${poem.title} by ${poem.author}\n\n${plainPoem}`;
 
       return `<item>
-      <title>${htmlEscape(poem.title)}</title>
+      <title>${htmlEscape(itemTitle)}</title>
       <link>${htmlEscape(link)}</link>
       <guid isPermaLink="true">${htmlEscape(link)}</guid>
       <pubDate>${htmlEscape(pubDate)}</pubDate>
-      <description>${htmlEscape(description)}</description>
+      <dc:creator>${htmlEscape(poem.author)}</dc:creator>
+      <description><![CDATA[${cdataSafe(plainDescription)}]]></description>
+      <content:encoded><![CDATA[${cdataSafe(contentHtml)}]]></content:encoded>
     </item>`;
     })
     .filter(Boolean)
     .join("\n");
 
   const rss = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
   <channel>
     <title>A Poem Per Day</title>
     <link>${htmlEscape(channelLink)}</link>
