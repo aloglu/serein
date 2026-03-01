@@ -586,6 +586,59 @@ function withAlignedPoetryLines(markdown) {
   return transformed.join("\n");
 }
 
+function withInlineStyledAlignedPoetryLines(markdown) {
+  const lines = String(markdown || "").split("\n");
+  const transformed = [];
+  let activeFenceChar = "";
+
+  for (const line of lines) {
+    const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fenceMatch) {
+      const markerChar = fenceMatch[1][0];
+      if (!activeFenceChar) {
+        activeFenceChar = markerChar;
+      } else if (activeFenceChar === markerChar) {
+        activeFenceChar = "";
+      }
+      transformed.push(line);
+      continue;
+    }
+
+    if (activeFenceChar) {
+      transformed.push(line);
+      continue;
+    }
+
+    const segments = parsePoetryLineDirective(line);
+    if (!segments) {
+      transformed.push(line);
+      continue;
+    }
+
+    const template = segments
+      .map((segment) => (segment.align === "~" ? segment.spacerWidth : "minmax(0,1fr)"))
+      .join(" ");
+    const content = segments
+      .map((segment) => {
+        if (segment.align === "~") {
+          return `<span style="display:block;min-width:${segment.spacerWidth};"></span>`;
+        }
+
+        const align = segment.textAlign || (segment.align === "<" ? "left" : segment.align === "^" ? "center" : "right");
+        const justify = segment.align === "<" ? "start" : segment.align === "^" ? "center" : "end";
+        const inner = marked.parseInline(segment.text || "").trim() || "&nbsp;";
+        return `<span style="display:block;min-width:0;text-align:${align};justify-self:${justify};">${inner}</span>`;
+      })
+      .join("");
+
+    transformed.push(
+      `<div style="display:grid;grid-template-columns:${template};column-gap:0;align-items:baseline;margin:0;">${content}</div>`
+    );
+  }
+
+  return transformed.join("\n");
+}
+
 function validateCustomMarkdownSyntax(markdown, filename) {
   const lines = String(markdown || "").split("\n");
   let activeFenceChar = "";
@@ -622,6 +675,13 @@ function validateCustomMarkdownSyntax(markdown, filename) {
 function renderPoemMarkdown(markdown, highlights = []) {
   const withMarks = withLegacyHighlights(markdown, highlights);
   const withAlignedLines = withAlignedPoetryLines(withMarks);
+  const withInlineColors = withInlineColorHighlights(withAlignedLines);
+  return marked.parse(withInlineColors);
+}
+
+function renderRssPoemMarkdown(markdown, highlights = []) {
+  const withMarks = withLegacyHighlights(markdown, highlights);
+  const withAlignedLines = withInlineStyledAlignedPoetryLines(withMarks);
   const withInlineColors = withInlineColorHighlights(withAlignedLines);
   return marked.parse(withInlineColors);
 }
@@ -1091,17 +1151,13 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       }
 
       const pubDate = rfc822FromYyyyMmDd(poem.date);
-      const itemTitle = `${poem.title} - ${poem.author}`;
+      const itemTitle = poem.title;
       const byline = `${poem.title} - ${poem.author}`;
-      const poemHtml = renderRssPoemHtml(poem.poem, poem.highlights);
-      const plainPoem = htmlToPlainWithLineBreaks(poemHtml);
+      const poemHtml = renderRssPoemMarkdown(poem.poem, poem.highlights);
       const sourceLine = poem.source
         ? `<p>Source: <a href="${htmlEscape(poem.source)}">${htmlEscape(poem.source)}</a></p>`
         : "";
-      const contentHtml = `<p><strong>${htmlEscape(byline)}</strong></p><pre style="white-space: pre-wrap; margin: 0;">${htmlEscape(
-        plainPoem
-      )}</pre>${sourceLine}`;
-      const plainDescription = `${byline}\n\n${plainPoem}`;
+      const contentHtml = `<p><strong>${htmlEscape(byline)}</strong></p>${poemHtml}${sourceLine}`;
 
       return `<item>
       <title>${htmlEscape(itemTitle)}</title>
@@ -1109,7 +1165,6 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       <guid isPermaLink="true">${htmlEscape(link)}</guid>
       <pubDate>${htmlEscape(pubDate)}</pubDate>
       <dc:creator>${htmlEscape(poem.author)}</dc:creator>
-      <description><![CDATA[${cdataSafe(plainDescription)}]]></description>
       <content:encoded><![CDATA[${cdataSafe(contentHtml)}]]></content:encoded>
     </item>`;
     })
