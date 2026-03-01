@@ -1168,7 +1168,7 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       const contentHtml = poemUsesCustomMarkup(poem.poem)
         ? `<p>This poem uses special formatting that is not suited for RSS feeds. Please <a href="${htmlEscape(
             link
-          )}">visit the website to read it</a>.</p><p>&nbsp;</p>${authorLine}`
+          )}">visit the website to read it</a>.</p>`
         : `${poemHtml}<p>&nbsp;</p>${authorLine}`;
 
       return `<item>
