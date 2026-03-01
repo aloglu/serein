@@ -1,10 +1,10 @@
-import { readdir, readFile, rename } from "node:fs/promises";
+import { mkdir, readdir, readFile, rename, rmdir } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { expectedPoemFilenameWithExtension } from "./poem-filenames.mjs";
 
 const root = process.cwd();
-const poemsDir = path.join(root, "data", "poems");
+const poemsDir = path.join(root, "poems");
 
 function normalizeNewlines(input) {
   return String(input || "").replace(/\r\n/g, "\n");
@@ -70,54 +70,142 @@ function parsePoemMarkdownFile(rawContent, filename) {
   return poem;
 }
 
-async function parsePoemEntry(entry) {
-  const fullPath = path.join(poemsDir, entry.name);
-  const raw = await readFile(fullPath, "utf8");
-  return { poem: parsePoemMarkdownFile(raw, entry.name), current: entry.name, fullPath };
+function parseDateParts(yyyyMmDd) {
+  const match = String(yyyyMmDd).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+  return {
+    year: match[1],
+    month: match[2]
+  };
 }
 
-async function normalizePoemFilenames() {
-  const entries = await readdir(poemsDir, { withFileTypes: true });
-  const poems = [];
+function monthFolderName(monthNumber) {
+  const month = Number(monthNumber);
+  if (!Number.isInteger(month) || month < 1 || month > 12) {
+    return "";
+  }
+  const label = new Intl.DateTimeFormat("en-US", { month: "long", timeZone: "UTC" }).format(
+    new Date(Date.UTC(2024, month - 1, 1))
+  );
+  return `${String(month).padStart(2, "0")}-${label}`;
+}
+
+function expectedPoemSubdirForDate(yyyyMmDd) {
+  const parts = parseDateParts(yyyyMmDd);
+  if (!parts) {
+    return null;
+  }
+  const monthFolder = monthFolderName(parts.month);
+  if (!monthFolder) {
+    return null;
+  }
+  return path.join(parts.year, monthFolder);
+}
+
+async function collectPoemFiles(dirPath, relDir = "") {
+  const entries = await readdir(dirPath, { withFileTypes: true });
+  const files = [];
 
   for (const entry of entries) {
+    const relPath = relDir ? path.join(relDir, entry.name) : entry.name;
+    const fullPath = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      const nested = await collectPoemFiles(fullPath, relPath);
+      files.push(...nested);
+      continue;
+    }
     if (!entry.isFile() || !entry.name.endsWith(".md")) {
       continue;
     }
+    files.push({
+      name: entry.name,
+      relPath,
+      fullPath
+    });
+  }
+
+  return files;
+}
+
+async function parsePoemEntry(file) {
+  const raw = await readFile(file.fullPath, "utf8");
+  return { poem: parsePoemMarkdownFile(raw, file.relPath), currentRelPath: file.relPath, fullPath: file.fullPath };
+}
+
+async function removeEmptyPoemDirs(dirPath) {
+  const entries = await readdir(dirPath, { withFileTypes: true });
+  for (const entry of entries) {
+    if (!entry.isDirectory()) {
+      continue;
+    }
+    const child = path.join(dirPath, entry.name);
+    await removeEmptyPoemDirs(child);
+  }
+
+  if (dirPath === poemsDir) {
+    return;
+  }
+
+  const after = await readdir(dirPath, { withFileTypes: true });
+  if (after.length === 0) {
+    await rmdir(dirPath);
+  }
+}
+
+async function normalizePoemFilenames() {
+  const entries = await collectPoemFiles(poemsDir);
+  const poems = [];
+
+  for (const entry of entries) {
     const parsed = await parsePoemEntry(entry);
     const expected = expectedPoemFilenameWithExtension(parsed.poem, ".md");
     if (!expected) {
-      throw new Error(`Cannot normalize '${entry.name}': missing/invalid date or title.`);
+      throw new Error(`Cannot normalize '${entry.relPath}': missing/invalid date or title.`);
     }
-    poems.push({ ...parsed, expected });
+    const expectedSubdir = expectedPoemSubdirForDate(parsed.poem.date);
+    if (!expectedSubdir) {
+      throw new Error(`Cannot normalize '${entry.relPath}': missing/invalid date.`);
+    }
+    poems.push({
+      ...parsed,
+      expectedFilename: expected,
+      expectedRelPath: path.join(expectedSubdir, expected)
+    });
   }
 
-  const expectedNames = new Map();
+  const expectedPaths = new Map();
   for (const item of poems) {
-    if (expectedNames.has(item.expected) && expectedNames.get(item.expected) !== item.current) {
+    if (expectedPaths.has(item.expectedRelPath) && expectedPaths.get(item.expectedRelPath) !== item.currentRelPath) {
       throw new Error(
-        `Filename collision: '${item.current}' and '${expectedNames.get(item.expected)}' both map to '${item.expected}'.`
+        `Path collision: '${item.currentRelPath}' and '${expectedPaths.get(item.expectedRelPath)}' both map to '${item.expectedRelPath}'.`
       );
     }
-    expectedNames.set(item.expected, item.current);
+    expectedPaths.set(item.expectedRelPath, item.currentRelPath);
   }
 
   let changed = 0;
   for (const item of poems) {
-    const expectedPath = path.join(poemsDir, item.expected);
-    const needsRename = item.current !== item.expected;
+    const expectedPath = path.join(poemsDir, item.expectedRelPath);
+    const needsRename = item.currentRelPath !== item.expectedRelPath;
 
     if (!needsRename) {
       continue;
     }
 
+    await mkdir(path.dirname(expectedPath), { recursive: true });
     await rename(item.fullPath, expectedPath);
     changed += 1;
-    console.log(`renamed: ${item.current} -> ${item.expected}`);
+    console.log(`moved: ${item.currentRelPath} -> ${item.expectedRelPath}`);
+  }
+
+  if (changed > 0) {
+    await removeEmptyPoemDirs(poemsDir);
   }
 
   if (changed === 0) {
-    console.log("No filename changes needed.");
+    console.log("No poem path/filename changes needed.");
   } else {
     console.log(`Updated ${changed} poem file(s).`);
   }

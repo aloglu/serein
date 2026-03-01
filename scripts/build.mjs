@@ -6,7 +6,7 @@ import { marked } from "marked";
 import { expectedPoemFilename } from "./poem-filenames.mjs";
 
 const root = process.cwd();
-const dataDir = path.join(root, "data", "poems");
+const poemsDir = path.join(root, "poems");
 const distDir = path.join(root, "dist");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
@@ -194,6 +194,29 @@ function parseDateParts(yyyyMmDd) {
     month: match[2],
     day: match[3]
   };
+}
+
+function monthFolderName(monthNumber) {
+  const month = Number(monthNumber);
+  if (!Number.isInteger(month) || month < 1 || month > 12) {
+    return "";
+  }
+  const label = new Intl.DateTimeFormat("en-US", { month: "long", timeZone: "UTC" }).format(
+    new Date(Date.UTC(2024, month - 1, 1))
+  );
+  return `${String(month).padStart(2, "0")}-${label}`;
+}
+
+function expectedPoemSubdirForDate(yyyyMmDd) {
+  const parts = parseDateParts(yyyyMmDd);
+  if (!parts) {
+    return null;
+  }
+  const monthFolder = monthFolderName(parts.month);
+  if (!monthFolder) {
+    return null;
+  }
+  return path.join(parts.year, monthFolder);
 }
 
 function yyyyMmDdInTimeZone(timeZone) {
@@ -532,35 +555,68 @@ function validatePoem(poem, filename) {
 }
 
 async function loadPoems() {
-  const files = await readdir(dataDir, { withFileTypes: true });
+  async function collectPoemFiles(dirPath, relDir = "") {
+    const entries = await readdir(dirPath, { withFileTypes: true });
+    const files = [];
+
+    for (const entry of entries) {
+      const entryRelPath = relDir ? path.join(relDir, entry.name) : entry.name;
+      const entryFullPath = path.join(dirPath, entry.name);
+      if (entry.isDirectory()) {
+        const nested = await collectPoemFiles(entryFullPath, entryRelPath);
+        files.push(...nested);
+        continue;
+      }
+      files.push({
+        name: entry.name,
+        relPath: entryRelPath,
+        fullPath: entryFullPath
+      });
+    }
+
+    return files;
+  }
+
+  const files = await collectPoemFiles(poemsDir);
   const poems = [];
 
-  for (const entry of files) {
-    if (!entry.isFile()) {
-      continue;
+  for (const file of files) {
+    if (file.name.endsWith(".json")) {
+      throw new Error(
+        `Found unsupported poem file '${file.relPath}'. Only Markdown (.md) poem files are allowed.`
+      );
     }
-    if (entry.name.endsWith(".json")) {
-      throw new Error(`Found unsupported poem file '${entry.name}'. Only Markdown (.md) poem files are allowed.`);
-    }
-    if (!entry.name.endsWith(".md")) {
+    if (!file.name.endsWith(".md")) {
       continue;
     }
 
-    const fullPath = path.join(dataDir, entry.name);
-    const raw = await readFile(fullPath, "utf8");
-    const parsed = parsePoemMarkdownFile(raw, entry.name);
-    validatePoem(parsed, entry.name);
-    validateCustomMarkdownSyntax(parsed.poem, entry.name);
+    const raw = await readFile(file.fullPath, "utf8");
+    const parsed = parsePoemMarkdownFile(raw, file.relPath);
+    validatePoem(parsed, file.relPath);
+    validateCustomMarkdownSyntax(parsed.poem, file.relPath);
     const expectedFilename = expectedPoemFilename(parsed);
     if (!expectedFilename) {
-      throw new Error(`Could not derive expected filename from date/title in ${entry.name}.`);
+      throw new Error(`Could not derive expected filename from date/title in ${file.relPath}.`);
     }
-    if (entry.name !== expectedFilename) {
+    if (file.name !== expectedFilename) {
       throw new Error(
-        `Invalid poem filename '${entry.name}'. Expected '${expectedFilename}' (based on date + title). Run 'npm run normalize:filenames'.`
+        `Invalid poem filename '${file.relPath}'. Expected '${expectedFilename}' (based on date + title). Run 'npm run normalize:filenames'.`
       );
     }
-    parsed.filename = entry.name;
+
+    const expectedSubdir = expectedPoemSubdirForDate(parsed.date);
+    if (!expectedSubdir) {
+      throw new Error(`Could not derive expected subdirectory from date in ${file.relPath}.`);
+    }
+    const actualSubdir = path.dirname(file.relPath);
+    if (actualSubdir !== expectedSubdir) {
+      throw new Error(
+        `Invalid poem path '${file.relPath}'. Expected to be in '${expectedSubdir}'. Run 'npm run normalize:filenames'.`
+      );
+    }
+
+    parsed.filename = file.name;
+    parsed.filepath = file.relPath;
     parsed.route = toRoutePath(parsed.date);
     poems.push(parsed);
   }
@@ -938,7 +994,7 @@ if (isDirectRun) {
 if (watchMode && isDirectRun) {
   const { watch } = await import("node:fs");
   console.log("Watch mode enabled.");
-  const watchTargets = ["data", "assets", "templates", "scripts"].map((dir) => path.join(root, dir));
+  const watchTargets = ["poems", "assets", "templates", "scripts"].map((dir) => path.join(root, dir));
   let buildInFlight = false;
   let buildQueued = false;
   let debounceTimer = null;
