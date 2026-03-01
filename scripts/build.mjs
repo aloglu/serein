@@ -686,6 +686,17 @@ function renderRssPoemMarkdown(markdown, highlights = []) {
   return marked.parse(withInlineColors);
 }
 
+function poemUsesCustomMarkup(markdown) {
+  const source = String(markdown || "");
+  if (/(^|\n)\s*::line\b/m.test(source)) {
+    return true;
+  }
+  if (/==([^=\n][^=\n]*?)==/.test(source)) {
+    return true;
+  }
+  return false;
+}
+
 function validatePoem(poem, filename) {
   const required = ["title", "author", "date", "poem"];
 
@@ -1152,12 +1163,13 @@ async function renderRssFeed(poems, defaultAsOf = "") {
 
       const pubDate = rfc822FromYyyyMmDd(poem.date);
       const itemTitle = poem.title;
-      const byline = `${poem.title} by ${poem.author}`;
       const poemHtml = renderRssPoemMarkdown(poem.poem, poem.highlights);
-      const sourceLine = poem.source
-        ? `<p>Source: <a href="${htmlEscape(poem.source)}">${htmlEscape(poem.source)}</a></p>`
-        : "";
-      const contentHtml = `<p><strong>${htmlEscape(byline)}</strong></p><p>&nbsp;</p>${poemHtml}${sourceLine}`;
+      const authorLine = `<p>by <strong>${htmlEscape(poem.author)}</strong></p>`;
+      const contentHtml = poemUsesCustomMarkup(poem.poem)
+        ? `<p>This poem uses special formatting that is not suited for RSS feeds. Please <a href="${htmlEscape(
+            link
+          )}">visit the website to read it</a>.</p><p>&nbsp;</p>${authorLine}`
+        : `${poemHtml}<p>&nbsp;</p>${authorLine}`;
 
       return `<item>
       <title>${htmlEscape(itemTitle)}</title>
