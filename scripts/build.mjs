@@ -278,6 +278,10 @@ function appleTouchPath(routePath) {
   return `${relativePrefix(routePath)}assets/branding/icon-ios-180.png`;
 }
 
+function rssPath(routePath) {
+  return `${relativePrefix(routePath)}rss.xml`;
+}
+
 function absoluteRouteUrl(routePath) {
   if (!siteUrl) {
     return "";
@@ -296,6 +300,15 @@ function canonicalTag(routePath) {
 function ogUrlTag(routePath) {
   const content = absoluteRouteUrl(routePath);
   return content ? `<meta property="og:url" content="${content}">` : "";
+}
+
+function rfc822FromYyyyMmDd(yyyyMmDd) {
+  const parts = parseDateParts(yyyyMmDd);
+  if (!parts) {
+    return "";
+  }
+  const dt = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), 0, 0, 0, 0));
+  return dt.toUTCString();
 }
 
 function fontPath(routePath, filename) {
@@ -685,6 +698,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/" } = {
     .replace("{{ASSET_PATH}}", assetPath(routePath))
     .replace("{{FONT_PRELOADS}}", fontPreloads(routePath))
     .replace("{{MANIFEST_PATH}}", manifestPath(routePath))
+    .replace("{{RSS_PATH}}", rssPath(routePath))
     .replace("{{FAVICON_32_PATH}}", favicon32Path(routePath))
     .replace("{{FAVICON_512_PATH}}", favicon512Path(routePath))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath(routePath))
@@ -727,6 +741,7 @@ async function renderArchive(poems, defaultAsOf = "") {
     .replace("{{ASSET_PATH}}", assetPath("/archive"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/archive"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/archive"))
+    .replace("{{RSS_PATH}}", rssPath("/archive"))
     .replace("{{FAVICON_32_PATH}}", favicon32Path("/archive"))
     .replace("{{FAVICON_512_PATH}}", favicon512Path("/archive"))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/archive"))
@@ -745,6 +760,7 @@ async function renderAbout() {
     .replace("{{ASSET_PATH}}", assetPath("/about"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/about"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/about"))
+    .replace("{{RSS_PATH}}", rssPath("/about"))
     .replace("{{FAVICON_32_PATH}}", favicon32Path("/about"))
     .replace("{{FAVICON_512_PATH}}", favicon512Path("/about"))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/about"))
@@ -775,6 +791,7 @@ async function renderHome(poems, defaultAsOf = "") {
     .replace("{{ASSET_PATH}}", assetPath("/"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/"))
+    .replace("{{RSS_PATH}}", rssPath("/"))
     .replace("{{FAVICON_32_PATH}}", favicon32Path("/"))
     .replace("{{FAVICON_512_PATH}}", favicon512Path("/"))
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/"))
@@ -916,6 +933,7 @@ async function renderNotFoundPage() {
   <link rel="preload" href="/assets/fonts/libre-baskerville-400.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="/assets/fonts/libre-baskerville-700.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="manifest" href="/site.webmanifest">
+  <link rel="alternate" type="application/rss+xml" title="A Poem Per Day RSS Feed" href="/rss.xml">
   <link rel="icon" type="image/png" sizes="512x512" href="/assets/branding/icon-circle-512.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/branding/icon-circle-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/branding/icon-ios-180.png">
@@ -965,6 +983,62 @@ async function renderSeoFiles(publishedPoems) {
   await writeFile(path.join(distDir, "sitemap.xml"), sitemapXml, "utf8");
 }
 
+async function renderRssFeed(poems, defaultAsOf = "") {
+  if (!siteUrl) {
+    console.warn("Skipped RSS feed generation because SITE_URL is not set.");
+    return;
+  }
+
+  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const published = poems
+    .filter((poem) => poem.date <= fallbackDate)
+    .slice()
+    .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+
+  const channelLink = `${siteUrl}/`;
+  const selfLink = `${siteUrl}/rss.xml`;
+  const buildDate = new Date().toUTCString();
+
+  const items = published
+    .map((poem) => {
+      const link = absoluteRouteUrl(poem.route);
+      if (!link) {
+        return "";
+      }
+
+      const pubDate = rfc822FromYyyyMmDd(poem.date);
+      const poemText = markdownStrip(poem.poem || "");
+      const compact = poemText.length > 400 ? `${poemText.slice(0, 397)}...` : poemText;
+      const meta = poem.publication ? `${poem.author} (${poem.publication})` : poem.author;
+      const description = compact ? `${meta}: ${compact}` : meta;
+
+      return `<item>
+      <title>${htmlEscape(poem.title)}</title>
+      <link>${htmlEscape(link)}</link>
+      <guid isPermaLink="true">${htmlEscape(link)}</guid>
+      <pubDate>${htmlEscape(pubDate)}</pubDate>
+      <description>${htmlEscape(description)}</description>
+    </item>`;
+    })
+    .filter(Boolean)
+    .join("\n");
+
+  const rss = `<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>A Poem Per Day</title>
+    <link>${htmlEscape(channelLink)}</link>
+    <description>Daily poems from A Poem Per Day.</description>
+    <language>en</language>
+    <lastBuildDate>${htmlEscape(buildDate)}</lastBuildDate>
+    <atom:link href="${htmlEscape(selfLink)}" rel="self" type="application/rss+xml" />
+${items ? `${items}\n` : ""}  </channel>
+</rss>
+`;
+
+  await writeFile(path.join(distDir, "rss.xml"), rss, "utf8");
+}
+
 export async function build() {
   await ensureDist();
   const poems = preparePoems(await loadPoems());
@@ -978,6 +1052,7 @@ export async function build() {
     renderSearchData(poems),
     renderPoemsData(poems),
     renderSeoFiles(poems),
+    renderRssFeed(poems, asOfDate),
     renderNotFoundPage(),
     copyAssets()
   ]);
