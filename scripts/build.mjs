@@ -1164,12 +1164,11 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       const pubDate = rfc822FromYyyyMmDd(poem.date);
       const itemTitle = poem.title;
       const poemHtml = renderRssPoemMarkdown(poem.poem, poem.highlights);
-      const authorLine = `<p>by <strong>${htmlEscape(poem.author)}</strong></p>`;
       const contentHtml = poemUsesCustomMarkup(poem.poem)
         ? `<p>This poem uses special formatting that is not suited for RSS feeds. Please <a href="${htmlEscape(
             link
           )}">visit the website to read it</a>.</p>`
-        : `${poemHtml}<p>&nbsp;</p>${authorLine}`;
+        : poemHtml;
 
       return `<item>
       <title>${htmlEscape(itemTitle)}</title>
