@@ -1151,7 +1151,13 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       }
 
       const pubDate = rfc822FromYyyyMmDd(poem.date);
-      const itemTitle = `${poem.title} by ${poem.author}`;
+      const itemTitle = poem.title;
+      const byline = `${poem.title} by ${poem.author}`;
+      const poemHtml = renderRssPoemMarkdown(poem.poem, poem.highlights);
+      const sourceLine = poem.source
+        ? `<p>Source: <a href="${htmlEscape(poem.source)}">${htmlEscape(poem.source)}</a></p>`
+        : "";
+      const contentHtml = `<p><strong>${htmlEscape(byline)}</strong></p><p>&nbsp;</p>${poemHtml}${sourceLine}`;
 
       return `<item>
       <title>${htmlEscape(itemTitle)}</title>
@@ -1160,7 +1166,7 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       <pubDate>${htmlEscape(pubDate)}</pubDate>
       <dc:creator>${htmlEscape(poem.author)}</dc:creator>
       <description><![CDATA[]]></description>
-      <content:encoded><![CDATA[]]></content:encoded>
+      <content:encoded><![CDATA[${cdataSafe(contentHtml)}]]></content:encoded>
     </item>`;
     })
     .filter(Boolean)
