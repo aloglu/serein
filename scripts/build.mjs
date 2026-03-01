@@ -334,6 +334,67 @@ function htmlToPlainWithLineBreaks(input) {
   return decodeBasicHtmlEntities(withBreaks).replace(/\n{3,}/g, "\n\n").trim();
 }
 
+function spacerToSpaces(spacerWidth) {
+  const raw = String(spacerWidth || "").trim().toLowerCase();
+  const chMatch = raw.match(/^(\d+(?:\.\d+)?)ch$/);
+  if (chMatch) {
+    const count = Math.max(1, Math.min(16, Math.round(Number(chMatch[1]))));
+    return " ".repeat(count);
+  }
+  return "   ";
+}
+
+function withRssFriendlyAlignedPoetryLines(markdown) {
+  const lines = String(markdown || "").split("\n");
+  const transformed = [];
+  let activeFenceChar = "";
+
+  for (const line of lines) {
+    const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/);
+    if (fenceMatch) {
+      const markerChar = fenceMatch[1][0];
+      if (!activeFenceChar) {
+        activeFenceChar = markerChar;
+      } else if (activeFenceChar === markerChar) {
+        activeFenceChar = "";
+      }
+      transformed.push(line);
+      continue;
+    }
+
+    if (activeFenceChar) {
+      transformed.push(line);
+      continue;
+    }
+
+    const segments = parsePoetryLineDirective(line);
+    if (!segments) {
+      transformed.push(line);
+      continue;
+    }
+
+    const plainLine = segments
+      .map((segment) => {
+        if (segment.align === "~") {
+          return spacerToSpaces(segment.spacerWidth);
+        }
+        return String(segment.text || "");
+      })
+      .join("")
+      .replace(/\s+$/g, "");
+    transformed.push(plainLine || " ");
+  }
+
+  return transformed.join("\n");
+}
+
+function renderRssPoemHtml(markdown, highlights = []) {
+  const withMarks = withLegacyHighlights(markdown, highlights);
+  const withAlignedLines = withRssFriendlyAlignedPoetryLines(withMarks);
+  const withInlineColors = withInlineColorHighlights(withAlignedLines);
+  return marked.parse(withInlineColors);
+}
+
 function fontPath(routePath, filename) {
   return `${relativePrefix(routePath)}assets/fonts/${filename}`;
 }
@@ -1030,14 +1091,17 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       }
 
       const pubDate = rfc822FromYyyyMmDd(poem.date);
-      const itemTitle = `${poem.title} by ${poem.author}`;
-      const poemHtml = poem.poemHtml || renderPoemMarkdown(poem.poem, poem.highlights);
+      const itemTitle = `${poem.title} - ${poem.author}`;
+      const byline = `${poem.title} - ${poem.author}`;
+      const poemHtml = renderRssPoemHtml(poem.poem, poem.highlights);
       const plainPoem = htmlToPlainWithLineBreaks(poemHtml);
       const sourceLine = poem.source
         ? `<p>Source: <a href="${htmlEscape(poem.source)}">${htmlEscape(poem.source)}</a></p>`
         : "";
-      const contentHtml = `<p><strong>${htmlEscape(poem.title)}</strong> by ${htmlEscape(poem.author)}</p>${poemHtml}${sourceLine}`;
-      const plainDescription = `${poem.title} by ${poem.author}\n\n${plainPoem}`;
+      const contentHtml = `<p><strong>${htmlEscape(byline)}</strong></p><pre style="white-space: pre-wrap; margin: 0;">${htmlEscape(
+        plainPoem
+      )}</pre>${sourceLine}`;
+      const plainDescription = `${byline}\n\n${plainPoem}`;
 
       return `<item>
       <title>${htmlEscape(itemTitle)}</title>
