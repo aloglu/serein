@@ -9,7 +9,7 @@
     "normalize:filenames": "node scripts/normalize-poem-filenames.mjs",
     "preview": "npx serve dist",
     "dev:preview": "concurrently -k -n build,serve -c yellow,cyan \"npm run dev\" \"npm run preview\"",
-    "dev:preview:asof": "concurrently -k -n build,serve -c yellow,cyan \"node scripts/build.mjs --watch --as-of $npm_config_date\" \"npm run preview\""
+    "dev:preview:asof": "node scripts/dev-preview-asof.mjs"
   },
   "engines": {
     "node": ">=20"

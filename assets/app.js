@@ -22,12 +22,15 @@ function localDateString(now = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function effectiveDateFromQueryOrNow({ allowQueryOverride = true } = {}) {
+function effectiveDateFromQueryOrNow({ allowQueryOverride = true, defaultAsOf = "" } = {}) {
   if (allowQueryOverride) {
     const queryDate = new URLSearchParams(window.location.search).get("as_of") || "";
     if (/^\d{4}-\d{2}-\d{2}$/.test(queryDate)) {
       return queryDate;
     }
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(defaultAsOf || "").trim())) {
+    return String(defaultAsOf).trim();
   }
   return localDateString();
 }
@@ -126,6 +129,7 @@ function initCountdown() {
 function initPoemAccessGuard() {
   const main = document.querySelector("main[data-poem-date]");
   const poemDate = main?.getAttribute("data-poem-date") || "";
+  const defaultAsOf = main?.dataset?.defaultAsOf || "";
   const markReady = () => {
     if (main) {
       main.setAttribute("data-ready", "1");
@@ -136,8 +140,8 @@ function initPoemAccessGuard() {
     return;
   }
 
-  const todayLocal = localDateString();
-  if (poemDate <= todayLocal) {
+  const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
+  if (poemDate <= effectiveDate) {
     markReady();
     return;
   }
@@ -324,7 +328,8 @@ async function init() {
 
   try {
     const poems = await loadPoemsData();
-    const effectiveDate = effectiveDateFromQueryOrNow();
+    const defaultAsOf = dynamicMain?.dataset?.defaultAsOf || "";
+    const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
     if (hasHomeView) {
       renderHome(poems, effectiveDate);
     }

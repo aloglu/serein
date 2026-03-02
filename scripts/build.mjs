@@ -38,7 +38,13 @@ function readArgValue(flagName) {
 }
 
 function parseAsOfDateArg() {
-  const raw = String(readArgValue("--as-of") || "").trim();
+  const raw = String(
+    readArgValue("--as-of")
+      || process.env.SEREIN_AS_OF
+      || process.env.npm_config_as_of
+      || process.env.npm_config_date
+      || ""
+  ).trim();
   if (!raw) {
     return "";
   }
@@ -459,14 +465,29 @@ function withInlineColorHighlights(markdown) {
 }
 
 function parsePoetryLineDirective(line) {
-  const match = String(line || "").match(/^\s*::line\s+(.+)$/);
+  const cleanedLine = String(line || "")
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .replace(/\u00A0/g, " ")
+    .replace(/\uFF5C/g, "|")
+    .replace(/[\u2223\u2758\u00A6]/g, "|")
+    .replace(/[\u301C\uFF5E\u223C\u2053\u223F]/g, "~");
+  const match = cleanedLine.match(/^\s*::line\b\s*(.+)$/);
   if (!match) {
     return null;
   }
 
   const source = match[1];
+  const spacerOnly = source.match(/^\s*(?:\|\s*)?~\s*([^|]*?)(?:\s*\|)?\s*$/);
+  if (spacerOnly) {
+    const spacerWidth = parsePoetrySpacerWidth(spacerOnly[1].replace(/\\\|/g, "|"));
+    if (!spacerWidth) {
+      return null;
+    }
+    return [{ align: "~", spacerWidth }];
+  }
+
   const segments = [];
-  const tokenPattern = /\|([<^>~])((?:\\\||[^|])*)\|/g;
+  const tokenPattern = /\|\s*([<^>~])\s*((?:\\\||[^|])*)\|/g;
   let lastIndex = 0;
 
   for (const token of source.matchAll(tokenPattern)) {
@@ -499,7 +520,21 @@ function parsePoetryLineDirective(line) {
     lastIndex = tokenIndex + token[0].length;
   }
 
-  if (segments.length === 0 || source.slice(lastIndex).trim()) {
+  const trailing = source.slice(lastIndex);
+  if (trailing.trim()) {
+    // Allow shorthand like: ::line |~4ch| some text
+    // by treating trailing plain text as an implicit left segment.
+    if (trailing.includes("|")) {
+      return null;
+    }
+    segments.push({
+      align: "<",
+      text: trailing.trimStart(),
+      textAlign: null
+    });
+  }
+
+  if (segments.length === 0) {
     return null;
   }
 
@@ -579,7 +614,7 @@ function withAlignedPoetryLines(markdown) {
       })
       .join("");
     transformed.push(
-      `<div class="poetry-line" style="--poetry-cols: ${segments.length}; --poetry-template: ${template};">${content}</div>`
+      `<span class="poetry-line" style="--poetry-cols: ${segments.length}; --poetry-template: ${template};">${content}</span>`
     );
   }
 
@@ -632,7 +667,7 @@ function withInlineStyledAlignedPoetryLines(markdown) {
       .join("");
 
     transformed.push(
-      `<div style="display:grid;grid-template-columns:${template};column-gap:0;align-items:baseline;margin:0;">${content}</div>`
+      `<span style="display:inline-grid;width:100%;grid-template-columns:${template};column-gap:0;row-gap:0;align-items:baseline;line-height:inherit;">${content}</span>`
     );
   }
 
@@ -642,6 +677,7 @@ function withInlineStyledAlignedPoetryLines(markdown) {
 function validateCustomMarkdownSyntax(markdown, filename) {
   const lines = String(markdown || "").split("\n");
   let activeFenceChar = "";
+  const strict = String(process.env.SEREIN_STRICT_MARKUP || "1") !== "0";
 
   for (let i = 0; i < lines.length; i += 1) {
     const line = lines[i];
@@ -665,9 +701,11 @@ function validateCustomMarkdownSyntax(markdown, filename) {
     }
 
     if (!parsePoetryLineDirective(line)) {
-      throw new Error(
-        `Invalid ::line syntax in ${filename}:${i + 1}. Expected tokens like |<text| |^text| |>text|, optional text-align prefix (left:, center:, right:), or spacer |~10ch|.`
-      );
+      const message = `Invalid ::line syntax in ${filename}:${i + 1}. Expected tokens like |<text| |^text| |>text|, optional text-align prefix (left:, center:, right:), or spacer |~10ch|.`;
+      if (strict) {
+        throw new Error(message);
+      }
+      console.warn(`Warning: ${message}`);
     }
   }
 }
@@ -837,7 +875,7 @@ function renderAuthorMeta(poem) {
   return `${author} <span aria-hidden="true">&middot;</span> ${details}`;
 }
 
-function renderPoemShell(template, poem, { noindex = true, routePath = "/" } = {}) {
+function renderPoemShell(template, poem, { noindex = true, routePath = "/", defaultAsOf = "" } = {}) {
   const description = `${poem.title} by ${poem.author}.`;
   const authorMeta = poem.authorMetaHtml || renderAuthorMeta(poem);
   const poemHtml = poem.poemHtml || renderPoemMarkdown(poem.poem, poem.highlights);
@@ -847,6 +885,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/" } = {
     .replaceAll("{{DESCRIPTION}}", htmlEscape(description))
     .replaceAll("{{PUBLICATION}}", htmlEscape(poem.publication))
     .replaceAll("{{DATE}}", htmlEscape(poem.date))
+    .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{AUTHOR_META}}", authorMeta)
     .replaceAll("{{PUBLICATION_META}}", renderPublicationMeta(poem))
     .replaceAll("{{POEM_TEXT}}", poemHtml)
@@ -876,11 +915,11 @@ async function writeRoutedPage(routePath, html) {
   await writeFile(path.join(dirPath, "index.html"), html, "utf8");
 }
 
-async function renderPoemPages(publishedPoems) {
+async function renderPoemPages(publishedPoems, defaultAsOf = "") {
   const template = await readTemplate("poem.html");
 
   for (const poem of publishedPoems) {
-    const html = renderPoemShell(template, poem, { noindex: false, routePath: poem.route });
+    const html = renderPoemShell(template, poem, { noindex: false, routePath: poem.route, defaultAsOf });
     await writeRoutedPage(poem.route, html);
   }
 }
@@ -1206,7 +1245,7 @@ export async function build() {
 
   await Promise.all([
     renderHome(poems, asOfDate),
-    renderPoemPages(poems),
+    renderPoemPages(poems, asOfDate),
     renderArchive(poems, asOfDate),
     renderAbout(),
     renderSearchData(poems),
