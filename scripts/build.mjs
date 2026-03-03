@@ -489,8 +489,10 @@ function parsePoetryLineDirective(line) {
   const segments = [];
   const tokenPattern = /\|\s*([<^>~])\s*((?:\\\||[^|])*)\|/g;
   let lastIndex = 0;
+  let hasDirectiveToken = false;
 
   for (const token of source.matchAll(tokenPattern)) {
+    hasDirectiveToken = true;
     const tokenIndex = token.index ?? 0;
     if (source.slice(lastIndex, tokenIndex).trim()) {
       return null;
@@ -524,6 +526,9 @@ function parsePoetryLineDirective(line) {
   if (trailing.trim()) {
     // Allow shorthand like: ::line |~4ch| some text
     // by treating trailing plain text as an implicit left segment.
+    if (!hasDirectiveToken) {
+      return null;
+    }
     if (trailing.includes("|")) {
       return null;
     }
