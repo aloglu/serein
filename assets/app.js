@@ -9,7 +9,7 @@ function normalizedRoutePath() {
 
 function poemsDataPath() {
   const routePath = normalizedRoutePath();
-  if (routePath.endsWith("/archive/")) {
+  if (routePath.endsWith("/archive/") || routePath.endsWith("/poets/")) {
     return "../poems-data.json";
   }
   return "./poems-data.json";
@@ -240,6 +240,49 @@ function groupByYearMonth(poems) {
   return grouped;
 }
 
+const authorCollator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
+
+function normalizedAlphaText(input) {
+  return String(input || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+}
+
+function authorInitial(author) {
+  const normalized = normalizedAlphaText(author);
+  const firstChar = normalized.charAt(0).toUpperCase();
+  return /^[A-Z]$/.test(firstChar) ? firstChar : "#";
+}
+
+function groupByAuthorInitial(poems) {
+  const grouped = new Map();
+  const sorted = poems
+    .slice()
+    .sort((a, b) => authorCollator.compare(a.author, b.author) || b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+
+  for (const poem of sorted) {
+    const author = String(poem.author || "").trim() || "Unknown";
+    const initial = authorInitial(author);
+    if (!grouped.has(initial)) {
+      grouped.set(initial, new Map());
+    }
+    const authorsMap = grouped.get(initial);
+    if (!authorsMap.has(author)) {
+      authorsMap.set(author, []);
+    }
+    authorsMap.get(author).push(poem);
+  }
+
+  for (const authorsMap of grouped.values()) {
+    for (const poemsByAuthor of authorsMap.values()) {
+      poemsByAuthor.sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+    }
+  }
+
+  return grouped;
+}
+
 function renderHome(poems, effectiveDate) {
   const titleEl = document.getElementById("home-title");
   const metaEl = document.getElementById("home-meta");
@@ -283,10 +326,11 @@ function renderArchive(poems, effectiveDate) {
       const monthsMap = grouped.get(year);
       const months = Array.from(monthsMap.keys()).sort((a, b) => b.localeCompare(a));
       const yearOpen = year === currentYear ? " open" : "";
+      const defaultOpenMonth = year === currentYear ? (months.includes(currentMonth) ? currentMonth : months[0] || "") : "";
       const monthBlocks = months
         .map((month) => {
           const poemsInMonth = monthsMap.get(month);
-          const monthOpen = year === currentYear && month === currentMonth ? " open" : "";
+          const monthOpen = year === currentYear && month === defaultOpenMonth ? " open" : "";
           const rows = poemsInMonth
             .map((poem) => {
               const day = escapeHtml(String(poem.dateParts?.day || "--"));
@@ -298,6 +342,51 @@ function renderArchive(poems, effectiveDate) {
         })
         .join("");
       return `<details class="archive-year"${yearOpen}><summary>${escapeHtml(year)}</summary><div class="archive-months">${monthBlocks}</div></details>`;
+    })
+    .join("");
+}
+
+function renderPoets(poems, effectiveDate) {
+  const treeEl = document.getElementById("poets-tree");
+  if (!treeEl) {
+    return;
+  }
+
+  const { visible } = selectPoemForDate(poems, effectiveDate);
+  if (visible.length === 0) {
+    treeEl.innerHTML = "<p>No published poets yet.</p>";
+    return;
+  }
+
+  const grouped = groupByAuthorInitial(visible);
+  const letters = Array.from(grouped.keys()).sort((a, b) => {
+    if (a === "#") {
+      return 1;
+    }
+    if (b === "#") {
+      return -1;
+    }
+    return authorCollator.compare(a, b);
+  });
+
+  treeEl.innerHTML = letters
+    .map((letter) => {
+      const authorsMap = grouped.get(letter);
+      const authors = Array.from(authorsMap.keys()).sort((a, b) => authorCollator.compare(a, b));
+      const poetBlocks = authors
+        .map((author) => {
+          const poemsByAuthor = authorsMap.get(author);
+          const countLabel = poemsByAuthor.length === 1 ? "1 poem" : `${poemsByAuthor.length} poems`;
+          const rows = poemsByAuthor
+            .map((poem) => {
+              const href = `../${poem.route.slice(1)}/`;
+              return `<li><span aria-hidden="true" class="poet-separator">&middot;</span><a href="${escapeHtml(href)}">${escapeHtml(poem.title)}</a></li>`;
+            })
+            .join("");
+          return `<details class="archive-month poet-group"><summary><span class="poet-name">${escapeHtml(author)}</span><span aria-hidden="true" class="poet-separator">&middot;</span><span class="poet-count">${escapeHtml(countLabel)}</span></summary><ul class="archive-poems poet-poems">${rows}</ul></details>`;
+        })
+        .join("");
+      return `<details class="archive-year poet-letter"><summary>${escapeHtml(letter)}</summary><div class="archive-months poet-groups">${poetBlocks}</div></details>`;
     })
     .join("");
 }
@@ -316,13 +405,14 @@ async function init() {
 
   const hasHomeView = Boolean(document.getElementById("home-content"));
   const hasArchiveView = Boolean(document.getElementById("archive-tree"));
+  const hasPoetsView = Boolean(document.getElementById("poets-tree"));
   const dynamicMain = document.querySelector('main[data-dynamic-page="1"]');
   const markReady = () => {
     if (dynamicMain) {
       dynamicMain.setAttribute("data-ready", "1");
     }
   };
-  if (!hasHomeView && !hasArchiveView) {
+  if (!hasHomeView && !hasArchiveView && !hasPoetsView) {
     return;
   }
 
@@ -336,8 +426,11 @@ async function init() {
     if (hasArchiveView) {
       renderArchive(poems, effectiveDate);
     }
+    if (hasPoetsView) {
+      renderPoets(poems, effectiveDate);
+    }
   } catch (error) {
-    const target = document.querySelector("#home-content, #archive-tree");
+    const target = document.querySelector("#home-content, #archive-tree, #poets-tree");
     if (target) {
       target.innerHTML = `<p class="empty">${escapeHtml(error.message || "Failed to load poems.")}</p>`;
     }

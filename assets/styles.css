@@ -343,6 +343,28 @@ main > .empty:only-child {
   color: var(--muted);
 }
 
+.poet-group > summary {
+  display: block;
+}
+
+.poet-separator {
+  margin: 0 0.35rem;
+  color: var(--muted);
+}
+
+.poet-count {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.content-block .published-note {
+  margin: 3rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
 .archive-poems a {
   color: var(--text);
 }
@@ -397,6 +419,10 @@ main > .empty:only-child {
 
   .archive-poems {
     margin-left: 0.8rem;
+  }
+
+  .poet-count {
+    font-size: 0.9rem;
   }
 }
 
