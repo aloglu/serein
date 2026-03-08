@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-runtime-as-of-enabled="{{RUNTIME_AS_OF_ENABLED}}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,7 +26,8 @@
     (() => {
       const poemDate = "{{DATE}}";
       const defaultAsOf = "{{DEFAULT_AS_OF}}";
-      const queryDate = new URLSearchParams(window.location.search).get("as_of") || "";
+      const allowRuntimeAsOf = document.documentElement.dataset.runtimeAsOfEnabled === "1";
+      const queryDate = allowRuntimeAsOf ? (new URLSearchParams(window.location.search).get("as_of") || "") : "";
       const effectiveDate = /^\d{4}-\d{2}-\d{2}$/.test(queryDate)
         ? queryDate
         : (/^\d{4}-\d{2}-\d{2}$/.test(defaultAsOf) ? defaultAsOf : (() => {

@@ -48,7 +48,7 @@ body {
   font-family: "Libre Baskerville", Georgia, serif;
 }
 
-html.js main[data-dynamic-page="1"]:not([data-ready="1"]) {
+html.js:not([data-dynamic-fallback-ready="1"]) main[data-dynamic-page="1"]:not([data-ready="1"]) {
   visibility: hidden;
 }
 

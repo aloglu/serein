@@ -28,6 +28,10 @@ const INLINE_HIGHLIGHT_COLORS = new Set([
 ]);
 
 const watchMode = process.argv.includes("--watch");
+const runtimeAsOfEnabled = (
+  String(process.env.SEREIN_ENABLE_RUNTIME_AS_OF || "").trim() === "1"
+  || String(process.env.CODESPACES || "").trim().toLowerCase() === "true"
+);
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -52,6 +56,10 @@ function parseAsOfDateArg() {
     throw new Error(`Invalid --as-of value '${raw}'. Expected YYYY-MM-DD.`);
   }
   return raw;
+}
+
+function runtimeAsOfDataValue() {
+  return runtimeAsOfEnabled ? "1" : "0";
 }
 
 marked.setOptions({
@@ -893,6 +901,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replaceAll("{{PUBLICATION}}", htmlEscape(poem.publication))
     .replaceAll("{{DATE}}", htmlEscape(poem.date))
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replaceAll("{{AUTHOR_META}}", authorMeta)
     .replaceAll("{{PUBLICATION_META}}", renderPublicationMeta(poem))
     .replaceAll("{{POEM_TEXT}}", poemHtml)
@@ -937,7 +946,9 @@ async function renderArchive(poems, defaultAsOf = "") {
   const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
   const rows = renderArchiveTree(fallbackPoems, fallbackDate);
   const html = template
-    .replace("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
+    .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{FALLBACK_ARCHIVE_ROWS}}", rows)
     .replace("{{ASSET_PATH}}", assetPath("/archive"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/archive"))
@@ -958,6 +969,7 @@ async function renderArchive(poems, defaultAsOf = "") {
 async function renderAbout() {
   const template = await readTemplate("about.html");
   const html = template
+    .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{ASSET_PATH}}", assetPath("/about"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/about"))
     .replace("{{MANIFEST_PATH}}", manifestPath("/about"))
@@ -985,7 +997,9 @@ async function renderHome(poems, defaultAsOf = "") {
   const html = template
     .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
     .replaceAll("{{PAGE_DESCRIPTION}}", "A Poem Per Day.")
-    .replace("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
+    .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{FALLBACK_TITLE}}", fallbackTitle)
     .replace("{{FALLBACK_META}}", fallbackMeta)
     .replace("{{FALLBACK_POEM_HTML}}", fallbackBody)
@@ -1177,7 +1191,9 @@ async function renderPoets(poems, defaultAsOf = "") {
   const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
   const rows = renderPoetsTree(fallbackPoems);
   const html = template
-    .replace("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+    .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
+    .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{FALLBACK_POET_ROWS}}", rows)
     .replace("{{ASSET_PATH}}", assetPath("/poets"))
     .replace("{{FONT_PRELOADS}}", fontPreloads("/poets"))
@@ -1207,6 +1223,10 @@ function renderPoemContent(poem, { includePublishedNote = true } = {}) {
   return `${poemHtml}${renderPublishedOnNote(poem)}`;
 }
 
+async function writeJsonFile(filename, value) {
+  await writeFile(path.join(distDir, filename), JSON.stringify(value), "utf8");
+}
+
 async function renderSearchData(poems) {
   const lightweight = poems.map((poem) => ({
     id: poem.id,
@@ -1218,29 +1238,39 @@ async function renderSearchData(poems) {
     text: poem.searchText || markdownStrip(poem.poem)
   }));
 
-  await writeFile(path.join(distDir, "search-index.json"), JSON.stringify(lightweight, null, 2), "utf8");
+  await writeJsonFile("search-index.json", lightweight);
 }
 
-async function renderPoemsData(poems) {
-  const full = poems.map((poem) => {
-    const parts = parseDateParts(poem.date) || { year: "", month: "", day: "" };
-    return {
-      id: poem.id,
-      title: poem.title,
-      author: poem.author,
-      publication: poem.publication,
-      source: poem.source,
-      date: poem.date,
-      route: poem.route,
-      dateParts: parts,
-      authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
-      poemHtml: poem.poemHtml || renderPoemContent(poem, { includePublishedNote: false }),
-      poemHtmlWithPublishedNote:
-        poem.poemHtmlWithPublishedNote || renderPoemContent(poem, { includePublishedNote: true })
-    };
-  });
+async function renderHomeData(poems) {
+  const home = poems.map((poem) => ({
+    title: poem.title,
+    date: poem.date,
+    authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
+    poemHtml: poem.poemHtml || renderPoemContent(poem, { includePublishedNote: false })
+  }));
 
-  await writeFile(path.join(distDir, "poems-data.json"), JSON.stringify(full, null, 2), "utf8");
+  await writeJsonFile("home-data.json", home);
+}
+
+async function renderArchiveData(poems) {
+  const archive = poems.map((poem) => ({
+    title: poem.title,
+    date: poem.date,
+    route: poem.route
+  }));
+
+  await writeJsonFile("archive-data.json", archive);
+}
+
+async function renderPoetsData(poems) {
+  const poets = poems.map((poem) => ({
+    title: poem.title,
+    author: poem.author,
+    date: poem.date,
+    route: poem.route
+  }));
+
+  await writeJsonFile("poets-data.json", poets);
 }
 
 async function copyAssets() {
@@ -1394,7 +1424,9 @@ export async function build() {
     renderPoets(poems, asOfDate),
     renderAbout(),
     renderSearchData(poems),
-    renderPoemsData(poems),
+    renderHomeData(poems),
+    renderArchiveData(poems),
+    renderPoetsData(poems),
     renderSeoFiles(poems),
     renderRssFeed(poems, asOfDate),
     renderNotFoundPage(),

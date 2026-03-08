@@ -7,12 +7,22 @@ function normalizedRoutePath() {
   return noIndex.endsWith("/") ? noIndex : `${noIndex}/`;
 }
 
-function poemsDataPath() {
-  const routePath = normalizedRoutePath();
-  if (routePath.endsWith("/archive/") || routePath.endsWith("/poets/")) {
-    return "../poems-data.json";
+function pageDataPath(kind) {
+  const prefix = normalizedRoutePath() === "/" ? "./" : "../";
+  if (kind === "home") {
+    return `${prefix}home-data.json`;
   }
-  return "./poems-data.json";
+  if (kind === "archive") {
+    return `${prefix}archive-data.json`;
+  }
+  if (kind === "poets") {
+    return `${prefix}poets-data.json`;
+  }
+  throw new Error(`Unknown data kind '${kind}'.`);
+}
+
+function runtimeAsOfEnabled() {
+  return document.documentElement.dataset.runtimeAsOfEnabled === "1";
 }
 
 function localDateString(now = new Date()) {
@@ -22,7 +32,19 @@ function localDateString(now = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function effectiveDateFromQueryOrNow({ allowQueryOverride = true, defaultAsOf = "" } = {}) {
+function parseDateParts(yyyyMmDd) {
+  const match = String(yyyyMmDd).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+  return {
+    year: match[1],
+    month: match[2],
+    day: match[3]
+  };
+}
+
+function effectiveDateFromQueryOrNow({ allowQueryOverride = runtimeAsOfEnabled(), defaultAsOf = "" } = {}) {
   if (allowQueryOverride) {
     const queryDate = new URLSearchParams(window.location.search).get("as_of") || "";
     if (/^\d{4}-\d{2}-\d{2}$/.test(queryDate)) {
@@ -222,7 +244,7 @@ function groupByYearMonth(poems) {
   const grouped = new Map();
   const sorted = poems.slice().sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
   for (const poem of sorted) {
-    const parts = poem.dateParts || {};
+    const parts = parseDateParts(poem.date) || {};
     const year = String(parts.year || "");
     const month = String(parts.month || "");
     if (!year || !month) {
@@ -333,7 +355,7 @@ function renderArchive(poems, effectiveDate) {
           const monthOpen = year === currentYear && month === defaultOpenMonth ? " open" : "";
           const rows = poemsInMonth
             .map((poem) => {
-              const day = escapeHtml(String(poem.dateParts?.day || "--"));
+              const day = escapeHtml(String(parseDateParts(poem.date)?.day || "--"));
               const href = `../${poem.route.slice(1)}/`;
               return `<li><span class="archive-day">${day}</span><span aria-hidden="true">&middot;</span><a href="${escapeHtml(href)}">${escapeHtml(poem.title)}</a></li>`;
             })
@@ -391,8 +413,8 @@ function renderPoets(poems, effectiveDate) {
     .join("");
 }
 
-async function loadPoemsData() {
-  const response = await fetch(poemsDataPath());
+async function loadPageData(kind) {
+  const response = await fetch(pageDataPath(kind));
   if (!response.ok) {
     throw new Error(`Could not load poems data (${response.status}).`);
   }
@@ -416,17 +438,25 @@ async function init() {
     return;
   }
 
+  const defaultAsOf = dynamicMain?.dataset?.defaultAsOf || "";
+  const renderedAsOf = dynamicMain?.dataset?.renderedAsOf || "";
+  const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
+  if (/^\d{4}-\d{2}-\d{2}$/.test(renderedAsOf) && renderedAsOf === effectiveDate) {
+    markReady();
+    return;
+  }
+
   try {
-    const poems = await loadPoemsData();
-    const defaultAsOf = dynamicMain?.dataset?.defaultAsOf || "";
-    const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
     if (hasHomeView) {
+      const poems = await loadPageData("home");
       renderHome(poems, effectiveDate);
     }
     if (hasArchiveView) {
+      const poems = await loadPageData("archive");
       renderArchive(poems, effectiveDate);
     }
     if (hasPoetsView) {
+      const poems = await loadPageData("poets");
       renderPoets(poems, effectiveDate);
     }
   } catch (error) {
