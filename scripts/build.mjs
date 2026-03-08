@@ -1,4 +1,4 @@
-import { mkdir, readdir, readFile, rm, writeFile, copyFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile, copyFile, stat } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import path from "node:path";
 import process from "node:process";
@@ -9,6 +9,8 @@ import { expectedPoemFilename } from "./poem-filenames.mjs";
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
 const distDir = path.join(root, "dist");
+const cacheDir = path.join(root, ".cache");
+const socialCardCacheDir = path.join(cacheDir, "social-cards");
 const reportsDir = path.join(root, "reports");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
@@ -60,7 +62,9 @@ let htmlMinifyFn = null;
 let sharpFactory = null;
 let authorPages = [];
 let socialCardManifest = null;
-let socialCardFontCss = "";
+let socialCardStats = { generated: 0, cached: 0 };
+let socialCardFontConfigPath = "";
+const SOCIAL_CARD_CACHE_VERSION = "png-v3";
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -201,6 +205,7 @@ async function loadSharpFactory() {
   }
 
   try {
+    await ensureSocialCardFontConfig();
     const sharpModule = await import("sharp");
     sharpFactory = sharpModule.default;
     return sharpFactory;
@@ -212,32 +217,47 @@ async function loadSharpFactory() {
   }
 }
 
-async function loadSocialCardFontCss() {
-  if (socialCardFontCss) {
-    return socialCardFontCss;
+function xmlEscape(input) {
+  return String(input)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+async function ensureSocialCardFontConfig() {
+  if (socialCardFontConfigPath) {
+    return socialCardFontConfigPath;
   }
 
-  const [regularFont, boldFont] = await Promise.all([
-    readFile(fontSourceEntries.regular400),
-    readFile(fontSourceEntries.bold700)
-  ]);
+  const fontCacheDir = path.join(cacheDir, "fontconfig");
+  const configPath = path.join(fontCacheDir, "fonts.conf");
+  await mkdir(fontCacheDir, { recursive: true });
 
-  socialCardFontCss = [
-    "@font-face {",
-    "  font-family: 'Serein Social';",
-    "  font-style: normal;",
-    "  font-weight: 400;",
-    `  src: url("data:font/woff2;base64,${regularFont.toString("base64")}") format("woff2");`,
-    "}",
-    "@font-face {",
-    "  font-family: 'Serein Social';",
-    "  font-style: normal;",
-    "  font-weight: 700;",
-    `  src: url("data:font/woff2;base64,${boldFont.toString("base64")}") format("woff2");`,
-    "}"
-  ].join("\n");
+  const fontConfigXml = `<?xml version="1.0"?>
+<!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+<fontconfig>
+  <reset-dirs />
+  <dir>${xmlEscape(path.join(assetsDir, "fonts"))}</dir>
+  <cachedir>${xmlEscape(fontCacheDir)}</cachedir>
+  <config></config>
+</fontconfig>
+`;
 
-  return socialCardFontCss;
+  await writeFile(configPath, fontConfigXml, "utf8");
+  process.env.FONTCONFIG_FILE = configPath;
+  process.env.FONTCONFIG_PATH = fontCacheDir;
+  socialCardFontConfigPath = configPath;
+  return socialCardFontConfigPath;
+}
+
+async function fileExists(filePath) {
+  try {
+    await stat(filePath);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function outputWebPath(filePath) {
@@ -247,6 +267,14 @@ function outputWebPath(filePath) {
 
 function fingerprintContents(contents) {
   return createHash("sha256").update(contents).digest("hex").slice(0, 10);
+}
+
+function socialCardCacheKey(svgContents) {
+  return createHash("sha256")
+    .update(SOCIAL_CARD_CACHE_VERSION)
+    .update("\n")
+    .update(svgContents)
+    .digest("hex");
 }
 
 async function writeFingerprintedAsset({ name, extension, subdir = "assets", contents }) {
@@ -573,7 +601,7 @@ function wrapCardText(text, maxCharsPerLine, maxLines) {
 function renderCardTextLines(lines, { x, y, size, lineHeight, weight = "400", fill = "#2f2a25" }) {
   return lines
     .map(
-      (line, index) => `<text x="${x}" y="${y + (index * lineHeight)}" font-family="'Libre Baskerville', Georgia, serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
+      (line, index) => `<text x="${x}" y="${y + (index * lineHeight)}" font-family="'Libre Baskerville'" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
     )
     .join("");
 }
@@ -581,12 +609,12 @@ function renderCardTextLines(lines, { x, y, size, lineHeight, weight = "400", fi
 function renderCenteredCardTextLines(lines, { centerX, startY, size, lineHeight, weight = "400", fill = "#ebe0d2" }) {
   return lines
     .map(
-      (line, index) => `<text x="${centerX}" y="${startY + (index * lineHeight)}" text-anchor="middle" font-family="'Serein Social', 'Libre Baskerville', Georgia, serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
+      (line, index) => `<text x="${centerX}" y="${startY + (index * lineHeight)}" text-anchor="middle" font-family="'Libre Baskerville'" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
     )
     .join("");
 }
 
-function renderSocialCardSvg({ title, subtitle = "" }, embeddedFontCss = "") {
+function renderSocialCardSvg({ title, subtitle = "" }) {
   const titleLines = wrapCardText(title, 18, 4);
   const subtitleLines = subtitle ? wrapCardText(subtitle, 28, 2) : [];
   const titleSize = titleLines.length >= 4 ? 68 : titleLines.length === 3 ? 76 : 88;
@@ -605,11 +633,6 @@ function renderSocialCardSvg({ title, subtitle = "" }, embeddedFontCss = "") {
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="card-title card-detail">
   <title id="card-title">${htmlEscape(title)}</title>
   <desc id="card-detail">${htmlEscape(description)}</desc>
-  <defs>
-    <style><![CDATA[
-${embeddedFontCss}
-    ]]></style>
-  </defs>
   <rect width="1200" height="630" fill="#1d1711"/>
   ${renderCenteredCardTextLines(titleLines, { centerX: 600, startY: titleStartY, size: titleSize, lineHeight: titleLineHeight, weight: "700", fill: "#ebe0d2" })}
   ${renderCenteredCardTextLines(subtitleLines, { centerX: 600, startY: subtitleStartY, size: subtitleSize, lineHeight: subtitleLineHeight, fill: "#c0b39f" })}
@@ -618,21 +641,33 @@ ${embeddedFontCss}
 }
 
 async function writeSocialCard(filename, svgContents) {
-  const sharp = await loadSharpFactory();
   const outputPath = path.join(distDir, "social", filename);
   await mkdir(path.dirname(outputPath), { recursive: true });
+  await mkdir(socialCardCacheDir, { recursive: true });
+
+  const cacheKey = socialCardCacheKey(svgContents);
+  const cachePath = path.join(socialCardCacheDir, `${cacheKey}.png`);
+
+  if (await fileExists(cachePath)) {
+    await copyFile(cachePath, outputPath);
+    socialCardStats.cached += 1;
+    return outputWebPath(outputPath);
+  }
+
+  const sharp = await loadSharpFactory();
   const pngBuffer = await sharp(Buffer.from(svgContents), { density: 144 })
     .png({
       compressionLevel: 9,
       palette: false
     })
     .toBuffer();
+  await writeFile(cachePath, pngBuffer);
   await writeFile(outputPath, pngBuffer);
+  socialCardStats.generated += 1;
   return outputWebPath(outputPath);
 }
 
 async function buildSocialCardManifest(poems, defaultAsOf = "") {
-  const embeddedFontCss = await loadSocialCardFontCss();
   const routeCards = new Map();
 
   routeCards.set("/", {
@@ -640,7 +675,7 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
       "home.png",
       renderSocialCardSvg({
         title: "A Poem Per Day"
-      }, embeddedFontCss)
+      })
     ),
     alt: "A Poem Per Day"
   });
@@ -649,9 +684,8 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
     path: await writeSocialCard(
       "archive.png",
       renderSocialCardSvg({
-        title: "Archive",
-        subtitle: "of A Poem Per Day"
-      }, embeddedFontCss)
+        title: "Archive"
+      })
     ),
     alt: "Archive of A Poem Per Day"
   });
@@ -660,9 +694,8 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
     path: await writeSocialCard(
       "poets.png",
       renderSocialCardSvg({
-        title: "Poets",
-        subtitle: "of A Poem Per Day"
-      }, embeddedFontCss)
+        title: "Poets"
+      })
     ),
     alt: "Poets of A Poem Per Day"
   });
@@ -671,9 +704,8 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
     path: await writeSocialCard(
       "about.png",
       renderSocialCardSvg({
-        title: "About",
-        subtitle: "of A Poem Per Day"
-      }, embeddedFontCss)
+        title: "About"
+      })
     ),
     alt: "About A Poem Per Day"
   });
@@ -684,7 +716,7 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
         `poem-${poem.date}.png`,
         renderSocialCardSvg({
           title: poem.title
-        }, embeddedFontCss)
+        })
       ),
       alt: poem.title
     });
@@ -695,9 +727,8 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
       path: await writeSocialCard(
         `poet-${authorPage.slug}.png`,
         renderSocialCardSvg({
-          title: authorPage.author,
-          subtitle: "of A Poem Per Day"
-        }, embeddedFontCss)
+          title: authorPage.author
+        })
       ),
       alt: `${authorPage.author} on A Poem Per Day`
     });
@@ -2226,6 +2257,7 @@ ${items ? `${items}\n` : ""}  </channel>
 
 export async function build() {
   await ensureDist();
+  socialCardStats = { generated: 0, cached: 0 };
   const loadedPoems = await loadPoems();
   authorPages = buildAuthorPages(loadedPoems);
   const poems = preparePoems(loadedPoems, authorRouteMap(authorPages));
@@ -2249,6 +2281,7 @@ export async function build() {
   ]);
 
   console.log(`Built Serein with ${poems.length} poems (local-date rendering enabled on /, /archive, and /poets).`);
+  console.log(`Social cards: ${socialCardStats.cached} cached, ${socialCardStats.generated} generated.`);
 }
 
 const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

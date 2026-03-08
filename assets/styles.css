@@ -45,7 +45,7 @@ body {
   flex-direction: column;
   color: var(--text);
   background: var(--bg);
-  font-family: "Libre Baskerville", Georgia, serif;
+  font-family: "Libre Baskerville";
 }
 
 html.js:not([data-dynamic-fallback-ready="1"]) main[data-dynamic-page="1"]:not([data-ready="1"]) {
@@ -165,7 +165,7 @@ main > h1 + .content-block {
 .content-block h1,
 .content-block h2,
 .content-block h3 {
-  font-family: "Libre Baskerville", Georgia, serif;
+  font-family: "Libre Baskerville";
   margin: 1.1rem 0 0.6rem;
   line-height: 1.2;
 }
