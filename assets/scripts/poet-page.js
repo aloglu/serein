@@ -1,6 +1,7 @@
 import {
   effectiveDateFromQueryOrNow,
   escapeHtml,
+  formatPublishedPoemCount,
   groupByYearMonth,
   loadJsonData,
   monthLabel,
@@ -20,9 +21,7 @@ function renderAuthorArchive(poems, authorRoute, effectiveDate) {
     .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
 
   if (metaEl) {
-    metaEl.textContent = authoredPoems.length === 0
-      ? "No published poems yet."
-      : `${authoredPoems.length === 1 ? "1 poem" : `${authoredPoems.length} poems`} published on A Poem Per Day.`;
+    metaEl.textContent = formatPublishedPoemCount(authoredPoems.length);
   }
 
   if (authoredPoems.length === 0) {

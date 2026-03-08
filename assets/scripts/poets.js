@@ -37,21 +37,14 @@ function renderPoets(poems, effectiveDate) {
       const poetBlocks = authors
         .map((author) => {
           const poemsByAuthor = authorsMap.get(author);
-          const countLabel = poemsByAuthor.length === 1 ? "1 poem" : `${poemsByAuthor.length} poems`;
           const authorRoute = poemsByAuthor[0]?.authorRoute || "";
           const authorLabel = authorRoute
             ? `<a href="${escapeHtml(`${authorRoute}/`)}">${escapeHtml(author)}</a>`
             : escapeHtml(author);
-          const rows = poemsByAuthor
-            .map((poem) => {
-              const href = `${poem.route}/`;
-              return `<li><span aria-hidden="true" class="poet-separator">&middot;</span><a href="${escapeHtml(href)}">${escapeHtml(poem.title)}</a></li>`;
-            })
-            .join("");
-          return `<details class="archive-month poet-group"><summary><span class="poet-name">${authorLabel}</span><span aria-hidden="true" class="poet-separator">&middot;</span><span class="poet-count">${escapeHtml(countLabel)}</span></summary><ul class="archive-poems poet-poems">${rows}</ul></details>`;
+          return `<li class="poet-authors-item">${authorLabel}</li>`;
         })
         .join("");
-      return `<details class="archive-year poet-letter"><summary>${escapeHtml(letter)}</summary><div class="archive-months poet-groups">${poetBlocks}</div></details>`;
+      return `<details class="archive-year poet-letter"><summary>${escapeHtml(letter)}</summary><div class="archive-months poet-groups"><ul class="poet-authors">${poetBlocks}</ul></div></details>`;
     })
     .join("");
 }

@@ -25,6 +25,6 @@ I wonder when its birthday is
 two beautiful dogs ride the bus with me
 on a regular basis
 
-I can't commit suicide on a dog's birthday
+I can’t commit suicide on a dog’s birthday
 my god
-I just can't
+I just can’t

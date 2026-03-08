@@ -75,6 +75,8 @@ function integerToWords(value) {
   return parts.join(" ");
 }
 
+export { integerToWords };
+
 function normalizeTitleForFilename(input) {
   const raw = String(input || "").trim();
   const numericTitle = raw.replace(/[^\d]/g, "");

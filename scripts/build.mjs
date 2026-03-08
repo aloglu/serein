@@ -4,7 +4,7 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { marked } from "marked";
-import { expectedPoemFilename } from "./poem-filenames.mjs";
+import { expectedPoemFilename, integerToWords } from "./poem-filenames.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
@@ -354,7 +354,12 @@ function normalizeNewlines(input) {
 
 function stripWrappingQuotes(input) {
   const raw = String(input || "").trim();
-  if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
+  if (
+    (raw.startsWith('"') && raw.endsWith('"'))
+    || (raw.startsWith("'") && raw.endsWith("'"))
+    || (raw.startsWith("\u201C") && raw.endsWith("\u201D"))
+    || (raw.startsWith("\u2018") && raw.endsWith("\u2019"))
+  ) {
     return raw.slice(1, -1);
   }
   return raw;
@@ -381,6 +386,7 @@ function parsePoemMarkdownFile(rawContent, filename) {
   const poem = {
     title: "",
     author: "",
+    translator: "",
     publication: "",
     date: "",
     source: "",
@@ -1230,6 +1236,9 @@ function validatePoem(poem, filename) {
   if (typeof poem.publication !== "string") {
     poem.publication = poem.publication == null ? "" : String(poem.publication);
   }
+  if (typeof poem.translator !== "string") {
+    poem.translator = poem.translator == null ? "" : String(poem.translator);
+  }
   if (typeof poem.source !== "string") {
     poem.source = poem.source == null ? "" : String(poem.source);
   }
@@ -1395,14 +1404,24 @@ function renderPublicationMeta(poem) {
   return `${publication} <span aria-hidden="true">&middot;</span> <a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Source</a>`;
 }
 
+function renderTranslatorMeta(poem) {
+  const translator = htmlEscape(poem.translator || "");
+  return translator ? `translated by ${translator}` : "";
+}
+
 function renderAuthorMeta(poem) {
   const authorName = htmlEscape(poem.author || "");
   const author = poem.authorRoute ? routeLink(poem.authorRoute, poem.author || "") : authorName;
+  const parts = [author];
+  const translator = renderTranslatorMeta(poem);
   const details = renderPublicationMeta(poem);
-  if (!details) {
-    return author;
+  if (translator) {
+    parts.push(translator);
   }
-  return `${author} <span aria-hidden="true">&middot;</span> ${details}`;
+  if (details) {
+    parts.push(details);
+  }
+  return parts.join(' <span aria-hidden="true">&middot;</span> ');
 }
 
 function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "", twitterCard = "summary", socialMeta = "" } = {}) {
@@ -1635,11 +1654,6 @@ function authorRouteMap(authorPagesList) {
   return new Map(authorPagesList.map((entry) => [entry.author, entry.route]));
 }
 
-function renderPoetRow(poem, fromRoute) {
-  const href = `${relativePrefix(fromRoute)}${poem.route.slice(1)}/`;
-  return `<li><span aria-hidden="true" class="poet-separator">&middot;</span><a href="${htmlEscape(href)}">${htmlEscape(poem.title)}</a></li>`;
-}
-
 function groupPoemsByAuthorInitial(publishedPoems) {
   const groups = new Map();
   const sorted = publishedPoems
@@ -1745,15 +1759,13 @@ function renderPoetsTree(publishedPoems) {
       const poetBlocks = authors
         .map((author) => {
           const poems = authorsMap.get(author);
-          const countLabel = poems.length === 1 ? "1 poem" : `${poems.length} poems`;
-          const rows = poems.map((poem) => renderPoetRow(poem, "/poets")).join("");
           const authorRoute = poems[0]?.authorRoute || "";
           const authorLabel = authorRoute ? routeLink(authorRoute, author) : htmlEscape(author);
-          return `<details class="archive-month poet-group"><summary><span class="poet-name">${authorLabel}</span><span aria-hidden="true" class="poet-separator">&middot;</span><span class="poet-count">${htmlEscape(countLabel)}</span></summary><ul class="archive-poems poet-poems">${rows}</ul></details>`;
+          return `<li class="poet-authors-item">${authorLabel}</li>`;
         })
         .join("");
 
-      return `<details class="archive-year poet-letter"><summary>${htmlEscape(letter)}</summary><div class="archive-months poet-groups">${poetBlocks}</div></details>`;
+      return `<details class="archive-year poet-letter"><summary>${htmlEscape(letter)}</summary><div class="archive-months poet-groups"><ul class="poet-authors">${poetBlocks}</ul></div></details>`;
     })
     .join("");
 }
@@ -1777,12 +1789,22 @@ async function renderPoets(poems, defaultAsOf = "") {
   await writeRoutedPage("/poets", html);
 }
 
-function poetCountLabel(count) {
-  return count === 1 ? "1 poem" : `${count} poems`;
+function poetCountNoun(count) {
+  return count === 1 ? "poem" : "poems";
+}
+
+function spelloutCount(count) {
+  if (!Number.isInteger(count) || count < 0) {
+    return String(count);
+  }
+  if (count === 0) {
+    return "no";
+  }
+  return integerToWords(String(count)) || String(count);
 }
 
 function poetMetaLabel(count) {
-  return count === 0 ? "No published poems yet." : `${poetCountLabel(count)} published on A Poem Per Day.`;
+  return `This poet has ${spelloutCount(count)} published ${poetCountNoun(count)}`;
 }
 
 async function renderPoetPages(poems, defaultAsOf = "") {
@@ -1794,9 +1816,7 @@ async function renderPoetPages(poems, defaultAsOf = "") {
     const rows = fallbackPoems.length > 0
       ? renderArchiveTree(fallbackPoems, fallbackDate, authorPage.route)
       : `<p>No published poems by ${htmlEscape(authorPage.author)} yet.</p>`;
-    const description = fallbackPoems.length > 0
-      ? `${poetCountLabel(fallbackPoems.length)} by ${authorPage.author} published on A Poem Per Day.`
-      : `Poems by ${authorPage.author} on A Poem Per Day.`;
+    const description = poetMetaLabel(fallbackPoems.length);
     const html = withCommonPageAssets(template, authorPage.route, {
       scriptName: "poetPage",
       robotsMeta: '<meta name="robots" content="index, follow">',

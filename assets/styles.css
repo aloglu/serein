@@ -32,6 +32,11 @@
   --card-bg: rgba(255, 255, 255, 0.52);
   --note-bg: rgba(255, 255, 255, 0.45);
   --card-shadow: 0 8px 20px rgba(71, 56, 38, 0.05);
+  --selection-bg: color-mix(in oklab, var(--bg) 84%, var(--text));
+  --selection-text: var(--text);
+  --scrollbar-track: color-mix(in oklab, var(--bg) 92%, white);
+  --scrollbar-thumb: color-mix(in oklab, var(--selection-bg) 78%, var(--text));
+  --scrollbar-thumb-hover: color-mix(in oklab, var(--selection-bg) 64%, var(--text));
 }
 
 * {
@@ -46,6 +51,44 @@ body {
   color: var(--text);
   background: var(--bg);
   font-family: "Libre Baskerville";
+}
+
+html {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  scrollbar-width: thin;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 999px;
+  border: 3px solid var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scrollbar-track);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
+}
+
+::-moz-selection {
+  background: var(--selection-bg);
+  color: var(--selection-text);
 }
 
 html.js:not([data-dynamic-fallback-ready="1"]) main[data-dynamic-page="1"]:not([data-ready="1"]) {
@@ -100,6 +143,12 @@ main > h1 {
   color: var(--muted);
   margin: 0.35rem 0;
   font-size: 0.95rem;
+}
+
+.poem-meta {
+  margin-top: 0.5rem;
+  padding-top: 0.08rem;
+  font-size: 1.06rem;
 }
 
 .content-block {
@@ -343,24 +392,22 @@ main > .empty:only-child {
   color: var(--muted);
 }
 
-.poet-group > summary {
-  display: block;
+.poet-authors {
+  list-style: none;
+  margin: 0.3rem 0 0.2rem 1.05rem;
+  padding: 0;
+  display: grid;
+  gap: 0.28rem;
 }
 
-.poet-separator {
-  margin: 0 0.35rem;
-  color: var(--muted);
-}
-
-.poet-count {
-  color: var(--muted);
-  font-size: 0.95rem;
+.poet-authors-item {
+  color: var(--text);
 }
 
 .content-block .published-note {
   margin: 3rem 0 0;
   color: var(--muted);
-  font-size: 0.95rem;
+  font-size: 0.91rem;
   line-height: 1.6;
   font-style: italic;
 }
@@ -421,8 +468,8 @@ main > .empty:only-child {
     margin-left: 0.8rem;
   }
 
-  .poet-count {
-    font-size: 0.9rem;
+  .poet-authors {
+    margin-left: 0.8rem;
   }
 }
 
@@ -436,5 +483,10 @@ main > .empty:only-child {
     --card-bg: rgba(50, 40, 31, 0.72);
     --note-bg: rgba(42, 34, 26, 0.72);
     --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    --selection-bg: color-mix(in oklab, var(--bg) 82%, var(--text));
+    --selection-text: var(--text);
+    --scrollbar-track: color-mix(in oklab, var(--bg) 92%, black);
+    --scrollbar-thumb: color-mix(in oklab, var(--selection-bg) 76%, var(--text));
+    --scrollbar-thumb-hover: color-mix(in oklab, var(--selection-bg) 62%, var(--text));
   }
 }

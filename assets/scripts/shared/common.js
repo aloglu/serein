@@ -85,6 +85,80 @@ export function selectPoemForDate(poems, dateStr) {
 }
 
 const authorCollator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
+const SMALL_NUMBER_WORDS = [
+  "zero",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+  "thirteen",
+  "fourteen",
+  "fifteen",
+  "sixteen",
+  "seventeen",
+  "eighteen",
+  "nineteen"
+];
+const TENS_NUMBER_WORDS = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+const LARGE_NUMBER_WORDS = ["", "thousand", "million", "billion", "trillion"];
+
+function integerBelowOneThousandToWords(value) {
+  if (value < 20) {
+    return SMALL_NUMBER_WORDS[value];
+  }
+
+  if (value < 100) {
+    const tens = Math.floor(value / 10);
+    const remainder = value % 10;
+    return remainder ? `${TENS_NUMBER_WORDS[tens]}-${SMALL_NUMBER_WORDS[remainder]}` : TENS_NUMBER_WORDS[tens];
+  }
+
+  const hundreds = Math.floor(value / 100);
+  const remainder = value % 100;
+  const prefix = `${SMALL_NUMBER_WORDS[hundreds]} hundred`;
+  return remainder ? `${prefix} ${integerBelowOneThousandToWords(remainder)}` : prefix;
+}
+
+function integerToWords(value) {
+  if (!/^\d+$/.test(value)) {
+    return null;
+  }
+
+  const normalized = value.replace(/^0+(?=\d)/, "");
+  if (normalized === "0") {
+    return SMALL_NUMBER_WORDS[0];
+  }
+
+  let remainder = normalized;
+  let chunkIndex = 0;
+  const parts = [];
+
+  while (remainder.length > 0) {
+    const chunk = Number(remainder.slice(-3));
+    remainder = remainder.slice(0, -3);
+
+    if (chunk !== 0) {
+      const words = integerBelowOneThousandToWords(chunk);
+      const scale = LARGE_NUMBER_WORDS[chunkIndex];
+      parts.unshift(scale ? `${words} ${scale}` : words);
+    }
+
+    chunkIndex += 1;
+    if (chunkIndex >= LARGE_NUMBER_WORDS.length && remainder.length > 0) {
+      return null;
+    }
+  }
+
+  return parts.join(" ");
+}
 
 function normalizedAlphaText(input) {
   return String(input || "")
@@ -153,4 +227,13 @@ export function groupByAuthorInitial(poems) {
   }
 
   return grouped;
+}
+
+export function formatPublishedPoemCount(count) {
+  const normalizedCount = Number.isInteger(count) && count >= 0 ? count : 0;
+  const amount = normalizedCount === 0
+    ? "no"
+    : (integerToWords(String(normalizedCount)) || String(normalizedCount));
+  const noun = normalizedCount === 1 ? "poem" : "poems";
+  return `This poet has ${amount} published ${noun}`;
 }
