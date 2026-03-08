@@ -1386,7 +1386,7 @@ function renderFooter(routePath) {
   }
   links.push(`<a href="${prefix}archive/">Archive</a>`);
   links.push(`<a href="${prefix}about/">About</a>`);
-  return `<footer class="site-footer">${links.join('<span aria-hidden="true">&bull;</span>')}</footer>`;
+  return `<footer class="site-footer">${links.join('<span aria-hidden="true" class="separator-mark">&bull;</span>')}</footer>`;
 }
 
 function renderPublicationMeta(poem) {
@@ -1401,7 +1401,7 @@ function renderPublicationMeta(poem) {
   if (!publication) {
     return `<a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Source</a>`;
   }
-  return `${publication} <span aria-hidden="true">&middot;</span> <a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Source</a>`;
+  return `${publication}<span aria-hidden="true" class="separator-mark meta-separator">&middot;</span><a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Source</a>`;
 }
 
 function renderTranslatorMeta(poem) {
@@ -1421,7 +1421,7 @@ function renderAuthorMeta(poem) {
   if (details) {
     parts.push(details);
   }
-  return parts.join(' <span aria-hidden="true">&middot;</span> ');
+  return parts.join('<span aria-hidden="true" class="separator-mark meta-separator">&middot;</span>');
 }
 
 function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "", twitterCard = "summary", socialMeta = "" } = {}) {
@@ -1591,7 +1591,7 @@ function renderArchiveRow(poem, fromRoute) {
   const href = `${relativePrefix(fromRoute)}${poem.route.slice(1)}/`;
   const parts = parseDateParts(poem.date);
   const day = parts ? parts.day : "--";
-  return `<li><span class="archive-day">${htmlEscape(day)}</span><span aria-hidden="true">&middot;</span><a href="${htmlEscape(href)}">${htmlEscape(poem.title)}</a></li>`;
+  return `<li><span class="archive-day">${htmlEscape(day)}</span><span aria-hidden="true" class="separator-mark">&middot;</span><a href="${htmlEscape(href)}">${htmlEscape(poem.title)}</a></li>`;
 }
 
 const authorCollator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
@@ -1603,9 +1603,46 @@ function normalizedAlphaText(input) {
     .trim();
 }
 
-function authorInitial(author) {
+function authorSortParts(author) {
   const normalized = normalizedAlphaText(author);
-  const firstChar = normalized.charAt(0).toUpperCase();
+  const tokens = normalized.split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) {
+    return { initialSource: "", primary: "", secondary: "" };
+  }
+
+  const primary = tokens[tokens.length - 1];
+  const secondary = tokens.slice(0, -1).join(" ");
+  return {
+    initialSource: primary,
+    primary,
+    secondary
+  };
+}
+
+function authorIndexLabel(author) {
+  const raw = String(author || "").trim();
+  const tokens = raw.split(/\s+/).filter(Boolean);
+  if (tokens.length <= 1) {
+    return raw;
+  }
+  const primary = tokens[tokens.length - 1];
+  const secondary = tokens.slice(0, -1).join(" ");
+  return `${primary}, ${secondary}`;
+}
+
+function compareAuthorsBySurname(left, right) {
+  const leftParts = authorSortParts(left);
+  const rightParts = authorSortParts(right);
+  return (
+    authorCollator.compare(leftParts.primary, rightParts.primary)
+    || authorCollator.compare(leftParts.secondary, rightParts.secondary)
+    || authorCollator.compare(left, right)
+  );
+}
+
+function authorInitial(author) {
+  const { initialSource } = authorSortParts(author);
+  const firstChar = initialSource.charAt(0).toUpperCase();
   return /^[A-Z]$/.test(firstChar) ? firstChar : "#";
 }
 
@@ -1627,7 +1664,7 @@ export function buildAuthorPages(poems) {
     poemsByAuthor.get(author).push(poem);
   }
 
-  const authors = Array.from(poemsByAuthor.keys()).sort((a, b) => authorCollator.compare(a, b));
+  const authors = Array.from(poemsByAuthor.keys()).sort(compareAuthorsBySurname);
   const slugCounts = new Map();
 
   return authors.map((author) => {
@@ -1658,7 +1695,7 @@ function groupPoemsByAuthorInitial(publishedPoems) {
   const groups = new Map();
   const sorted = publishedPoems
     .slice()
-    .sort((a, b) => authorCollator.compare(a.author, b.author) || b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+    .sort((a, b) => compareAuthorsBySurname(a.author, b.author) || b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
 
   for (const poem of sorted) {
     const author = String(poem.author || "").trim() || "Unknown";
@@ -1737,7 +1774,15 @@ function renderArchiveTree(publishedPoems, today, fromRoute = "/archive") {
 }
 
 function renderPoetsTree(publishedPoems) {
-  const grouped = groupPoemsByAuthorInitial(publishedPoems);
+  const grouped = new Map();
+  for (const authorPage of buildAuthorPages(publishedPoems)) {
+    const initial = authorInitial(authorPage.author);
+    if (!grouped.has(initial)) {
+      grouped.set(initial, []);
+    }
+    grouped.get(initial).push(authorPage);
+  }
+
   const letters = Array.from(grouped.keys()).sort((a, b) => {
     if (a === "#") {
       return 1;
@@ -1754,13 +1799,13 @@ function renderPoetsTree(publishedPoems) {
 
   return letters
     .map((letter) => {
-      const authorsMap = grouped.get(letter);
-      const authors = Array.from(authorsMap.keys()).sort((a, b) => authorCollator.compare(a, b));
-      const poetBlocks = authors
-        .map((author) => {
-          const poems = authorsMap.get(author);
-          const authorRoute = poems[0]?.authorRoute || "";
-          const authorLabel = authorRoute ? routeLink(authorRoute, author) : htmlEscape(author);
+      const authorPagesForLetter = grouped.get(letter);
+      const poetBlocks = authorPagesForLetter
+        .map((authorPage) => {
+          const label = authorIndexLabel(authorPage.author);
+          const authorLabel = authorPage.route
+            ? routeLink(authorPage.route, label)
+            : htmlEscape(label);
           return `<li class="poet-authors-item">${authorLabel}</li>`;
         })
         .join("");
@@ -2169,7 +2214,7 @@ async function renderNotFoundPage() {
       <p><a href="/">Go to Today</a> or browse the <a href="/archive/">archive</a>.</p>
     </article>
   </main>
-  <footer class="site-footer"><a href="/">Today</a><span aria-hidden="true">&bull;</span><a href="/archive/">Archive</a><span aria-hidden="true">&bull;</span><a href="/about/">About</a></footer>
+  <footer class="site-footer"><a href="/">Today</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/archive/">Archive</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/about/">About</a></footer>
 </body>
 </html>
 `;

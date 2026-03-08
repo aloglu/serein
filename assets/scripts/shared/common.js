@@ -167,14 +167,47 @@ function normalizedAlphaText(input) {
     .trim();
 }
 
-function authorInitial(author) {
+function authorSortParts(author) {
   const normalized = normalizedAlphaText(author);
-  const firstChar = normalized.charAt(0).toUpperCase();
+  const tokens = normalized.split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) {
+    return { initialSource: "", primary: "", secondary: "" };
+  }
+
+  const primary = tokens[tokens.length - 1];
+  const secondary = tokens.slice(0, -1).join(" ");
+  return {
+    initialSource: primary,
+    primary,
+    secondary
+  };
+}
+
+export function formatAuthorIndexLabel(author) {
+  const raw = String(author || "").trim();
+  const tokens = raw.split(/\s+/).filter(Boolean);
+  if (tokens.length <= 1) {
+    return raw;
+  }
+  const primary = tokens[tokens.length - 1];
+  const secondary = tokens.slice(0, -1).join(" ");
+  return `${primary}, ${secondary}`;
+}
+
+function authorInitial(author) {
+  const { initialSource } = authorSortParts(author);
+  const firstChar = initialSource.charAt(0).toUpperCase();
   return /^[A-Z]$/.test(firstChar) ? firstChar : "#";
 }
 
 export function compareAuthors(left, right) {
-  return authorCollator.compare(left, right);
+  const leftParts = authorSortParts(left);
+  const rightParts = authorSortParts(right);
+  return (
+    authorCollator.compare(leftParts.primary, rightParts.primary)
+    || authorCollator.compare(leftParts.secondary, rightParts.secondary)
+    || authorCollator.compare(left, right)
+  );
 }
 
 export function groupByYearMonth(poems) {
@@ -205,7 +238,7 @@ export function groupByAuthorInitial(poems) {
   const grouped = new Map();
   const sorted = poems
     .slice()
-    .sort((a, b) => authorCollator.compare(a.author, b.author) || b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+    .sort((a, b) => compareAuthors(a.author, b.author) || b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
 
   for (const poem of sorted) {
     const author = String(poem.author || "").trim() || "Unknown";

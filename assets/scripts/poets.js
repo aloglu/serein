@@ -2,6 +2,7 @@ import {
   compareAuthors,
   effectiveDateFromQueryOrNow,
   escapeHtml,
+  formatAuthorIndexLabel,
   groupByAuthorInitial,
   loadJsonData,
   selectPoemForDate
@@ -38,9 +39,10 @@ function renderPoets(poems, effectiveDate) {
         .map((author) => {
           const poemsByAuthor = authorsMap.get(author);
           const authorRoute = poemsByAuthor[0]?.authorRoute || "";
+          const label = formatAuthorIndexLabel(author);
           const authorLabel = authorRoute
-            ? `<a href="${escapeHtml(`${authorRoute}/`)}">${escapeHtml(author)}</a>`
-            : escapeHtml(author);
+            ? `<a href="${escapeHtml(`${authorRoute}/`)}">${escapeHtml(label)}</a>`
+            : escapeHtml(label);
           return `<li class="poet-authors-item">${authorLabel}</li>`;
         })
         .join("");

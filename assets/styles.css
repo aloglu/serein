@@ -151,6 +151,17 @@ main > h1 {
   font-size: 1.06rem;
 }
 
+.separator-mark {
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.meta-separator {
+  display: inline-block;
+  margin: 0 0.35rem;
+}
+
 .content-block {
   margin-top: 3rem;
   line-height: 1.9;
@@ -410,6 +421,10 @@ main > .empty:only-child {
   font-size: 0.91rem;
   line-height: 1.6;
   font-style: italic;
+}
+
+.content-block .poet-page-note {
+  margin-top: 2.6rem;
 }
 
 .archive-poems a {

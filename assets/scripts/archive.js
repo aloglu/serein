@@ -39,7 +39,7 @@ function renderArchive(poems, effectiveDate) {
             .map((poem) => {
               const day = escapeHtml(String(parseDateParts(poem.date)?.day || "--"));
               const href = `../${poem.route.slice(1)}/`;
-              return `<li><span class="archive-day">${day}</span><span aria-hidden="true">&middot;</span><a href="${escapeHtml(href)}">${escapeHtml(poem.title)}</a></li>`;
+              return `<li><span class="archive-day">${day}</span><span aria-hidden="true" class="separator-mark">&middot;</span><a href="${escapeHtml(href)}">${escapeHtml(poem.title)}</a></li>`;
             })
             .join("");
           return `<details class="archive-month"${monthOpen}><summary>${escapeHtml(monthLabel(month))}</summary><ul class="archive-poems">${rows}</ul></details>`;
