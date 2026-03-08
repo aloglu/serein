@@ -133,19 +133,99 @@ function secondsUntilNextLocalMidnight(now = new Date()) {
   return (nextMidnight.getTime() - now.getTime()) / 1000;
 }
 
+function msUntilNextSecondValue(secondsRemaining) {
+  if (secondsRemaining <= 0) {
+    return 1000;
+  }
+
+  if (Number.isInteger(secondsRemaining)) {
+    return 1000;
+  }
+
+  const wholeSeconds = Math.floor(secondsRemaining);
+  return Math.ceil((secondsRemaining - wholeSeconds) * 1000) + 25;
+}
+
+function msUntilSafeBelowThreshold(secondsRemaining, thresholdSeconds) {
+  const safe = Math.max(0, Math.floor(secondsRemaining));
+  if (safe < thresholdSeconds) {
+    return msUntilNextSecondValue(secondsRemaining);
+  }
+
+  const dropsNeeded = safe - thresholdSeconds + 1;
+  return msUntilNextSecondValue(secondsRemaining) + ((dropsNeeded - 1) * 1000);
+}
+
+function nextAboutCountdownDelay(secondsRemaining) {
+  const safe = Math.max(0, Math.floor(secondsRemaining));
+  if (safe < 60) {
+    return msUntilNextSecondValue(secondsRemaining);
+  }
+
+  if (safe < 3600) {
+    const minutes = Math.floor(safe / 60);
+    return msUntilSafeBelowThreshold(secondsRemaining, minutes * 60);
+  }
+
+  const hours = Math.floor(safe / 3600);
+  const minutes = Math.floor((safe % 3600) / 60);
+  return msUntilSafeBelowThreshold(secondsRemaining, (hours * 3600) + (minutes * 60));
+}
+
+function nextFutureAvailabilityDelay(secondsRemaining) {
+  const safe = Math.max(0, Math.floor(secondsRemaining));
+  if (safe < 60) {
+    return msUntilNextSecondValue(secondsRemaining);
+  }
+
+  const days = Math.floor(safe / 86400);
+  const hours = Math.floor((safe % 86400) / 3600);
+  const minutes = Math.floor((safe % 3600) / 60);
+  return msUntilSafeBelowThreshold(
+    secondsRemaining,
+    (days * 86400) + (hours * 3600) + (minutes * 60)
+  );
+}
+
+function startScheduledCountdown({ getSecondsRemaining, render, getNextDelay, onExpire }) {
+  let timerId = 0;
+
+  const tick = () => {
+    const secondsRemaining = getSecondsRemaining();
+    if (secondsRemaining <= 0 && onExpire) {
+      onExpire();
+      return;
+    }
+
+    render(secondsRemaining);
+    const delay = Math.max(50, Math.floor(getNextDelay(secondsRemaining)));
+    timerId = window.setTimeout(tick, delay);
+  };
+
+  tick();
+
+  return () => {
+    if (timerId) {
+      window.clearTimeout(timerId);
+    }
+  };
+}
+
 function initCountdown() {
   const el = document.getElementById("next-poem-countdown");
   if (!el) {
     return;
   }
 
-  const render = () => {
-    const remaining = secondsUntilNextLocalMidnight(new Date());
+  const render = (remaining) => {
     el.textContent = formatCountdown(remaining);
   };
 
-  render();
-  window.setInterval(render, 1000);
+  startScheduledCountdown({
+    getSecondsRemaining: () => secondsUntilNextLocalMidnight(new Date()),
+    render,
+    getNextDelay: nextAboutCountdownDelay
+  });
 }
 
 function initPoemAccessGuard() {
@@ -201,16 +281,17 @@ function initPoemAccessGuard() {
     contentEl.innerHTML = `<p>This poem will become available in <strong id="${countdownId}">--</strong> in your local time.</p>`;
     const countdownEl = document.getElementById(countdownId);
     if (countdownEl) {
-      const render = () => {
-        const secondsLeft = (availableAt.getTime() - Date.now()) / 1000;
-        if (secondsLeft <= 0) {
-          window.location.reload();
-          return;
-        }
+      const render = (secondsLeft) => {
         countdownEl.textContent = formatFutureAvailabilityCountdown(secondsLeft);
       };
-      render();
-      window.setInterval(render, 1000);
+      startScheduledCountdown({
+        getSecondsRemaining: () => (availableAt.getTime() - Date.now()) / 1000,
+        render,
+        getNextDelay: nextFutureAvailabilityDelay,
+        onExpire: () => {
+          window.location.reload();
+        }
+      });
     }
   }
   markReady();
