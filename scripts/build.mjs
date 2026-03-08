@@ -1,4 +1,5 @@
-import { mkdir, readdir, readFile, rm, writeFile, copyFile, cp } from "node:fs/promises";
+import { mkdir, readdir, readFile, rm, writeFile, copyFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
@@ -32,6 +33,28 @@ const runtimeAsOfEnabled = (
   String(process.env.SEREIN_ENABLE_RUNTIME_AS_OF || "").trim() === "1"
   || String(process.env.CODESPACES || "").trim().toLowerCase() === "true"
 );
+const bundledAssetEntries = {
+  styles: path.join(assetsDir, "styles.css"),
+  home: path.join(assetsDir, "scripts", "home.js"),
+  archive: path.join(assetsDir, "scripts", "archive.js"),
+  poets: path.join(assetsDir, "scripts", "poets.js"),
+  about: path.join(assetsDir, "scripts", "about.js"),
+  poem: path.join(assetsDir, "scripts", "poem.js")
+};
+const fontSourceEntries = {
+  regular400: path.join(assetsDir, "fonts", "libre-baskerville-400.woff2"),
+  bold700: path.join(assetsDir, "fonts", "libre-baskerville-700.woff2")
+};
+const iconSourceEntries = {
+  circle32: path.join(assetsDir, "branding", "icon-circle-32.png"),
+  circle192: path.join(assetsDir, "branding", "icon-circle-192.png"),
+  circle512: path.join(assetsDir, "branding", "icon-circle-512.png"),
+  ios180: path.join(assetsDir, "branding", "icon-ios-180.png"),
+  faviconIco: path.join(assetsDir, "branding", "icon-circle.ico")
+};
+let assetManifest = null;
+let esbuildBundleFn = null;
+let htmlMinifyFn = null;
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -132,6 +155,118 @@ async function readTemplate(name) {
     console.log(`Auto-fixed typography in templates/${name}`);
   }
   return normalized;
+}
+
+async function loadEsbuildBundle() {
+  if (esbuildBundleFn) {
+    return esbuildBundleFn;
+  }
+
+  try {
+    ({ build: esbuildBundleFn } = await import("esbuild"));
+    return esbuildBundleFn;
+  } catch (error) {
+    if (String(error?.code || "") === "ERR_MODULE_NOT_FOUND") {
+      throw new Error("Missing build dependency 'esbuild'. Run 'npm install' (or 'npm ci') before running 'npm run build'.");
+    }
+    throw error;
+  }
+}
+
+async function loadHtmlMinifier() {
+  if (htmlMinifyFn) {
+    return htmlMinifyFn;
+  }
+
+  try {
+    ({ minify: htmlMinifyFn } = await import("html-minifier-terser"));
+    return htmlMinifyFn;
+  } catch (error) {
+    if (String(error?.code || "") === "ERR_MODULE_NOT_FOUND") {
+      throw new Error("Missing build dependency 'html-minifier-terser'. Run 'npm install' (or 'npm ci') before running 'npm run build'.");
+    }
+    throw error;
+  }
+}
+
+function outputWebPath(filePath) {
+  const absolutePath = path.isAbsolute(filePath) ? filePath : path.join(root, filePath);
+  return `/${path.relative(distDir, absolutePath).split(path.sep).join("/")}`;
+}
+
+function fingerprintContents(contents) {
+  return createHash("sha256").update(contents).digest("hex").slice(0, 10);
+}
+
+async function writeFingerprintedAsset({ name, extension, subdir = "assets", contents }) {
+  const buffer = Buffer.isBuffer(contents) ? contents : Buffer.from(String(contents), "utf8");
+  const filename = `${name}-${fingerprintContents(buffer)}${extension}`;
+  const relativePath = path.posix.join(subdir, filename);
+  const outputPath = path.join(distDir, ...relativePath.split("/"));
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await writeFile(outputPath, buffer);
+  return `/${relativePath}`;
+}
+
+async function copyFingerprintedAsset(sourcePath, options = {}) {
+  const ext = path.extname(sourcePath);
+  const name = path.basename(sourcePath, ext);
+  const contents = await readFile(sourcePath);
+  return writeFingerprintedAsset({
+    name,
+    extension: ext,
+    subdir: options.subdir || "assets",
+    contents
+  });
+}
+
+function bundledOutputByEntry(metafile, entryPath) {
+  const normalizedEntry = path.normalize(entryPath);
+
+  for (const [outputPath, meta] of Object.entries(metafile.outputs || {})) {
+    if (!meta.entryPoint) {
+      continue;
+    }
+
+    const resolvedEntry = path.normalize(path.join(root, meta.entryPoint));
+    if (resolvedEntry === normalizedEntry) {
+      return outputWebPath(outputPath);
+    }
+  }
+
+  return "";
+}
+
+function bundledOutputByInput(metafile, inputPath) {
+  const normalizedInput = path.normalize(inputPath);
+
+  for (const [outputPath, meta] of Object.entries(metafile.outputs || {})) {
+    const inputEntries = Object.keys(meta.inputs || {});
+    for (const candidate of inputEntries) {
+      const resolvedInput = path.normalize(path.join(root, candidate));
+      if (resolvedInput === normalizedInput) {
+        return outputWebPath(outputPath);
+      }
+    }
+  }
+
+  return "";
+}
+
+async function minifyPageHtml(html) {
+  const minify = await loadHtmlMinifier();
+  return minify(String(html || ""), {
+    collapseWhitespace: true,
+    conservativeCollapse: true,
+    keepClosingSlash: true,
+    minifyCSS: true,
+    minifyJS: true,
+    removeComments: true,
+    removeRedundantAttributes: true,
+    removeScriptTypeAttributes: true,
+    removeStyleLinkTypeAttributes: true,
+    useShortDoctype: true
+  });
 }
 
 function normalizeNewlines(input) {
@@ -268,28 +403,44 @@ function relativePrefix(routePath) {
   return "../".repeat(depth);
 }
 
-function assetPath(routePath) {
-  return `${relativePrefix(routePath)}assets/styles.css`;
+function requireAssetManifest() {
+  if (!assetManifest) {
+    throw new Error("Asset manifest is not ready yet.");
+  }
+  return assetManifest;
 }
 
-function scriptPath(routePath) {
-  return `${relativePrefix(routePath)}assets/app.js`;
+function routeRelativeAssetUrl(routePath, assetUrl) {
+  const normalized = String(assetUrl || "").replace(/^\/+/, "");
+  return `${relativePrefix(routePath)}${normalized}`;
+}
+
+function assetPath(routePath) {
+  return routeRelativeAssetUrl(routePath, requireAssetManifest().css);
+}
+
+function scriptPath(routePath, pageName) {
+  return routeRelativeAssetUrl(routePath, requireAssetManifest().scripts[pageName]);
 }
 
 function manifestPath(routePath) {
-  return `${relativePrefix(routePath)}site.webmanifest`;
+  return routeRelativeAssetUrl(routePath, requireAssetManifest().manifest);
 }
 
 function favicon32Path(routePath) {
-  return `${relativePrefix(routePath)}assets/branding/icon-circle-32.png`;
+  return routeRelativeAssetUrl(routePath, requireAssetManifest().icons.circle32);
 }
 
 function favicon512Path(routePath) {
-  return `${relativePrefix(routePath)}assets/branding/icon-circle-512.png`;
+  return routeRelativeAssetUrl(routePath, requireAssetManifest().icons.circle512);
 }
 
 function appleTouchPath(routePath) {
-  return `${relativePrefix(routePath)}assets/branding/icon-ios-180.png`;
+  return routeRelativeAssetUrl(routePath, requireAssetManifest().icons.ios180);
+}
+
+function pageDataPath(routePath, pageName) {
+  return routeRelativeAssetUrl(routePath, requireAssetManifest().data[pageName]);
 }
 
 function rssPath(routePath) {
@@ -410,13 +561,14 @@ function renderRssPoemHtml(markdown, highlights = []) {
 }
 
 function fontPath(routePath, filename) {
-  return `${relativePrefix(routePath)}assets/fonts/${filename}`;
+  return routeRelativeAssetUrl(routePath, filename);
 }
 
 function fontPreloads(routePath) {
+  const { fonts } = requireAssetManifest();
   return [
-    `<link rel="preload" href="${fontPath(routePath, "libre-baskerville-400.ttf")}" as="font" type="font/ttf" crossorigin>`,
-    `<link rel="preload" href="${fontPath(routePath, "libre-baskerville-700.ttf")}" as="font" type="font/ttf" crossorigin>`
+    `<link rel="preload" href="${fontPath(routePath, fonts.regular400)}" as="font" type="font/woff2" crossorigin>`,
+    `<link rel="preload" href="${fontPath(routePath, fonts.bold700)}" as="font" type="font/woff2" crossorigin>`
   ].join("\n  ");
 }
 
@@ -889,12 +1041,39 @@ function renderAuthorMeta(poem) {
   return `${author} <span aria-hidden="true">&middot;</span> ${details}`;
 }
 
+function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "" } = {}) {
+  let html = template
+    .replace("{{ASSET_PATH}}", assetPath(routePath))
+    .replace("{{FONT_PRELOADS}}", fontPreloads(routePath))
+    .replace("{{MANIFEST_PATH}}", manifestPath(routePath))
+    .replace("{{RSS_PATH}}", rssPath(routePath))
+    .replace("{{FAVICON_32_PATH}}", favicon32Path(routePath))
+    .replace("{{FAVICON_512_PATH}}", favicon512Path(routePath))
+    .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath(routePath))
+    .replace("{{CANONICAL_TAG}}", canonicalTag(routePath))
+    .replace("{{OG_URL_TAG}}", ogUrlTag(routePath))
+    .replace("{{FOOTER}}", renderFooter(routePath));
+
+  if (scriptName) {
+    html = html.replace("{{SCRIPT_PATH}}", scriptPath(routePath, scriptName));
+  }
+
+  if (html.includes("{{ROBOTS_META}}")) {
+    html = html.replace("{{ROBOTS_META}}", robotsMeta);
+  }
+
+  return html;
+}
+
 function renderPoemShell(template, poem, { noindex = true, routePath = "/", defaultAsOf = "" } = {}) {
   const description = `${poem.title} by ${poem.author}.`;
   const authorMeta = poem.authorMetaHtml || renderAuthorMeta(poem);
   const poemHtml =
     poem.poemHtmlWithPublishedNote || renderPoemContent(poem, { includePublishedNote: true });
-  return template
+  return withCommonPageAssets(template, routePath, {
+    scriptName: "poem",
+    robotsMeta: noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">'
+  })
     .replaceAll("{{TITLE}}", htmlEscape(poem.title))
     .replaceAll("{{AUTHOR}}", htmlEscape(poem.author))
     .replaceAll("{{DESCRIPTION}}", htmlEscape(description))
@@ -905,30 +1084,20 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replaceAll("{{AUTHOR_META}}", authorMeta)
     .replaceAll("{{PUBLICATION_META}}", renderPublicationMeta(poem))
     .replaceAll("{{POEM_TEXT}}", poemHtml)
-    .replace("{{ASSET_PATH}}", assetPath(routePath))
-    .replace("{{FONT_PRELOADS}}", fontPreloads(routePath))
-    .replace("{{MANIFEST_PATH}}", manifestPath(routePath))
-    .replace("{{RSS_PATH}}", rssPath(routePath))
-    .replace("{{FAVICON_32_PATH}}", favicon32Path(routePath))
-    .replace("{{FAVICON_512_PATH}}", favicon512Path(routePath))
-    .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath(routePath))
-    .replace("{{SCRIPT_PATH}}", scriptPath(routePath))
-    .replace("{{ROBOTS_META}}", noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">')
-    .replace("{{CANONICAL_TAG}}", canonicalTag(routePath))
-    .replace("{{OG_URL_TAG}}", ogUrlTag(routePath))
-    .replace("{{FOOTER}}", renderFooter(routePath));
+    .replace("{{SCRIPT_PATH}}", scriptPath(routePath, "poem"));
 }
 
 async function writeRoutedPage(routePath, html) {
+  const finalHtml = await minifyPageHtml(html);
   if (routePath === "/") {
-    await writeFile(path.join(distDir, "index.html"), html, "utf8");
+    await writeFile(path.join(distDir, "index.html"), finalHtml, "utf8");
     return;
   }
 
   const rel = routePath.slice(1);
   const dirPath = path.join(distDir, rel);
   await mkdir(dirPath, { recursive: true });
-  await writeFile(path.join(dirPath, "index.html"), html, "utf8");
+  await writeFile(path.join(dirPath, "index.html"), finalHtml, "utf8");
 }
 
 async function renderPoemPages(publishedPoems, defaultAsOf = "") {
@@ -945,42 +1114,24 @@ async function renderArchive(poems, defaultAsOf = "") {
   const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
   const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
   const rows = renderArchiveTree(fallbackPoems, fallbackDate);
-  const html = template
+  const html = withCommonPageAssets(template, "/archive", {
+    scriptName: "archive",
+    robotsMeta: '<meta name="robots" content="index, follow">'
+  })
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{FALLBACK_ARCHIVE_ROWS}}", rows)
-    .replace("{{ASSET_PATH}}", assetPath("/archive"))
-    .replace("{{FONT_PRELOADS}}", fontPreloads("/archive"))
-    .replace("{{MANIFEST_PATH}}", manifestPath("/archive"))
-    .replace("{{RSS_PATH}}", rssPath("/archive"))
-    .replace("{{FAVICON_32_PATH}}", favicon32Path("/archive"))
-    .replace("{{FAVICON_512_PATH}}", favicon512Path("/archive"))
-    .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/archive"))
-    .replace("{{SCRIPT_PATH}}", scriptPath("/archive"))
-    .replace("{{ROBOTS_META}}", '<meta name="robots" content="index, follow">')
-    .replace("{{CANONICAL_TAG}}", canonicalTag("/archive"))
-    .replace("{{OG_URL_TAG}}", ogUrlTag("/archive"))
-    .replace("{{FOOTER}}", renderFooter("/archive"));
+    .replace("{{PAGE_DATA_URL}}", pageDataPath("/archive", "archive"));
 
   await writeRoutedPage("/archive", html);
 }
 
 async function renderAbout() {
   const template = await readTemplate("about.html");
-  const html = template
-    .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
-    .replace("{{ASSET_PATH}}", assetPath("/about"))
-    .replace("{{FONT_PRELOADS}}", fontPreloads("/about"))
-    .replace("{{MANIFEST_PATH}}", manifestPath("/about"))
-    .replace("{{RSS_PATH}}", rssPath("/about"))
-    .replace("{{FAVICON_32_PATH}}", favicon32Path("/about"))
-    .replace("{{FAVICON_512_PATH}}", favicon512Path("/about"))
-    .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/about"))
-    .replace("{{SCRIPT_PATH}}", scriptPath("/about"))
-    .replace("{{CANONICAL_TAG}}", canonicalTag("/about"))
-    .replace("{{OG_URL_TAG}}", ogUrlTag("/about"))
-    .replace("{{FOOTER}}", renderFooter("/about"));
+  const html = withCommonPageAssets(template, "/about", {
+    scriptName: "about"
+  }).replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue());
   await writeRoutedPage("/about", html);
 }
 
@@ -994,7 +1145,10 @@ async function renderHome(poems, defaultAsOf = "") {
   const fallbackBody = fallbackPoem
     ? fallbackPoem.poemHtml || renderPoemContent(fallbackPoem, { includePublishedNote: false })
     : '<p class="empty">No poem is published for today.</p>';
-  const html = template
+  const html = withCommonPageAssets(template, "/", {
+    scriptName: "home",
+    robotsMeta: '<meta name="robots" content="index, follow">'
+  })
     .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
     .replaceAll("{{PAGE_DESCRIPTION}}", "A Poem Per Day.")
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
@@ -1003,18 +1157,7 @@ async function renderHome(poems, defaultAsOf = "") {
     .replace("{{FALLBACK_TITLE}}", fallbackTitle)
     .replace("{{FALLBACK_META}}", fallbackMeta)
     .replace("{{FALLBACK_POEM_HTML}}", fallbackBody)
-    .replace("{{ASSET_PATH}}", assetPath("/"))
-    .replace("{{FONT_PRELOADS}}", fontPreloads("/"))
-    .replace("{{MANIFEST_PATH}}", manifestPath("/"))
-    .replace("{{RSS_PATH}}", rssPath("/"))
-    .replace("{{FAVICON_32_PATH}}", favicon32Path("/"))
-    .replace("{{FAVICON_512_PATH}}", favicon512Path("/"))
-    .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/"))
-    .replace("{{SCRIPT_PATH}}", scriptPath("/"))
-    .replace("{{ROBOTS_META}}", '<meta name="robots" content="index, follow">')
-    .replace("{{CANONICAL_TAG}}", canonicalTag("/"))
-    .replace("{{OG_URL_TAG}}", ogUrlTag("/"))
-    .replace("{{FOOTER}}", renderFooter("/"));
+    .replace("{{PAGE_DATA_URL}}", pageDataPath("/", "home"));
 
   await writeRoutedPage("/", html);
 }
@@ -1190,23 +1333,15 @@ async function renderPoets(poems, defaultAsOf = "") {
   const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
   const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
   const rows = renderPoetsTree(fallbackPoems);
-  const html = template
+  const html = withCommonPageAssets(template, "/poets", {
+    scriptName: "poets",
+    robotsMeta: '<meta name="robots" content="index, follow">'
+  })
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{FALLBACK_POET_ROWS}}", rows)
-    .replace("{{ASSET_PATH}}", assetPath("/poets"))
-    .replace("{{FONT_PRELOADS}}", fontPreloads("/poets"))
-    .replace("{{MANIFEST_PATH}}", manifestPath("/poets"))
-    .replace("{{RSS_PATH}}", rssPath("/poets"))
-    .replace("{{FAVICON_32_PATH}}", favicon32Path("/poets"))
-    .replace("{{FAVICON_512_PATH}}", favicon512Path("/poets"))
-    .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath("/poets"))
-    .replace("{{SCRIPT_PATH}}", scriptPath("/poets"))
-    .replace("{{ROBOTS_META}}", '<meta name="robots" content="index, follow">')
-    .replace("{{CANONICAL_TAG}}", canonicalTag("/poets"))
-    .replace("{{OG_URL_TAG}}", ogUrlTag("/poets"))
-    .replace("{{FOOTER}}", renderFooter("/poets"));
+    .replace("{{PAGE_DATA_URL}}", pageDataPath("/poets", "poets"));
 
   await writeRoutedPage("/poets", html);
 }
@@ -1223,24 +1358,6 @@ function renderPoemContent(poem, { includePublishedNote = true } = {}) {
   return `${poemHtml}${renderPublishedOnNote(poem)}`;
 }
 
-async function writeJsonFile(filename, value) {
-  await writeFile(path.join(distDir, filename), JSON.stringify(value), "utf8");
-}
-
-async function renderSearchData(poems) {
-  const lightweight = poems.map((poem) => ({
-    id: poem.id,
-    title: poem.title,
-    author: poem.author,
-    publication: poem.publication,
-    date: poem.date,
-    route: poem.route,
-    text: poem.searchText || markdownStrip(poem.poem)
-  }));
-
-  await writeJsonFile("search-index.json", lightweight);
-}
-
 async function renderHomeData(poems) {
   const home = poems.map((poem) => ({
     title: poem.title,
@@ -1249,7 +1366,12 @@ async function renderHomeData(poems) {
     poemHtml: poem.poemHtml || renderPoemContent(poem, { includePublishedNote: false })
   }));
 
-  await writeJsonFile("home-data.json", home);
+  return writeFingerprintedAsset({
+    name: "home-data",
+    extension: ".json",
+    subdir: "assets/data",
+    contents: JSON.stringify(home)
+  });
 }
 
 async function renderArchiveData(poems) {
@@ -1259,7 +1381,12 @@ async function renderArchiveData(poems) {
     route: poem.route
   }));
 
-  await writeJsonFile("archive-data.json", archive);
+  return writeFingerprintedAsset({
+    name: "archive-data",
+    extension: ".json",
+    subdir: "assets/data",
+    contents: JSON.stringify(archive)
+  });
 }
 
 async function renderPoetsData(poems) {
@@ -1270,20 +1397,135 @@ async function renderPoetsData(poems) {
     route: poem.route
   }));
 
-  await writeJsonFile("poets-data.json", poets);
+  return writeFingerprintedAsset({
+    name: "poets-data",
+    extension: ".json",
+    subdir: "assets/data",
+    contents: JSON.stringify(poets)
+  });
 }
 
-async function copyAssets() {
-  await copyFile(path.join(assetsDir, "styles.css"), path.join(distDir, "assets", "styles.css"));
-  await copyFile(path.join(assetsDir, "app.js"), path.join(distDir, "assets", "app.js"));
-  await copyFile(path.join(assetsDir, "site.webmanifest"), path.join(distDir, "site.webmanifest"));
-  await cp(path.join(assetsDir, "fonts"), path.join(distDir, "assets", "fonts"), { recursive: true });
-  await cp(path.join(assetsDir, "highlights"), path.join(distDir, "assets", "highlights"), { recursive: true });
-  await cp(path.join(assetsDir, "branding"), path.join(distDir, "assets", "branding"), { recursive: true });
-  await copyFile(path.join(assetsDir, "branding", "icon-circle.ico"), path.join(distDir, "favicon.ico"));
+async function buildBundledAssetManifest() {
+  const bundle = await loadEsbuildBundle();
+  const result = await bundle({
+    absWorkingDir: root,
+    assetNames: "[name]-[hash]",
+    bundle: true,
+    charset: "utf8",
+    entryNames: "[name]-[hash]",
+    entryPoints: bundledAssetEntries,
+    format: "iife",
+    legalComments: "none",
+    loader: {
+      ".svg": "file",
+      ".woff2": "file"
+    },
+    metafile: true,
+    minify: true,
+    outdir: path.join(distDir, "assets"),
+    platform: "browser",
+    target: ["es2020"],
+    write: true
+  });
+
+  const metafile = result.metafile || { outputs: {} };
+  const manifest = {
+    css: bundledOutputByEntry(metafile, bundledAssetEntries.styles),
+    scripts: {
+      home: bundledOutputByEntry(metafile, bundledAssetEntries.home),
+      archive: bundledOutputByEntry(metafile, bundledAssetEntries.archive),
+      poets: bundledOutputByEntry(metafile, bundledAssetEntries.poets),
+      about: bundledOutputByEntry(metafile, bundledAssetEntries.about),
+      poem: bundledOutputByEntry(metafile, bundledAssetEntries.poem)
+    },
+    fonts: {
+      regular400: bundledOutputByInput(metafile, fontSourceEntries.regular400),
+      bold700: bundledOutputByInput(metafile, fontSourceEntries.bold700)
+    }
+  };
+
+  const requiredOutputs = [
+    manifest.css,
+    manifest.scripts.home,
+    manifest.scripts.archive,
+    manifest.scripts.poets,
+    manifest.scripts.about,
+    manifest.scripts.poem,
+    manifest.fonts.regular400,
+    manifest.fonts.bold700
+  ];
+
+  if (requiredOutputs.some((value) => !value)) {
+    throw new Error("Missing one or more bundled asset outputs.");
+  }
+
+  return manifest;
+}
+
+async function buildAssetManifest(poems) {
+  const [bundledAssets, homeData, archiveData, poetsData, circle32, circle192, circle512, ios180] = await Promise.all([
+    buildBundledAssetManifest(),
+    renderHomeData(poems),
+    renderArchiveData(poems),
+    renderPoetsData(poems),
+    copyFingerprintedAsset(iconSourceEntries.circle32, { subdir: "assets/branding" }),
+    copyFingerprintedAsset(iconSourceEntries.circle192, { subdir: "assets/branding" }),
+    copyFingerprintedAsset(iconSourceEntries.circle512, { subdir: "assets/branding" }),
+    copyFingerprintedAsset(iconSourceEntries.ios180, { subdir: "assets/branding" })
+  ]);
+
+  await copyFile(iconSourceEntries.faviconIco, path.join(distDir, "favicon.ico"));
+
+  const manifestSource = JSON.parse(await readFile(path.join(assetsDir, "site.webmanifest"), "utf8"));
+  manifestSource.icons = [
+    {
+      src: circle192,
+      sizes: "192x192",
+      type: "image/png"
+    },
+    {
+      src: circle512,
+      sizes: "512x512",
+      type: "image/png"
+    }
+  ];
+
+  const manifestFile = await writeFingerprintedAsset({
+    name: "site",
+    extension: ".webmanifest",
+    subdir: "assets",
+    contents: JSON.stringify(manifestSource)
+  });
+
+  return {
+    ...bundledAssets,
+    data: {
+      home: homeData,
+      archive: archiveData,
+      poets: poetsData
+    },
+    icons: {
+      circle32,
+      circle192,
+      circle512,
+      ios180
+    },
+    manifest: manifestFile
+  };
+}
+
+async function renderHeadersFile() {
+  const headers = `/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+`;
+  await writeFile(path.join(distDir, "_headers"), headers, "utf8");
 }
 
 async function renderNotFoundPage() {
+  const assets = requireAssetManifest();
   const html = `<!doctype html>
 <html lang="en">
 <head>
@@ -1297,14 +1539,14 @@ async function renderNotFoundPage() {
   <meta name="robots" content="noindex, nofollow">
   <meta name="description" content="Page not found.">
   <title>404 | A Poem Per Day</title>
-  <link rel="stylesheet" href="/assets/styles.css">
-  <link rel="preload" href="/assets/fonts/libre-baskerville-400.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" href="/assets/fonts/libre-baskerville-700.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="${assets.css}">
+  <link rel="preload" href="${assets.fonts.regular400}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="${assets.fonts.bold700}" as="font" type="font/woff2" crossorigin>
+  <link rel="manifest" href="${assets.manifest}">
   <link rel="alternate" type="application/rss+xml" title="A Poem Per Day RSS Feed" href="/rss.xml">
-  <link rel="icon" type="image/png" sizes="512x512" href="/assets/branding/icon-circle-512.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/assets/branding/icon-circle-32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/assets/branding/icon-ios-180.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="${assets.icons.circle512}">
+  <link rel="icon" type="image/png" sizes="32x32" href="${assets.icons.circle32}">
+  <link rel="apple-touch-icon" sizes="180x180" href="${assets.icons.ios180}">
 </head>
 <body>
   <main>
@@ -1318,7 +1560,7 @@ async function renderNotFoundPage() {
 </body>
 </html>
 `;
-  await writeFile(path.join(distDir, "404.html"), html, "utf8");
+  await writeFile(path.join(distDir, "404.html"), await minifyPageHtml(html), "utf8");
 }
 
 async function renderSeoFiles(publishedPoems) {
@@ -1416,6 +1658,7 @@ export async function build() {
   await ensureDist();
   const poems = preparePoems(await loadPoems());
   const asOfDate = parseAsOfDateArg();
+  assetManifest = await buildAssetManifest(poems);
 
   await Promise.all([
     renderHome(poems, asOfDate),
@@ -1423,14 +1666,10 @@ export async function build() {
     renderArchive(poems, asOfDate),
     renderPoets(poems, asOfDate),
     renderAbout(),
-    renderSearchData(poems),
-    renderHomeData(poems),
-    renderArchiveData(poems),
-    renderPoetsData(poems),
     renderSeoFiles(poems),
     renderRssFeed(poems, asOfDate),
     renderNotFoundPage(),
-    copyAssets()
+    renderHeadersFile()
   ]);
 
   console.log(`Built Serein with ${poems.length} poems (local-date rendering enabled on /, /archive, and /poets).`);

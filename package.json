@@ -18,6 +18,10 @@
     "marked": "^16.4.0"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1"
+    "concurrently": "^9.2.1",
+    "esbuild": "^0.27.3",
+    "html-minifier-terser": "^7.2.0",
+    "svgo": "^4.0.1",
+    "ttf2woff2": "^8.0.1"
   }
 }
