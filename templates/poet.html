@@ -30,19 +30,19 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="A Poem Per Day">
-  <meta name="description" content="Poets published to date.">
+  {{ROBOTS_META}}
+  <meta name="description" content="{{PAGE_DESCRIPTION}}">
   {{CANONICAL_TAG}}
   <meta property="og:site_name" content="A Poem Per Day">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Poets | A Poem Per Day">
-  <meta property="og:description" content="Poets published to date.">
+  <meta property="og:type" content="profile">
+  <meta property="og:title" content="{{AUTHOR}} | A Poem Per Day">
+  <meta property="og:description" content="{{PAGE_DESCRIPTION}}">
   {{OG_URL_TAG}}
   <meta name="twitter:card" content="{{TWITTER_CARD}}">
-  <meta name="twitter:title" content="Poets | A Poem Per Day">
-  <meta name="twitter:description" content="Poets published to date.">
+  <meta name="twitter:title" content="{{AUTHOR}} | A Poem Per Day">
+  <meta name="twitter:description" content="{{PAGE_DESCRIPTION}}">
   {{SOCIAL_META}}
-  {{ROBOTS_META}}
-  <title>Poets | A Poem Per Day</title>
+  <title>{{AUTHOR}} | A Poem Per Day</title>
   <link rel="stylesheet" href="{{ASSET_PATH}}">
   {{FONT_PRELOADS}}
   <link rel="manifest" href="{{MANIFEST_PATH}}">
@@ -52,10 +52,11 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{APPLE_TOUCH_ICON_PATH}}">
 </head>
 <body>
-  <main data-default-as-of="{{DEFAULT_AS_OF}}" data-rendered-as-of="{{RENDERED_AS_OF}}" data-page-data-url="{{PAGE_DATA_URL}}" data-dynamic-page="1">
-    <h1>Poets</h1>
+  <main data-default-as-of="{{DEFAULT_AS_OF}}" data-rendered-as-of="{{RENDERED_AS_OF}}" data-author-route="{{AUTHOR_ROUTE}}" data-page-data-url="{{PAGE_DATA_URL}}" data-dynamic-page="1">
+    <h1 id="poet-page-author">{{AUTHOR}}</h1>
+    <p class="meta" id="poet-page-meta">{{POET_META}}</p>
     <div class="content-block">
-      <div id="poets-tree" class="archive-tree poets-tree">{{FALLBACK_POET_ROWS}}</div>
+      <div id="poet-page-tree" class="archive-tree">{{FALLBACK_POEMS}}</div>
     </div>
   </main>
   {{FOOTER}}

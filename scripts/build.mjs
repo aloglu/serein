@@ -9,6 +9,7 @@ import { expectedPoemFilename } from "./poem-filenames.mjs";
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
 const distDir = path.join(root, "dist");
+const reportsDir = path.join(root, "reports");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
 const siteUrl = String(process.env.SITE_URL || "").trim().replace(/\/+$/, "");
@@ -38,6 +39,7 @@ const bundledAssetEntries = {
   home: path.join(assetsDir, "scripts", "home.js"),
   archive: path.join(assetsDir, "scripts", "archive.js"),
   poets: path.join(assetsDir, "scripts", "poets.js"),
+  poetPage: path.join(assetsDir, "scripts", "poet-page.js"),
   about: path.join(assetsDir, "scripts", "about.js"),
   poem: path.join(assetsDir, "scripts", "poem.js")
 };
@@ -55,6 +57,10 @@ const iconSourceEntries = {
 let assetManifest = null;
 let esbuildBundleFn = null;
 let htmlMinifyFn = null;
+let sharpFactory = null;
+let authorPages = [];
+let socialCardManifest = null;
+let socialCardFontCss = "";
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -187,6 +193,51 @@ async function loadHtmlMinifier() {
     }
     throw error;
   }
+}
+
+async function loadSharpFactory() {
+  if (sharpFactory) {
+    return sharpFactory;
+  }
+
+  try {
+    const sharpModule = await import("sharp");
+    sharpFactory = sharpModule.default;
+    return sharpFactory;
+  } catch (error) {
+    if (String(error?.code || "") === "ERR_MODULE_NOT_FOUND") {
+      throw new Error("Missing build dependency 'sharp'. Run 'npm install' (or 'npm ci') before running 'npm run build'.");
+    }
+    throw error;
+  }
+}
+
+async function loadSocialCardFontCss() {
+  if (socialCardFontCss) {
+    return socialCardFontCss;
+  }
+
+  const [regularFont, boldFont] = await Promise.all([
+    readFile(fontSourceEntries.regular400),
+    readFile(fontSourceEntries.bold700)
+  ]);
+
+  socialCardFontCss = [
+    "@font-face {",
+    "  font-family: 'Serein Social';",
+    "  font-style: normal;",
+    "  font-weight: 400;",
+    `  src: url("data:font/woff2;base64,${regularFont.toString("base64")}") format("woff2");`,
+    "}",
+    "@font-face {",
+    "  font-family: 'Serein Social';",
+    "  font-style: normal;",
+    "  font-weight: 700;",
+    `  src: url("data:font/woff2;base64,${boldFont.toString("base64")}") format("woff2");`,
+    "}"
+  ].join("\n");
+
+  return socialCardFontCss;
 }
 
 function outputWebPath(filePath) {
@@ -457,6 +508,24 @@ function absoluteRouteUrl(routePath) {
   return `${siteUrl}${routePath}/`;
 }
 
+function absoluteAssetUrl(webPath) {
+  if (!siteUrl || !webPath) {
+    return "";
+  }
+  return `${siteUrl}${String(webPath).startsWith("/") ? "" : "/"}${webPath}`;
+}
+
+function routeHref(routePath) {
+  if (routePath === "/") {
+    return "/";
+  }
+  return `${routePath}/`;
+}
+
+function routeLink(routePath, label) {
+  return `<a href="${htmlEscape(routeHref(routePath))}">${htmlEscape(label)}</a>`;
+}
+
 function canonicalTag(routePath) {
   const href = absoluteRouteUrl(routePath);
   return href ? `<link rel="canonical" href="${href}">` : "";
@@ -465,6 +534,208 @@ function canonicalTag(routePath) {
 function ogUrlTag(routePath) {
   const content = absoluteRouteUrl(routePath);
   return content ? `<meta property="og:url" content="${content}">` : "";
+}
+
+function wrapCardText(text, maxCharsPerLine, maxLines) {
+  const words = String(text || "").trim().split(/\s+/).filter(Boolean);
+  if (words.length === 0) {
+    return [];
+  }
+
+  const lines = [];
+  let current = "";
+  for (const word of words) {
+    const candidate = current ? `${current} ${word}` : word;
+    if (candidate.length <= maxCharsPerLine || !current) {
+      current = candidate;
+      continue;
+    }
+    lines.push(current);
+    current = word;
+    if (lines.length === maxLines - 1) {
+      break;
+    }
+  }
+
+  if (current && lines.length < maxLines) {
+    lines.push(current);
+  }
+
+  const consumedWordCount = lines.join(" ").split(/\s+/).filter(Boolean).length;
+  if (consumedWordCount < words.length && lines.length > 0) {
+    const lastIndex = lines.length - 1;
+    lines[lastIndex] = `${lines[lastIndex].replace(/[.?!,:;…-]*$/g, "")}\u2026`;
+  }
+
+  return lines;
+}
+
+function renderCardTextLines(lines, { x, y, size, lineHeight, weight = "400", fill = "#2f2a25" }) {
+  return lines
+    .map(
+      (line, index) => `<text x="${x}" y="${y + (index * lineHeight)}" font-family="'Libre Baskerville', Georgia, serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
+    )
+    .join("");
+}
+
+function renderCenteredCardTextLines(lines, { centerX, startY, size, lineHeight, weight = "400", fill = "#ebe0d2" }) {
+  return lines
+    .map(
+      (line, index) => `<text x="${centerX}" y="${startY + (index * lineHeight)}" text-anchor="middle" font-family="'Serein Social', 'Libre Baskerville', Georgia, serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
+    )
+    .join("");
+}
+
+function renderSocialCardSvg({ title, subtitle = "" }, embeddedFontCss = "") {
+  const titleLines = wrapCardText(title, 18, 4);
+  const subtitleLines = subtitle ? wrapCardText(subtitle, 28, 2) : [];
+  const titleSize = titleLines.length >= 4 ? 68 : titleLines.length === 3 ? 76 : 88;
+  const titleLineHeight = titleLines.length >= 4 ? 84 : titleLines.length === 3 ? 92 : 102;
+  const subtitleSize = 40;
+  const subtitleLineHeight = 52;
+  const titleBlockHeight = titleLines.length > 0 ? ((titleLines.length - 1) * titleLineHeight) + titleSize : 0;
+  const subtitleBlockHeight = subtitleLines.length > 0 ? ((subtitleLines.length - 1) * subtitleLineHeight) + subtitleSize : 0;
+  const gap = subtitleLines.length > 0 ? 40 : 0;
+  const totalHeight = titleBlockHeight + gap + subtitleBlockHeight;
+  const titleStartY = ((630 - totalHeight) / 2) + titleSize;
+  const subtitleStartY = titleStartY + titleBlockHeight + gap;
+  const description = subtitle || title;
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="card-title card-detail">
+  <title id="card-title">${htmlEscape(title)}</title>
+  <desc id="card-detail">${htmlEscape(description)}</desc>
+  <defs>
+    <style><![CDATA[
+${embeddedFontCss}
+    ]]></style>
+  </defs>
+  <rect width="1200" height="630" fill="#1d1711"/>
+  ${renderCenteredCardTextLines(titleLines, { centerX: 600, startY: titleStartY, size: titleSize, lineHeight: titleLineHeight, weight: "700", fill: "#ebe0d2" })}
+  ${renderCenteredCardTextLines(subtitleLines, { centerX: 600, startY: subtitleStartY, size: subtitleSize, lineHeight: subtitleLineHeight, fill: "#c0b39f" })}
+</svg>
+`;
+}
+
+async function writeSocialCard(filename, svgContents) {
+  const sharp = await loadSharpFactory();
+  const outputPath = path.join(distDir, "social", filename);
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  const pngBuffer = await sharp(Buffer.from(svgContents), { density: 144 })
+    .png({
+      compressionLevel: 9,
+      palette: false
+    })
+    .toBuffer();
+  await writeFile(outputPath, pngBuffer);
+  return outputWebPath(outputPath);
+}
+
+async function buildSocialCardManifest(poems, defaultAsOf = "") {
+  const embeddedFontCss = await loadSocialCardFontCss();
+  const routeCards = new Map();
+
+  routeCards.set("/", {
+    path: await writeSocialCard(
+      "home.png",
+      renderSocialCardSvg({
+        title: "A Poem Per Day"
+      }, embeddedFontCss)
+    ),
+    alt: "A Poem Per Day"
+  });
+
+  routeCards.set("/archive", {
+    path: await writeSocialCard(
+      "archive.png",
+      renderSocialCardSvg({
+        title: "Archive",
+        subtitle: "of A Poem Per Day"
+      }, embeddedFontCss)
+    ),
+    alt: "Archive of A Poem Per Day"
+  });
+
+  routeCards.set("/poets", {
+    path: await writeSocialCard(
+      "poets.png",
+      renderSocialCardSvg({
+        title: "Poets",
+        subtitle: "of A Poem Per Day"
+      }, embeddedFontCss)
+    ),
+    alt: "Poets of A Poem Per Day"
+  });
+
+  routeCards.set("/about", {
+    path: await writeSocialCard(
+      "about.png",
+      renderSocialCardSvg({
+        title: "About",
+        subtitle: "of A Poem Per Day"
+      }, embeddedFontCss)
+    ),
+    alt: "About A Poem Per Day"
+  });
+
+  for (const poem of poems) {
+    routeCards.set(poem.route, {
+      path: await writeSocialCard(
+        `poem-${poem.date}.png`,
+        renderSocialCardSvg({
+          title: poem.title
+        }, embeddedFontCss)
+      ),
+      alt: poem.title
+    });
+  }
+
+  for (const authorPage of authorPages) {
+    routeCards.set(authorPage.route, {
+      path: await writeSocialCard(
+        `poet-${authorPage.slug}.png`,
+        renderSocialCardSvg({
+          title: authorPage.author,
+          subtitle: "of A Poem Per Day"
+        }, embeddedFontCss)
+      ),
+      alt: `${authorPage.author} on A Poem Per Day`
+    });
+  }
+
+  return {
+    routeCards
+  };
+}
+
+function renderSharingExtraHead(routePath, { articlePublished = "", articleAuthor = "" } = {}) {
+  const card = socialCardManifest?.routeCards?.get(routePath);
+  const imageUrl = absoluteAssetUrl(card?.path || "");
+  const bits = [];
+
+  if (imageUrl) {
+    bits.push(
+      `<meta property="og:image" content="${htmlEscape(imageUrl)}">`,
+      `<meta property="og:image:url" content="${htmlEscape(imageUrl)}">`,
+      `<meta property="og:image:secure_url" content="${htmlEscape(imageUrl)}">`,
+      '<meta property="og:image:type" content="image/png">',
+      '<meta property="og:image:width" content="1200">',
+      '<meta property="og:image:height" content="630">',
+      `<meta property="og:image:alt" content="${htmlEscape(card.alt || "A Poem Per Day")}">`,
+      `<meta name="twitter:image" content="${htmlEscape(imageUrl)}">`,
+      `<meta name="twitter:image:src" content="${htmlEscape(imageUrl)}">`,
+      `<meta name="twitter:image:alt" content="${htmlEscape(card.alt || "A Poem Per Day")}">`
+    );
+  }
+
+  if (articlePublished) {
+    bits.push(`<meta property="article:published_time" content="${htmlEscape(`${articlePublished}T00:00:00Z`)}">`);
+  }
+  if (articleAuthor) {
+    bits.push(`<meta property="article:author" content="${htmlEscape(articleAuthor)}">`);
+  }
+
+  return bits.join("\n  ");
 }
 
 function rfc822FromYyyyMmDd(yyyyMmDd) {
@@ -497,6 +768,14 @@ function htmlToPlainWithLineBreaks(input) {
     .replace(/<li[^>]*>/gi, "- ")
     .replace(/<[^>]+>/g, "");
   return decodeBasicHtmlEntities(withBreaks).replace(/\n{3,}/g, "\n\n").trim();
+}
+
+function plainTextExcerpt(input, maxLength = 220) {
+  const normalized = String(input || "").replace(/\s+/g, " ").trim();
+  if (normalized.length <= maxLength) {
+    return normalized;
+  }
+  return `${normalized.slice(0, Math.max(0, maxLength - 1)).replace(/\s+\S*$/g, "")}\u2026`;
 }
 
 function spacerToSpaces(spacerWidth) {
@@ -923,9 +1202,51 @@ function validatePoem(poem, filename) {
   if (typeof poem.source !== "string") {
     poem.source = poem.source == null ? "" : String(poem.source);
   }
+  if (poem.source) {
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(poem.source);
+    } catch {
+      throw new Error(`Invalid source URL '${poem.source}' in ${filename}. Expected an absolute http(s) URL.`);
+    }
+    if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+      throw new Error(`Invalid source URL '${poem.source}' in ${filename}. Expected an absolute http(s) URL.`);
+    }
+  }
 }
 
-async function loadPoems() {
+function duplicateDateEntries(poems) {
+  const byDate = new Map();
+  for (const poem of poems) {
+    if (!byDate.has(poem.date)) {
+      byDate.set(poem.date, []);
+    }
+    byDate.get(poem.date).push(poem);
+  }
+  return Array.from(byDate.entries())
+    .filter(([, matches]) => matches.length > 1)
+    .map(([date, matches]) => ({
+      date,
+      poems: matches.map((poem) => ({
+        title: poem.title,
+        author: poem.author,
+        filepath: poem.filepath
+      }))
+    }));
+}
+
+function gapDaysBetween(leftDate, rightDate) {
+  const left = parseDateParts(leftDate);
+  const right = parseDateParts(rightDate);
+  if (!left || !right) {
+    return 0;
+  }
+  const leftTime = Date.UTC(Number(left.year), Number(left.month) - 1, Number(left.day));
+  const rightTime = Date.UTC(Number(right.year), Number(right.month) - 1, Number(right.day));
+  return Math.max(0, Math.round((rightTime - leftTime) / 86400000) - 1);
+}
+
+export async function loadPoems() {
   async function collectPoemFiles(dirPath, relDir = "") {
     const entries = await readdir(dirPath, { withFileTypes: true });
     const files = [];
@@ -993,13 +1314,24 @@ async function loadPoems() {
   }
 
   poems.sort((a, b) => a.date.localeCompare(b.date) || a.title.localeCompare(b.title));
+  const duplicates = duplicateDateEntries(poems);
+  if (duplicates.length > 0) {
+    const lines = duplicates
+      .map((entry) => `${entry.date}: ${entry.poems.map((poem) => `${poem.title} (${poem.filepath})`).join(", ")}`)
+      .join("; ");
+    throw new Error(`Duplicate poem dates are not allowed. ${lines}`);
+  }
   return poems;
 }
 
-function preparePoems(poems) {
+export function preparePoems(poems, authorRouteByName = new Map()) {
   return poems.map((poem) => ({
     ...poem,
-    authorMetaHtml: renderAuthorMeta(poem),
+    authorRoute: authorRouteByName.get(poem.author) || "",
+    authorMetaHtml: renderAuthorMeta({
+      ...poem,
+      authorRoute: authorRouteByName.get(poem.author) || ""
+    }),
     poemHtml: renderPoemContent(poem, { includePublishedNote: false }),
     poemHtmlWithPublishedNote: renderPoemContent(poem, { includePublishedNote: true }),
     searchText: markdownStrip(poem.poem)
@@ -1033,7 +1365,8 @@ function renderPublicationMeta(poem) {
 }
 
 function renderAuthorMeta(poem) {
-  const author = htmlEscape(poem.author || "");
+  const authorName = htmlEscape(poem.author || "");
+  const author = poem.authorRoute ? routeLink(poem.authorRoute, poem.author || "") : authorName;
   const details = renderPublicationMeta(poem);
   if (!details) {
     return author;
@@ -1041,7 +1374,7 @@ function renderAuthorMeta(poem) {
   return `${author} <span aria-hidden="true">&middot;</span> ${details}`;
 }
 
-function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "" } = {}) {
+function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "", twitterCard = "summary", socialMeta = "" } = {}) {
   let html = template
     .replace("{{ASSET_PATH}}", assetPath(routePath))
     .replace("{{FONT_PRELOADS}}", fontPreloads(routePath))
@@ -1052,6 +1385,8 @@ function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta
     .replace("{{APPLE_TOUCH_ICON_PATH}}", appleTouchPath(routePath))
     .replace("{{CANONICAL_TAG}}", canonicalTag(routePath))
     .replace("{{OG_URL_TAG}}", ogUrlTag(routePath))
+    .replace("{{TWITTER_CARD}}", twitterCard)
+    .replace("{{SOCIAL_META}}", socialMeta)
     .replace("{{FOOTER}}", renderFooter(routePath));
 
   if (scriptName) {
@@ -1065,6 +1400,15 @@ function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta
   return html;
 }
 
+function sharingOptions(routePath, options = {}) {
+  const card = socialCardManifest?.routeCards?.get(routePath);
+  const hasImage = Boolean(absoluteAssetUrl(card?.path || ""));
+  return {
+    twitterCard: hasImage ? "summary_large_image" : "summary",
+    socialMeta: renderSharingExtraHead(routePath, options)
+  };
+}
+
 function renderPoemShell(template, poem, { noindex = true, routePath = "/", defaultAsOf = "" } = {}) {
   const description = `${poem.title} by ${poem.author}.`;
   const authorMeta = poem.authorMetaHtml || renderAuthorMeta(poem);
@@ -1072,7 +1416,11 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     poem.poemHtmlWithPublishedNote || renderPoemContent(poem, { includePublishedNote: true });
   return withCommonPageAssets(template, routePath, {
     scriptName: "poem",
-    robotsMeta: noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">'
+    robotsMeta: noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">',
+    ...sharingOptions(routePath, {
+      articlePublished: poem.date,
+      articleAuthor: absoluteRouteUrl(poem.authorRoute) || poem.author
+    })
   })
     .replaceAll("{{TITLE}}", htmlEscape(poem.title))
     .replaceAll("{{AUTHOR}}", htmlEscape(poem.author))
@@ -1116,7 +1464,8 @@ async function renderArchive(poems, defaultAsOf = "") {
   const rows = renderArchiveTree(fallbackPoems, fallbackDate);
   const html = withCommonPageAssets(template, "/archive", {
     scriptName: "archive",
-    robotsMeta: '<meta name="robots" content="index, follow">'
+    robotsMeta: '<meta name="robots" content="index, follow">',
+    ...sharingOptions("/archive")
   })
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
@@ -1130,7 +1479,8 @@ async function renderArchive(poems, defaultAsOf = "") {
 async function renderAbout() {
   const template = await readTemplate("about.html");
   const html = withCommonPageAssets(template, "/about", {
-    scriptName: "about"
+    scriptName: "about",
+    ...sharingOptions("/about")
   }).replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue());
   await writeRoutedPage("/about", html);
 }
@@ -1142,15 +1492,17 @@ async function renderHome(poems, defaultAsOf = "") {
   const fallbackPoem = fallbackPoems.find((poem) => poem.date === fallbackDate) || fallbackPoems[fallbackPoems.length - 1] || null;
   const fallbackTitle = fallbackPoem ? htmlEscape(fallbackPoem.title) : "A Poem Per Day";
   const fallbackMeta = fallbackPoem ? fallbackPoem.authorMetaHtml || renderAuthorMeta(fallbackPoem) : "";
+  const fallbackDescription = "A new poem every day, published at midnight in your local time.";
   const fallbackBody = fallbackPoem
     ? fallbackPoem.poemHtml || renderPoemContent(fallbackPoem, { includePublishedNote: false })
     : '<p class="empty">No poem is published for today.</p>';
   const html = withCommonPageAssets(template, "/", {
     scriptName: "home",
-    robotsMeta: '<meta name="robots" content="index, follow">'
+    robotsMeta: '<meta name="robots" content="index, follow">',
+    ...sharingOptions("/")
   })
     .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
-    .replaceAll("{{PAGE_DESCRIPTION}}", "A Poem Per Day.")
+    .replaceAll("{{PAGE_DESCRIPTION}}", htmlEscape(fallbackDescription))
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
@@ -1205,6 +1557,51 @@ function authorInitial(author) {
   const normalized = normalizedAlphaText(author);
   const firstChar = normalized.charAt(0).toUpperCase();
   return /^[A-Z]$/.test(firstChar) ? firstChar : "#";
+}
+
+function slugifySegment(input) {
+  const base = normalizedAlphaText(input)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+  return base || "unknown";
+}
+
+export function buildAuthorPages(poems) {
+  const poemsByAuthor = new Map();
+  for (const poem of poems) {
+    const author = String(poem.author || "").trim() || "Unknown";
+    if (!poemsByAuthor.has(author)) {
+      poemsByAuthor.set(author, []);
+    }
+    poemsByAuthor.get(author).push(poem);
+  }
+
+  const authors = Array.from(poemsByAuthor.keys()).sort((a, b) => authorCollator.compare(a, b));
+  const slugCounts = new Map();
+
+  return authors.map((author) => {
+    const baseSlug = slugifySegment(author);
+    const nextCount = (slugCounts.get(baseSlug) || 0) + 1;
+    slugCounts.set(baseSlug, nextCount);
+    const slug = nextCount === 1 ? baseSlug : `${baseSlug}-${nextCount}`;
+    const route = `/poets/${slug}`;
+    const authoredPoems = poemsByAuthor
+      .get(author)
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+
+    return {
+      author,
+      slug,
+      route,
+      poems: authoredPoems
+    };
+  });
+}
+
+function authorRouteMap(authorPagesList) {
+  return new Map(authorPagesList.map((entry) => [entry.author, entry.route]));
 }
 
 function renderPoetRow(poem, fromRoute) {
@@ -1264,7 +1661,7 @@ function groupPoemsByYearMonth(publishedPoems) {
   return groups;
 }
 
-function renderArchiveTree(publishedPoems, today) {
+function renderArchiveTree(publishedPoems, today, fromRoute = "/archive") {
   const todayParts = parseDateParts(today);
   const currentYear = todayParts?.year || "";
   const currentMonth = todayParts?.month || "";
@@ -1285,7 +1682,7 @@ function renderArchiveTree(publishedPoems, today) {
         .map((month) => {
           const poems = monthsMap.get(month);
           const monthOpen = year === currentYear && month === defaultOpenMonth ? " open" : "";
-          const rows = poems.map((poem) => renderArchiveRow(poem, "/archive")).join("");
+          const rows = poems.map((poem) => renderArchiveRow(poem, fromRoute)).join("");
           return `<details class="archive-month"${monthOpen}><summary>${htmlEscape(monthLabel(month))}</summary><ul class="archive-poems">${rows}</ul></details>`;
         })
         .join("");
@@ -1319,7 +1716,9 @@ function renderPoetsTree(publishedPoems) {
           const poems = authorsMap.get(author);
           const countLabel = poems.length === 1 ? "1 poem" : `${poems.length} poems`;
           const rows = poems.map((poem) => renderPoetRow(poem, "/poets")).join("");
-          return `<details class="archive-month poet-group"><summary><span class="poet-name">${htmlEscape(author)}</span><span aria-hidden="true" class="poet-separator">&middot;</span><span class="poet-count">${htmlEscape(countLabel)}</span></summary><ul class="archive-poems poet-poems">${rows}</ul></details>`;
+          const authorRoute = poems[0]?.authorRoute || "";
+          const authorLabel = authorRoute ? routeLink(authorRoute, author) : htmlEscape(author);
+          return `<details class="archive-month poet-group"><summary><span class="poet-name">${authorLabel}</span><span aria-hidden="true" class="poet-separator">&middot;</span><span class="poet-count">${htmlEscape(countLabel)}</span></summary><ul class="archive-poems poet-poems">${rows}</ul></details>`;
         })
         .join("");
 
@@ -1335,7 +1734,8 @@ async function renderPoets(poems, defaultAsOf = "") {
   const rows = renderPoetsTree(fallbackPoems);
   const html = withCommonPageAssets(template, "/poets", {
     scriptName: "poets",
-    robotsMeta: '<meta name="robots" content="index, follow">'
+    robotsMeta: '<meta name="robots" content="index, follow">',
+    ...sharingOptions("/poets")
   })
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
@@ -1344,6 +1744,45 @@ async function renderPoets(poems, defaultAsOf = "") {
     .replace("{{PAGE_DATA_URL}}", pageDataPath("/poets", "poets"));
 
   await writeRoutedPage("/poets", html);
+}
+
+function poetCountLabel(count) {
+  return count === 1 ? "1 poem" : `${count} poems`;
+}
+
+function poetMetaLabel(count) {
+  return count === 0 ? "No published poems yet." : `${poetCountLabel(count)} published on A Poem Per Day.`;
+}
+
+async function renderPoetPages(poems, defaultAsOf = "") {
+  const template = await readTemplate("poet.html");
+  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+
+  for (const authorPage of authorPages) {
+    const fallbackPoems = authorPage.poems.filter((poem) => poem.date <= fallbackDate);
+    const rows = fallbackPoems.length > 0
+      ? renderArchiveTree(fallbackPoems, fallbackDate, authorPage.route)
+      : `<p>No published poems by ${htmlEscape(authorPage.author)} yet.</p>`;
+    const description = fallbackPoems.length > 0
+      ? `${poetCountLabel(fallbackPoems.length)} by ${authorPage.author} published on A Poem Per Day.`
+      : `Poems by ${authorPage.author} on A Poem Per Day.`;
+    const html = withCommonPageAssets(template, authorPage.route, {
+      scriptName: "poetPage",
+      robotsMeta: '<meta name="robots" content="index, follow">',
+      ...sharingOptions(authorPage.route)
+    })
+      .replaceAll("{{AUTHOR}}", htmlEscape(authorPage.author))
+      .replaceAll("{{PAGE_DESCRIPTION}}", htmlEscape(description))
+      .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
+      .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
+      .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
+      .replace("{{AUTHOR_ROUTE}}", htmlEscape(authorPage.route))
+      .replace("{{POET_META}}", htmlEscape(poetMetaLabel(fallbackPoems.length)))
+      .replace("{{FALLBACK_POEMS}}", rows)
+      .replace("{{PAGE_DATA_URL}}", pageDataPath(authorPage.route, "poets"));
+
+    await writeRoutedPage(authorPage.route, html);
+  }
 }
 
 function renderPublishedOnNote(poem) {
@@ -1393,6 +1832,7 @@ async function renderPoetsData(poems) {
   const poets = poems.map((poem) => ({
     title: poem.title,
     author: poem.author,
+    authorRoute: poem.authorRoute,
     date: poem.date,
     route: poem.route
   }));
@@ -1435,6 +1875,7 @@ async function buildBundledAssetManifest() {
       home: bundledOutputByEntry(metafile, bundledAssetEntries.home),
       archive: bundledOutputByEntry(metafile, bundledAssetEntries.archive),
       poets: bundledOutputByEntry(metafile, bundledAssetEntries.poets),
+      poetPage: bundledOutputByEntry(metafile, bundledAssetEntries.poetPage),
       about: bundledOutputByEntry(metafile, bundledAssetEntries.about),
       poem: bundledOutputByEntry(metafile, bundledAssetEntries.poem)
     },
@@ -1449,6 +1890,7 @@ async function buildBundledAssetManifest() {
     manifest.scripts.home,
     manifest.scripts.archive,
     manifest.scripts.poets,
+    manifest.scripts.poetPage,
     manifest.scripts.about,
     manifest.scripts.poem,
     manifest.fonts.regular400,
@@ -1524,6 +1966,126 @@ async function renderHeadersFile() {
   await writeFile(path.join(distDir, "_headers"), headers, "utf8");
 }
 
+export function createEditorialReport(poems, { asOfDate = "", authorPagesList = authorPages } = {}) {
+  const effectiveAsOf = asOfDate || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const publishedPoems = poems.filter((poem) => poem.date <= effectiveAsOf);
+  const upcomingPoems = poems.filter((poem) => poem.date > effectiveAsOf);
+  const missingPublication = poems
+    .filter((poem) => !String(poem.publication || "").trim())
+    .map((poem) => ({ date: poem.date, title: poem.title, author: poem.author, filepath: poem.filepath }));
+  const missingSource = poems
+    .filter((poem) => !String(poem.source || "").trim())
+    .map((poem) => ({ date: poem.date, title: poem.title, author: poem.author, filepath: poem.filepath }));
+  const customMarkup = poems
+    .filter((poem) => poemUsesCustomMarkup(poem.poem))
+    .map((poem) => ({ date: poem.date, title: poem.title, author: poem.author, filepath: poem.filepath }));
+
+  const scheduleGaps = [];
+  for (let index = 1; index < poems.length; index += 1) {
+    const previous = poems[index - 1];
+    const current = poems[index];
+    const missingDays = gapDaysBetween(previous.date, current.date);
+    if (missingDays > 0) {
+      scheduleGaps.push({
+        after: previous.date,
+        before: current.date,
+        missingDays
+      });
+    }
+  }
+
+  const publishedAuthorCount = new Set(publishedPoems.map((poem) => poem.author)).size;
+
+  return {
+    generatedAt: new Date().toISOString(),
+    asOfDate: effectiveAsOf,
+    totals: {
+      poems: poems.length,
+      publishedPoems: publishedPoems.length,
+      upcomingPoems: upcomingPoems.length,
+      authors: authorPagesList.length,
+      publishedAuthors: publishedAuthorCount,
+      missingPublication: missingPublication.length,
+      missingSource: missingSource.length,
+      customMarkup: customMarkup.length
+    },
+    upcomingPoems: upcomingPoems.map((poem) => ({
+      date: poem.date,
+      title: poem.title,
+      author: poem.author,
+      filepath: poem.filepath
+    })),
+    scheduleGaps,
+    missingPublication,
+    missingSource,
+    customMarkup
+  };
+}
+
+export function formatEditorialReportText(report) {
+  const lines = [
+    "Serein editorial report",
+    `Generated: ${report.generatedAt}`,
+    `As of: ${report.asOfDate}`,
+    "",
+    "Totals",
+    `- Poems: ${report.totals.poems}`,
+    `- Published poems: ${report.totals.publishedPoems}`,
+    `- Upcoming poems: ${report.totals.upcomingPoems}`,
+    `- Authors: ${report.totals.authors}`,
+    `- Published authors: ${report.totals.publishedAuthors}`,
+    `- Missing publication fields: ${report.totals.missingPublication}`,
+    `- Missing source fields: ${report.totals.missingSource}`,
+    `- Poems using custom markup: ${report.totals.customMarkup}`,
+    "",
+    "Schedule gaps"
+  ];
+
+  if (report.scheduleGaps.length === 0) {
+    lines.push("- None");
+  } else {
+    for (const gap of report.scheduleGaps) {
+      lines.push(`- ${gap.after} -> ${gap.before}: ${gap.missingDays} missing day(s)`);
+    }
+  }
+
+  lines.push("", "Upcoming poems");
+  if (report.upcomingPoems.length === 0) {
+    lines.push("- None");
+  } else {
+    for (const poem of report.upcomingPoems) {
+      lines.push(`- ${poem.date}: ${poem.title} by ${poem.author} (${poem.filepath})`);
+    }
+  }
+
+  const appendSection = (heading, items) => {
+    lines.push("", heading);
+    if (items.length === 0) {
+      lines.push("- None");
+      return;
+    }
+    for (const item of items) {
+      lines.push(`- ${item.date}: ${item.title} by ${item.author} (${item.filepath})`);
+    }
+  };
+
+  appendSection("Missing publication", report.missingPublication);
+  appendSection("Missing source", report.missingSource);
+  appendSection("Custom markup", report.customMarkup);
+
+  return `${lines.join("\n")}\n`;
+}
+
+async function renderEditorialReport(poems, defaultAsOf = "") {
+  const report = createEditorialReport(poems, {
+    asOfDate: defaultAsOf,
+    authorPagesList: authorPages
+  });
+  await mkdir(reportsDir, { recursive: true });
+  await writeFile(path.join(reportsDir, "editorial-report.json"), JSON.stringify(report, null, 2), "utf8");
+  await writeFile(path.join(reportsDir, "editorial-report.txt"), formatEditorialReportText(report), "utf8");
+}
+
 async function renderNotFoundPage() {
   const assets = requireAssetManifest();
   const html = `<!doctype html>
@@ -1574,7 +2136,14 @@ async function renderSeoFiles(publishedPoems) {
     return;
   }
 
-  const routePaths = ["/", "/archive", "/about", ...publishedPoems.map((poem) => poem.route)];
+  const routePaths = [
+    "/",
+    "/archive",
+    "/about",
+    "/poets",
+    ...authorPages.map((entry) => entry.route),
+    ...publishedPoems.map((poem) => poem.route)
+  ];
   const uniqueRoutes = Array.from(new Set(routePaths));
   const urls = uniqueRoutes
     .map((routePath) => {
@@ -1619,6 +2188,7 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       const pubDate = rfc822FromYyyyMmDd(poem.date);
       const itemTitle = poem.title;
       const poemHtml = renderRssPoemMarkdown(poem.poem, poem.highlights);
+      const itemDescription = plainTextExcerpt(poem.searchText || markdownStrip(poem.poem));
       const contentHtml = poemUsesCustomMarkup(poem.poem)
         ? `<p>This poem uses special formatting that is not suited for RSS feeds. Please <a href="${htmlEscape(
             link
@@ -1631,7 +2201,7 @@ async function renderRssFeed(poems, defaultAsOf = "") {
       <guid isPermaLink="true">${htmlEscape(link)}</guid>
       <pubDate>${htmlEscape(pubDate)}</pubDate>
       <dc:creator>${htmlEscape(poem.author)}</dc:creator>
-      <description><![CDATA[]]></description>
+      <description><![CDATA[${cdataSafe(itemDescription)}]]></description>
       <content:encoded><![CDATA[${cdataSafe(contentHtml)}]]></content:encoded>
     </item>`;
     })
@@ -1656,16 +2226,22 @@ ${items ? `${items}\n` : ""}  </channel>
 
 export async function build() {
   await ensureDist();
-  const poems = preparePoems(await loadPoems());
+  const loadedPoems = await loadPoems();
+  authorPages = buildAuthorPages(loadedPoems);
+  const poems = preparePoems(loadedPoems, authorRouteMap(authorPages));
+  authorPages = buildAuthorPages(poems);
   const asOfDate = parseAsOfDateArg();
   assetManifest = await buildAssetManifest(poems);
+  socialCardManifest = await buildSocialCardManifest(poems, asOfDate);
 
   await Promise.all([
     renderHome(poems, asOfDate),
     renderPoemPages(poems, asOfDate),
     renderArchive(poems, asOfDate),
     renderPoets(poems, asOfDate),
+    renderPoetPages(poems, asOfDate),
     renderAbout(),
+    renderEditorialReport(poems, asOfDate),
     renderSeoFiles(poems),
     renderRssFeed(poems, asOfDate),
     renderNotFoundPage(),
