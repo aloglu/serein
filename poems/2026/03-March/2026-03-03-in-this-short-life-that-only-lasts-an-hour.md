@@ -1,7 +1,7 @@
 ---
 title: In this short Life that only lasts an hour
 author: Emily Dickinson
-publication: "The Poems of Emily Dickinson: Variorum Edition"
+publication: "The Poems of Emily Dickinson (Variorum Edition)"
 date: 2026-03-03
 source:
 ---
