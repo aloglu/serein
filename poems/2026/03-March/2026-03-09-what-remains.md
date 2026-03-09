@@ -1,7 +1,7 @@
 ---
 title: What Remains
 author: Ruth Irwin
-publication:
+publication: "People: Unfinished Poems"
 date: 2026-03-09
 source:
 ---

@@ -1,7 +1,7 @@
 ---
 title: On the Birth of a Son
 author: Su Tung-Po
-publication:
+publication: "Poetry (January 1918)"
 date: 2026-03-08
 source:
 ---
