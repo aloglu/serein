@@ -65,6 +65,8 @@ let socialCardManifest = null;
 let socialCardStats = { generated: 0, cached: 0 };
 let socialCardFontConfigPath = "";
 const SOCIAL_CARD_CACHE_VERSION = "png-v3";
+const HOME_PAGE_TITLE = "A Poem Per Day | Daily Poems, Archive, and Poets";
+const HOME_PAGE_DESCRIPTION = "Read one new poem every day, then explore the archive and poet index. A curated collection published daily at midnight in your local time.";
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -570,6 +572,55 @@ function ogUrlTag(routePath) {
   return content ? `<meta property="og:url" content="${content}">` : "";
 }
 
+function jsonLdScript(data) {
+  return `<script type="application/ld+json">${JSON.stringify(data).replace(/<\/script/gi, "<\\/script")}</script>`;
+}
+
+function renderHomeStructuredData(featuredPoem = null) {
+  if (!siteUrl) {
+    return "";
+  }
+
+  const graph = [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      name: "A Poem Per Day",
+      url: `${siteUrl}/`,
+      description: HOME_PAGE_DESCRIPTION
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": `${siteUrl}/#homepage`,
+      url: `${siteUrl}/`,
+      name: "A Poem Per Day",
+      description: HOME_PAGE_DESCRIPTION,
+      isPartOf: {
+        "@id": `${siteUrl}/#website`
+      }
+    }
+  ];
+
+  if (featuredPoem) {
+    graph[1].mainEntity = {
+      "@type": "CreativeWork",
+      name: featuredPoem.title,
+      url: absoluteRouteUrl(featuredPoem.route) || `${siteUrl}/`,
+      author: {
+        "@type": "Person",
+        name: featuredPoem.author
+      },
+      datePublished: featuredPoem.date,
+      description: plainTextExcerpt(featuredPoem.searchText || markdownStrip(featuredPoem.poem), 180)
+    };
+  }
+
+  return jsonLdScript({
+    "@context": "https://schema.org",
+    "@graph": graph
+  });
+}
+
 function wrapCardText(text, maxCharsPerLine, maxLines) {
   const words = String(text || "").trim().split(/\s+/).filter(Boolean);
   if (words.length === 0) {
@@ -813,6 +864,20 @@ function plainTextExcerpt(input, maxLength = 220) {
     return normalized;
   }
   return `${normalized.slice(0, Math.max(0, maxLength - 1)).replace(/\s+\S*$/g, "")}\u2026`;
+}
+
+function effectivePublicationCutoff(defaultAsOf = "") {
+  return defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+}
+
+function publishedPoemsForDate(poems, defaultAsOf = "") {
+  const cutoff = effectivePublicationCutoff(defaultAsOf);
+  return poems.filter((poem) => poem.date <= cutoff);
+}
+
+function authorPagesWithPublishedPoems(publishedPoems) {
+  const publishedAuthors = new Set(publishedPoems.map((poem) => poem.author));
+  return authorPages.filter((entry) => publishedAuthors.has(entry.author));
 }
 
 function spacerToSpaces(spacerWidth) {
@@ -1385,6 +1450,7 @@ function renderFooter(routePath) {
     links.push(`<a href="${prefix}">Today</a>`);
   }
   links.push(`<a href="${prefix}archive/">Archive</a>`);
+  links.push(`<a href="${prefix}poets/">Poets</a>`);
   links.push(`<a href="${prefix}about/">About</a>`);
   return `<footer class="site-footer">${links.join('<span aria-hidden="true" class="separator-mark">&bull;</span>')}</footer>`;
 }
@@ -1459,8 +1525,13 @@ function sharingOptions(routePath, options = {}) {
   };
 }
 
+function poemMetaDescription(poem) {
+  const excerpt = plainTextExcerpt(poem.searchText || markdownStrip(poem.poem), 140);
+  return excerpt ? `${poem.title} by ${poem.author}. ${excerpt}` : `${poem.title} by ${poem.author}.`;
+}
+
 function renderPoemShell(template, poem, { noindex = true, routePath = "/", defaultAsOf = "" } = {}) {
-  const description = `${poem.title} by ${poem.author}.`;
+  const description = poemMetaDescription(poem);
   const authorMeta = poem.authorMetaHtml || renderAuthorMeta(poem);
   const poemHtml =
     poem.poemHtmlWithPublishedNote || renderPoemContent(poem, { includePublishedNote: true });
@@ -1500,16 +1571,21 @@ async function writeRoutedPage(routePath, html) {
 
 async function renderPoemPages(publishedPoems, defaultAsOf = "") {
   const template = await readTemplate("poem.html");
+  const publicationCutoff = effectivePublicationCutoff(defaultAsOf);
 
   for (const poem of publishedPoems) {
-    const html = renderPoemShell(template, poem, { noindex: false, routePath: poem.route, defaultAsOf });
+    const html = renderPoemShell(template, poem, {
+      noindex: poem.date > publicationCutoff,
+      routePath: poem.route,
+      defaultAsOf
+    });
     await writeRoutedPage(poem.route, html);
   }
 }
 
 async function renderArchive(poems, defaultAsOf = "") {
   const template = await readTemplate("archive.html");
-  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const fallbackDate = effectivePublicationCutoff(defaultAsOf);
   const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
   const rows = renderArchiveTree(fallbackPoems, fallbackDate);
   const html = withCommonPageAssets(template, "/archive", {
@@ -1537,28 +1613,32 @@ async function renderAbout() {
 
 async function renderHome(poems, defaultAsOf = "") {
   const template = await readTemplate("index.html");
-  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const fallbackDate = effectivePublicationCutoff(defaultAsOf);
   const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
   const fallbackPoem = fallbackPoems.find((poem) => poem.date === fallbackDate) || fallbackPoems[fallbackPoems.length - 1] || null;
-  const fallbackTitle = fallbackPoem ? htmlEscape(fallbackPoem.title) : "A Poem Per Day";
+  const fallbackTitle = fallbackPoem ? htmlEscape(fallbackPoem.title) : "No poem published yet";
   const fallbackMeta = fallbackPoem ? fallbackPoem.authorMetaHtml || renderAuthorMeta(fallbackPoem) : "";
-  const fallbackDescription = "A new poem every day, published at midnight in your local time.";
-  const fallbackBody = fallbackPoem
-    ? fallbackPoem.poemHtml || renderPoemContent(fallbackPoem, { includePublishedNote: false })
-    : '<p class="empty">No poem is published for today.</p>';
+  const fallbackExcerpt = fallbackPoem
+    ? plainTextExcerpt(fallbackPoem.searchText || markdownStrip(fallbackPoem.poem), 260)
+    : "The archive is still empty. The first published poem will appear here.";
+  const fallbackRouteHref = fallbackPoem ? routeHref(fallbackPoem.route) : "/archive/";
+  const fallbackDateLabel = fallbackPoem ? `Published ${longDateLabel(fallbackPoem.date)}` : "";
   const html = withCommonPageAssets(template, "/", {
     scriptName: "home",
     robotsMeta: '<meta name="robots" content="index, follow">',
     ...sharingOptions("/")
   })
-    .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
-    .replaceAll("{{PAGE_DESCRIPTION}}", htmlEscape(fallbackDescription))
+    .replaceAll("{{PAGE_TITLE}}", HOME_PAGE_TITLE)
+    .replaceAll("{{PAGE_DESCRIPTION}}", htmlEscape(HOME_PAGE_DESCRIPTION))
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
+    .replace("{{STRUCTURED_DATA}}", renderHomeStructuredData(fallbackPoem))
     .replace("{{FALLBACK_TITLE}}", fallbackTitle)
     .replace("{{FALLBACK_META}}", fallbackMeta)
-    .replace("{{FALLBACK_POEM_HTML}}", fallbackBody)
+    .replace("{{FALLBACK_EXCERPT}}", htmlEscape(fallbackExcerpt))
+    .replaceAll("{{FALLBACK_ROUTE_HREF}}", htmlEscape(fallbackRouteHref))
+    .replace("{{FALLBACK_DATE_LABEL}}", htmlEscape(fallbackDateLabel))
     .replace("{{PAGE_DATA_URL}}", pageDataPath("/", "home"));
 
   await writeRoutedPage("/", html);
@@ -1817,7 +1897,7 @@ function renderPoetsTree(publishedPoems) {
 
 async function renderPoets(poems, defaultAsOf = "") {
   const template = await readTemplate("poets.html");
-  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const fallbackDate = effectivePublicationCutoff(defaultAsOf);
   const fallbackPoems = poems.filter((poem) => poem.date <= fallbackDate);
   const rows = renderPoetsTree(fallbackPoems);
   const html = withCommonPageAssets(template, "/poets", {
@@ -1848,23 +1928,28 @@ function spelloutCount(count) {
   return integerToWords(String(count)) || String(count);
 }
 
-function poetMetaLabel(count) {
-  return `This poet has ${spelloutCount(count)} published ${poetCountNoun(count)}`;
+function poetMetaLabel(author, count) {
+  if (count === 0) {
+    return `${author} does not have a published poem on A Poem Per Day yet.`;
+  }
+  return `${author} has ${spelloutCount(count)} published ${poetCountNoun(count)} on A Poem Per Day.`;
 }
 
 async function renderPoetPages(poems, defaultAsOf = "") {
   const template = await readTemplate("poet.html");
-  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const fallbackDate = effectivePublicationCutoff(defaultAsOf);
 
   for (const authorPage of authorPages) {
     const fallbackPoems = authorPage.poems.filter((poem) => poem.date <= fallbackDate);
     const rows = fallbackPoems.length > 0
       ? renderArchiveTree(fallbackPoems, fallbackDate, authorPage.route)
       : `<p>No published poems by ${htmlEscape(authorPage.author)} yet.</p>`;
-    const description = poetMetaLabel(fallbackPoems.length);
+    const description = poetMetaLabel(authorPage.author, fallbackPoems.length);
     const html = withCommonPageAssets(template, authorPage.route, {
       scriptName: "poetPage",
-      robotsMeta: '<meta name="robots" content="index, follow">',
+      robotsMeta: fallbackPoems.length > 0
+        ? '<meta name="robots" content="index, follow">'
+        : '<meta name="robots" content="noindex, nofollow">',
       ...sharingOptions(authorPage.route)
     })
       .replaceAll("{{AUTHOR}}", htmlEscape(authorPage.author))
@@ -1873,7 +1958,7 @@ async function renderPoetPages(poems, defaultAsOf = "") {
       .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
       .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
       .replace("{{AUTHOR_ROUTE}}", htmlEscape(authorPage.route))
-      .replace("{{POET_META}}", htmlEscape(poetMetaLabel(fallbackPoems.length)))
+      .replace("{{POET_META}}", htmlEscape(poetMetaLabel(authorPage.author, fallbackPoems.length)))
       .replace("{{FALLBACK_POEMS}}", rows)
       .replace("{{PAGE_DATA_URL}}", pageDataPath(authorPage.route, "poets"));
 
@@ -1897,8 +1982,9 @@ async function renderHomeData(poems) {
   const home = poems.map((poem) => ({
     title: poem.title,
     date: poem.date,
+    route: poem.route,
     authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
-    poemHtml: poem.poemHtml || renderPoemContent(poem, { includePublishedNote: false })
+    excerpt: plainTextExcerpt(poem.searchText || markdownStrip(poem.poem), 260)
   }));
 
   return writeFingerprintedAsset({
@@ -2214,14 +2300,16 @@ async function renderNotFoundPage() {
       <p><a href="/">Go to Today</a> or browse the <a href="/archive/">archive</a>.</p>
     </article>
   </main>
-  <footer class="site-footer"><a href="/">Today</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/archive/">Archive</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/about/">About</a></footer>
+  <footer class="site-footer"><a href="/">Today</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/archive/">Archive</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/poets/">Poets</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/about/">About</a></footer>
 </body>
 </html>
 `;
   await writeFile(path.join(distDir, "404.html"), await minifyPageHtml(html), "utf8");
 }
 
-async function renderSeoFiles(publishedPoems) {
+async function renderSeoFiles(poems, defaultAsOf = "") {
+  const publishedPoems = publishedPoemsForDate(poems, defaultAsOf);
+  const publishedAuthorPages = authorPagesWithPublishedPoems(publishedPoems);
   const robotsLines = ["User-agent: *", "Allow: /"];
   if (siteUrl) {
     robotsLines.push(`Sitemap: ${siteUrl}/sitemap.xml`);
@@ -2237,7 +2325,7 @@ async function renderSeoFiles(publishedPoems) {
     "/archive",
     "/about",
     "/poets",
-    ...authorPages.map((entry) => entry.route),
+    ...publishedAuthorPages.map((entry) => entry.route),
     ...publishedPoems.map((poem) => poem.route)
   ];
   const uniqueRoutes = Array.from(new Set(routePaths));
@@ -2264,7 +2352,7 @@ async function renderRssFeed(poems, defaultAsOf = "") {
     return;
   }
 
-  const fallbackDate = defaultAsOf || yyyyMmDdInTimeZone("Europe/Istanbul");
+  const fallbackDate = effectivePublicationCutoff(defaultAsOf);
   const published = poems
     .filter((poem) => poem.date <= fallbackDate)
     .slice()
@@ -2339,7 +2427,7 @@ export async function build() {
     renderPoetPages(poems, asOfDate),
     renderAbout(),
     renderEditorialReport(poems, asOfDate),
-    renderSeoFiles(poems),
+    renderSeoFiles(poems, asOfDate),
     renderRssFeed(poems, asOfDate),
     renderNotFoundPage(),
     renderHeadersFile()
