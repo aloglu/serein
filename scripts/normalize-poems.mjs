@@ -1,10 +1,12 @@
 import { mkdir, readdir, readFile, rename, rmdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { pathToFileURL } from "node:url";
 import { expectedPoemFilenameWithExtension } from "./poem-filenames.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
+const PUBLICATION_TIME_ZONE = "Europe/Istanbul";
 const TYPOGRAPHY_FRONTMATTER_FIELDS = new Set(["title", "author", "translator", "publication"]);
 const ELISION_WORD_RE = /^(?:\d{2,4}(?:s)?\b|cause\b|cuz\b|em\b|gainst\b|neath\b|round\b|til\b|tis\b|twas\b|tween\b|twere\b|twill\b|n\b)/i;
 const LEFT_SINGLE_QUOTE = "\u2018";
@@ -14,6 +16,32 @@ const RIGHT_DOUBLE_QUOTE = "\u201D";
 const ELLIPSIS = "\u2026";
 const EN_DASH = "\u2013";
 const EM_DASH = "\u2014";
+const MONTH_NAME_TO_NUMBER = new Map([
+  ["january", "01"],
+  ["jan", "01"],
+  ["february", "02"],
+  ["feb", "02"],
+  ["march", "03"],
+  ["mar", "03"],
+  ["april", "04"],
+  ["apr", "04"],
+  ["may", "05"],
+  ["june", "06"],
+  ["jun", "06"],
+  ["july", "07"],
+  ["jul", "07"],
+  ["august", "08"],
+  ["aug", "08"],
+  ["september", "09"],
+  ["sep", "09"],
+  ["sept", "09"],
+  ["october", "10"],
+  ["oct", "10"],
+  ["november", "11"],
+  ["nov", "11"],
+  ["december", "12"],
+  ["dec", "12"]
+]);
 
 function normalizeNewlines(input) {
   return String(input || "").replace(/\r\n/g, "\n");
@@ -258,8 +286,150 @@ function parseDateParts(yyyyMmDd) {
   }
   return {
     year: match[1],
-    month: match[2]
+    month: match[2],
+    day: match[3]
   };
+}
+
+function addDaysToYyyyMmDd(yyyyMmDd, dayCount) {
+  const parts = parseDateParts(yyyyMmDd);
+  if (!parts || !Number.isInteger(dayCount)) {
+    return "";
+  }
+
+  const dt = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day)));
+  dt.setUTCDate(dt.getUTCDate() + dayCount);
+  return dt.toISOString().slice(0, 10);
+}
+
+function yyyyMmDdInTimeZone(timeZone) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+
+  const get = (type) => parts.find((part) => part.type === type)?.value || "";
+  return `${get("year")}-${get("month")}-${get("day")}`;
+}
+
+function monthNumberFromToken(token) {
+  const normalized = String(token || "").trim().toLowerCase();
+  if (!normalized) {
+    return "";
+  }
+
+  if (/^(?:0?[1-9]|1[0-2])$/.test(normalized)) {
+    return String(Number(normalized)).padStart(2, "0");
+  }
+
+  return MONTH_NAME_TO_NUMBER.get(normalized) || "";
+}
+
+function describeDateDirective(rawDate) {
+  const value = String(rawDate || "").trim();
+  if (parseDateParts(value)) {
+    return {
+      type: "concrete",
+      raw: value
+    };
+  }
+
+  if (value.toLowerCase() === "next") {
+    return {
+      type: "next",
+      raw: value
+    };
+  }
+
+  const randomMonthMatch = value.match(/^random-(.+)$/i);
+  if (randomMonthMatch) {
+    const month = monthNumberFromToken(randomMonthMatch[1]);
+    if (month) {
+      return {
+        type: "random-month",
+        raw: value,
+        month
+      };
+    }
+    return {
+      type: "invalid-random-month",
+      raw: value
+    };
+  }
+
+  return {
+    type: "invalid",
+    raw: value
+  };
+}
+
+function daysInMonth(year, month) {
+  return new Date(Date.UTC(Number(year), Number(month), 0)).getUTCDate();
+}
+
+function listAvailableDatesForMonth(year, month, reservedDates) {
+  const available = [];
+  const totalDays = daysInMonth(year, month);
+
+  for (let day = 1; day <= totalDays; day += 1) {
+    const candidate = `${year}-${month}-${String(day).padStart(2, "0")}`;
+    if (!reservedDates.has(candidate)) {
+      available.push(candidate);
+    }
+  }
+
+  return available;
+}
+
+function findNextAvailableDateAfter(cursorDate, reservedDates) {
+  let candidate = addDaysToYyyyMmDd(cursorDate, 1);
+
+  while (reservedDates.has(candidate)) {
+    candidate = addDaysToYyyyMmDd(candidate, 1);
+  }
+
+  return candidate;
+}
+
+function replaceFrontmatterFieldValue(rawContent, fieldName, nextValue, filename) {
+  const source = normalizeNewlines(rawContent);
+  const lineEnding = detectLineEnding(rawContent);
+  const lines = source.split("\n");
+
+  if (lines[0]?.trim() !== "---") {
+    throw new Error(`Missing frontmatter in ${filename}. Expected file to start with '---'.`);
+  }
+
+  let endIndex = -1;
+  for (let index = 1; index < lines.length; index += 1) {
+    if (lines[index].trim() === "---") {
+      endIndex = index;
+      break;
+    }
+  }
+
+  if (endIndex < 0) {
+    throw new Error(`Unterminated frontmatter in ${filename}. Missing closing '---'.`);
+  }
+
+  let replaced = false;
+  for (let index = 1; index < endIndex; index += 1) {
+    const kv = lines[index].match(/^([A-Za-z][A-Za-z0-9_-]*)(:\s*)(.*)$/);
+    if (!kv || kv[1].toLowerCase() !== String(fieldName || "").toLowerCase()) {
+      continue;
+    }
+
+    lines[index] = `${kv[1]}${kv[2]}${nextValue}`;
+    replaced = true;
+  }
+
+  if (!replaced) {
+    throw new Error(`Missing frontmatter field '${fieldName}' in ${filename}.`);
+  }
+
+  return lines.join(lineEnding);
 }
 
 function monthFolderName(monthNumber) {
@@ -313,13 +483,79 @@ async function collectPoemFiles(dirPath, relDir = "") {
 async function parsePoemEntry(file) {
   const raw = await readFile(file.fullPath, "utf8");
   const normalizedContent = normalizePoemTypography(raw, file.relPath);
+  const poem = parsePoemMarkdownFile(normalizedContent, file.relPath);
   return {
-    poem: parsePoemMarkdownFile(normalizedContent, file.relPath),
+    poem,
     currentRelPath: file.relPath,
     fullPath: file.fullPath,
     rawContent: raw,
-    normalizedContent
+    typographyNormalizedContent: normalizedContent,
+    normalizedContent,
+    originalDate: poem.date
   };
+}
+
+function applyResolvedDateToEntry(entry, resolvedDate) {
+  if (entry.poem.date === resolvedDate) {
+    return;
+  }
+
+  entry.normalizedContent = replaceFrontmatterFieldValue(entry.normalizedContent, "date", resolvedDate, entry.currentRelPath);
+  entry.poem.date = resolvedDate;
+}
+
+function resolvePoemDateDirectives(entries) {
+  const sortedEntries = [...entries].sort((left, right) => left.currentRelPath.localeCompare(right.currentRelPath));
+  const reservedDates = new Set();
+
+  for (const entry of sortedEntries) {
+    const directive = describeDateDirective(entry.poem.date);
+    entry.dateDirective = directive;
+
+    if (directive.type === "concrete") {
+      reservedDates.add(directive.raw);
+      continue;
+    }
+
+    if (directive.type === "next" || directive.type === "random-month") {
+      continue;
+    }
+
+    throw new Error(
+      `Invalid date '${entry.poem.date}' in ${entry.currentRelPath}. Expected YYYY-MM-DD, 'next', or 'random-<month>' (for example 'random-may').`
+    );
+  }
+
+  const publicationToday = yyyyMmDdInTimeZone(PUBLICATION_TIME_ZONE);
+  let nextDateCursor = addDaysToYyyyMmDd(publicationToday, -1);
+  for (const entry of sortedEntries) {
+    if (entry.dateDirective.type !== "next") {
+      continue;
+    }
+
+    const resolvedDate = findNextAvailableDateAfter(nextDateCursor, reservedDates);
+    reservedDates.add(resolvedDate);
+    nextDateCursor = resolvedDate;
+    applyResolvedDateToEntry(entry, resolvedDate);
+  }
+
+  const publicationYear = publicationToday.slice(0, 4);
+  for (const entry of sortedEntries) {
+    if (entry.dateDirective.type !== "random-month") {
+      continue;
+    }
+
+    const availableDates = listAvailableDatesForMonth(publicationYear, entry.dateDirective.month, reservedDates);
+    if (availableDates.length === 0) {
+      throw new Error(
+        `Cannot resolve date '${entry.poem.date}' in ${entry.currentRelPath}. No available dates remain in ${publicationYear}-${entry.dateDirective.month}.`
+      );
+    }
+
+    const resolvedDate = availableDates[Math.floor(Math.random() * availableDates.length)];
+    reservedDates.add(resolvedDate);
+    applyResolvedDateToEntry(entry, resolvedDate);
+  }
 }
 
 async function removeEmptyPoemDirs(dirPath) {
@@ -338,29 +574,53 @@ async function removeEmptyPoemDirs(dirPath) {
 
   const after = await readdir(dirPath, { withFileTypes: true });
   if (after.length === 0) {
-    await rmdir(dirPath);
+    const retryDelaysMs = [50, 100, 250];
+
+    for (let attempt = 0; attempt <= retryDelaysMs.length; attempt += 1) {
+      try {
+        await rmdir(dirPath);
+        return;
+      } catch (error) {
+        const code = String(error?.code || "");
+        if (code === "ENOENT") {
+          return;
+        }
+        if (!["EBUSY", "ENOTEMPTY", "EPERM", "UNKNOWN"].includes(code)) {
+          throw error;
+        }
+        if (attempt === retryDelaysMs.length) {
+          return;
+        }
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, retryDelaysMs[attempt]));
+    }
   }
 }
 
-async function normalizePoems() {
+export async function normalizePoems() {
   const entries = await collectPoemFiles(poemsDir);
+  entries.sort((left, right) => left.relPath.localeCompare(right.relPath));
   const poems = [];
 
   for (const entry of entries) {
     const parsed = await parsePoemEntry(entry);
-    const expected = expectedPoemFilenameWithExtension(parsed.poem, ".md");
+    poems.push(parsed);
+  }
+
+  resolvePoemDateDirectives(poems);
+
+  for (const item of poems) {
+    const expected = expectedPoemFilenameWithExtension(item.poem, ".md");
     if (!expected) {
-      throw new Error(`Cannot normalize '${entry.relPath}': missing/invalid date or title.`);
+      throw new Error(`Cannot normalize '${item.currentRelPath}': missing/invalid date or title.`);
     }
-    const expectedSubdir = expectedPoemSubdirForDate(parsed.poem.date);
+    const expectedSubdir = expectedPoemSubdirForDate(item.poem.date);
     if (!expectedSubdir) {
-      throw new Error(`Cannot normalize '${entry.relPath}': missing/invalid date.`);
+      throw new Error(`Cannot normalize '${item.currentRelPath}': missing/invalid date.`);
     }
-    poems.push({
-      ...parsed,
-      expectedFilename: expected,
-      expectedRelPath: path.join(expectedSubdir, expected)
-    });
+    item.expectedFilename = expected;
+    item.expectedRelPath = path.join(expectedSubdir, expected);
   }
 
   const expectedPaths = new Map();
@@ -375,12 +635,15 @@ async function normalizePoems() {
 
   let renamed = 0;
   let typographyUpdated = 0;
+  let datesResolved = 0;
   for (const item of poems) {
     const expectedPath = path.join(poemsDir, item.expectedRelPath);
     const needsRename = item.currentRelPath !== item.expectedRelPath;
-    const needsTypographyUpdate = item.rawContent !== item.normalizedContent;
+    const needsTypographyUpdate = item.rawContent !== item.typographyNormalizedContent;
+    const needsDateUpdate = item.originalDate !== item.poem.date;
+    const needsContentUpdate = needsTypographyUpdate || needsDateUpdate;
 
-    if (!needsRename && !needsTypographyUpdate) {
+    if (!needsRename && !needsContentUpdate) {
       continue;
     }
 
@@ -392,9 +655,25 @@ async function normalizePoems() {
       renamed += 1;
     }
 
-    if (needsTypographyUpdate) {
+    if (needsContentUpdate) {
       await writeFile(targetPath, item.normalizedContent, "utf8");
+    }
+
+    if (needsTypographyUpdate) {
       typographyUpdated += 1;
+    }
+    if (needsDateUpdate) {
+      datesResolved += 1;
+    }
+
+    if (needsRename && needsDateUpdate && needsTypographyUpdate) {
+      console.log(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + date + typography)`);
+      continue;
+    }
+
+    if (needsRename && needsDateUpdate) {
+      console.log(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + date)`);
+      continue;
     }
 
     if (needsRename && needsTypographyUpdate) {
@@ -407,6 +686,16 @@ async function normalizePoems() {
       continue;
     }
 
+    if (needsDateUpdate && needsTypographyUpdate) {
+      console.log(`updated: ${item.currentRelPath} (date + typography)`);
+      continue;
+    }
+
+    if (needsDateUpdate) {
+      console.log(`date: ${item.currentRelPath} -> ${item.poem.date}`);
+      continue;
+    }
+
     console.log(`typography: ${item.currentRelPath}`);
   }
 
@@ -414,8 +703,8 @@ async function normalizePoems() {
     await removeEmptyPoemDirs(poemsDir);
   }
 
-  if (renamed === 0 && typographyUpdated === 0) {
-    console.log("No poem path/filename or typography changes needed.");
+  if (renamed === 0 && typographyUpdated === 0 && datesResolved === 0) {
+    console.log("No poem path/filename, frontmatter date, or typography changes needed.");
     return;
   }
 
@@ -423,10 +712,17 @@ async function normalizePoems() {
   if (renamed > 0) {
     summary.push(`renamed ${renamed} poem file(s)`);
   }
+  if (datesResolved > 0) {
+    summary.push(`resolved ${datesResolved} symbolic date(s)`);
+  }
   if (typographyUpdated > 0) {
     summary.push(`updated typography in ${typographyUpdated} poem file(s)`);
   }
   console.log(`Completed: ${summary.join("; ")}.`);
 }
 
-await normalizePoems();
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isDirectRun) {
+  await normalizePoems();
+}

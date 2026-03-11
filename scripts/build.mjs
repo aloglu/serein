@@ -1567,7 +1567,6 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replace("{{POEM_BLOCKED}}", blocked ? "1" : "0")
     .replace("{{PAGE_DATA_URL}}", pageDataUrl ? routeRelativeAssetUrl(routePath, pageDataUrl) : "")
     .replaceAll("{{AUTHOR_META}}", authorMeta)
-    .replaceAll("{{PUBLICATION_META}}", renderPublicationMeta(poem))
     .replaceAll("{{POEM_TEXT}}", poemHtml);
 }
 

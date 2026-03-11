@@ -60,6 +60,13 @@ Optional fields:
 
 Poem files follow the path pattern `poems/YYYY/MM-Month/YYYY-MM-DD-slug.md`. Dates are unique across the collection. Missing optional metadata is still surfaced by the editorial checks.
 
+Before running `npm run normalize:poems`, the `date` frontmatter may also use symbolic values:
+
+- `next` picks the closest unused date on or after the current publication date. Multiple `next` values in one normalize run are resolved sequentially in alphabetical path order.
+- `random-<month>` such as `random-may` picks an unused day in that month of the current publication year.
+
+The normalizer rewrites those symbolic values to concrete `YYYY-MM-DD` dates and then renames the poem file/path to match.
+
 The poem renderer also supports two small pieces of custom markup:
 
 - `::line` builds one visual line from aligned segments. `|<...|` places text on the left, `|^...|` centers it, `|>...|` places it on the right, and `|~...|` inserts space.
@@ -85,7 +92,7 @@ The build system also supports date-controlled previews through `--as-of` and `S
 
 ## Deployment
 
-GitHub Actions validates the site on pushes and pull requests. A separate scheduled workflow triggers the Cloudflare Pages deploy hook at midnight Istanbul time.
+GitHub Actions validates the site on pushes and pull requests. A separate scheduled workflow triggers the Cloudflare Pages deploy hook at the publication rollover.
 
 Production environments provide `SITE_URL` so canonical URLs, RSS, and the sitemap can be emitted with the correct domain.
 
