@@ -1,0 +1,20 @@
+---
+title: Missed Time
+author: Ha Jin
+publication:
+date: 2026-03-23
+source:
+---
+
+My notebook has remained blank for months
+thanks to the light you shower
+around me. I have no use
+for my pen, which lies
+languorously without grief.
+
+Nothing is better than to live
+a storyless life that needs
+no writing for meaning—
+when I am gone, let others say
+they lost a happy man,
+though no one can tell how happy I was.
