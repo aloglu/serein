@@ -32,7 +32,7 @@ const authorRouteByName = new Map(authors.map((entry) => [entry.author, entry.ro
 const poems = preparePoems(rawPoems, authorRouteByName);
 const report = createEditorialReport(poems, {
   asOfDate: parseAsOfDateArg(),
-  authorPagesList: buildAuthorPages(poems)
+  authorPagesList: authors
 });
 
 process.stdout.write(formatEditorialReportText(report));

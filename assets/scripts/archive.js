@@ -1,4 +1,5 @@
 import {
+  sortMapKeysDesc,
   effectiveDateFromQueryOrNow,
   escapeHtml,
   groupByYearMonth,
@@ -21,14 +22,14 @@ function renderArchive(poems, effectiveDate) {
   }
 
   const grouped = groupByYearMonth(visible);
-  const years = Array.from(grouped.keys()).sort((a, b) => b.localeCompare(a));
+  const years = sortMapKeysDesc(grouped);
   const currentYear = effectiveDate.slice(0, 4);
   const currentMonth = effectiveDate.slice(5, 7);
 
   treeEl.innerHTML = years
     .map((year) => {
       const monthsMap = grouped.get(year);
-      const months = Array.from(monthsMap.keys()).sort((a, b) => b.localeCompare(a));
+      const months = sortMapKeysDesc(monthsMap);
       const yearOpen = year === currentYear ? " open" : "";
       const defaultOpenMonth = year === currentYear ? (months.includes(currentMonth) ? currentMonth : months[0] || "") : "";
       const monthBlocks = months

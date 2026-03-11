@@ -42,7 +42,6 @@
   <meta name="twitter:title" content="{{PAGE_TITLE}}">
   <meta name="twitter:description" content="{{PAGE_DESCRIPTION}}">
   {{SOCIAL_META}}
-  {{STRUCTURED_DATA}}
   <title>{{PAGE_TITLE}}</title>
   <link rel="stylesheet" href="{{ASSET_PATH}}">
   {{FONT_PRELOADS}}
@@ -54,40 +53,9 @@
 </head>
 <body>
   <main data-default-as-of="{{DEFAULT_AS_OF}}" data-rendered-as-of="{{RENDERED_AS_OF}}" data-page-data-url="{{PAGE_DATA_URL}}" data-dynamic-page="1">
-    <p class="home-kicker">Daily poetry anthology</p>
-    <h1>A Poem Per Day</h1>
-    <p class="home-intro">One new poem arrives each day at midnight in your local time. Read the current selection, browse the archive, and explore the poets in the collection.</p>
-
-    <section class="home-feature" aria-labelledby="home-feature-label">
-      <div class="home-feature-header">
-        <p id="home-feature-label" class="home-section-label">Current poem</p>
-        <p id="home-feature-date" class="home-feature-date">{{FALLBACK_DATE_LABEL}}</p>
-      </div>
-      <article class="home-poem-card">
-        <h2 class="home-poem-title"><a id="home-title-link" href="{{FALLBACK_ROUTE_HREF}}"><span id="home-title">{{FALLBACK_TITLE}}</span></a></h2>
-        <p id="home-meta" class="meta poem-meta home-poem-meta">{{FALLBACK_META}}</p>
-        <p id="home-excerpt" class="home-poem-excerpt">{{FALLBACK_EXCERPT}}</p>
-        <p class="home-actions"><a id="home-read-link" class="home-cta" href="{{FALLBACK_ROUTE_HREF}}">Read the full poem</a></p>
-      </article>
-    </section>
-
-    <section class="home-grid" aria-label="Explore A Poem Per Day">
-      <article class="about-card">
-        <h2>Browse the archive</h2>
-        <p>Every published poem keeps its own permanent URL, organized by date.</p>
-        <p><a href="/archive/">Open the archive</a></p>
-      </article>
-      <article class="about-card">
-        <h2>Meet the poets</h2>
-        <p>Browse the growing index of poets and jump to their published work.</p>
-        <p><a href="/poets/">Visit the poets index</a></p>
-      </article>
-      <article class="about-card">
-        <h2>Subscribe by RSS</h2>
-        <p>Follow each new publication without waiting for search engines or social feeds.</p>
-        <p><a href="/rss.xml">Get the RSS feed</a></p>
-      </article>
-    </section>
+    <h1 id="home-title">{{FALLBACK_TITLE}}</h1>
+    <p id="home-meta" class="meta poem-meta">{{FALLBACK_META}}</p>
+    <article id="home-content" class="content-block">{{FALLBACK_POEM_HTML}}</article>
   </main>
 
   {{FOOTER}}

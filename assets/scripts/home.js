@@ -5,51 +5,56 @@ import {
   selectPoemForDate
 } from "./shared/common.js";
 
-function formatHomeDate(dateStr) {
-  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) {
-    return "";
+function renderHomePoem(poem) {
+  const titleEl = document.getElementById("home-title");
+  const metaEl = document.getElementById("home-meta");
+  const contentEl = document.getElementById("home-content");
+  if (!titleEl || !metaEl || !contentEl) {
+    return;
   }
 
-  const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 12, 0, 0, 0);
-  return new Intl.DateTimeFormat("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric"
-  }).format(date);
+  if (!poem) {
+    titleEl.textContent = "A Poem Per Day";
+    metaEl.textContent = "";
+    contentEl.innerHTML = '<p class="empty">No poem is available for your local date yet.</p>';
+    return;
+  }
+
+  titleEl.textContent = poem.title || "A Poem Per Day";
+  metaEl.innerHTML = poem.authorMetaHtml || "";
+  contentEl.innerHTML = poem.poemHtml || '<p class="empty">Poem content is unavailable.</p>';
 }
 
-function renderHome(poems, effectiveDate) {
-  const titleEl = document.getElementById("home-title");
-  const titleLinkEl = document.getElementById("home-title-link");
-  const metaEl = document.getElementById("home-meta");
-  const excerptEl = document.getElementById("home-excerpt");
-  const dateEl = document.getElementById("home-feature-date");
-  const readLinkEl = document.getElementById("home-read-link");
-  if (!titleEl || !titleLinkEl || !metaEl || !excerptEl || !dateEl || !readLinkEl) {
-    return;
+function normalizeHomePayload(payload) {
+  if (Array.isArray(payload)) {
+    return {
+      poems: payload,
+      upcoming: []
+    };
   }
 
+  return {
+    poems: Array.isArray(payload?.poems) ? payload.poems : [],
+    upcoming: Array.isArray(payload?.upcoming) ? payload.upcoming : []
+  };
+}
+
+async function renderHome(payload, effectiveDate) {
+  const { poems, upcoming } = normalizeHomePayload(payload);
   const { current } = selectPoemForDate(poems, effectiveDate);
-  if (!current) {
-    titleEl.textContent = "No poem published yet";
-    titleLinkEl.setAttribute("href", "/archive/");
-    metaEl.textContent = "";
-    excerptEl.textContent = "The archive is still empty. The first published poem will appear here.";
-    dateEl.textContent = "";
-    readLinkEl.textContent = "Browse the archive";
-    readLinkEl.setAttribute("href", "/archive/");
+  if (current?.date === effectiveDate) {
+    renderHomePoem(current);
     return;
   }
 
-  const route = current.route ? `${current.route}/` : "/archive/";
-  titleEl.textContent = current.title || "Untitled";
-  titleLinkEl.setAttribute("href", route);
-  metaEl.innerHTML = current.authorMetaHtml || "";
-  excerptEl.textContent = current.excerpt || "Read the full poem.";
-  dateEl.textContent = current.date ? `Published ${formatHomeDate(current.date)}` : "";
-  readLinkEl.textContent = "Read the full poem";
-  readLinkEl.setAttribute("href", route);
+  const upcomingEntry = upcoming.find((entry) => entry?.date === effectiveDate && entry?.pageDataUrl);
+  if (upcomingEntry) {
+    const upcomingPoem = await loadJsonData(upcomingEntry.pageDataUrl);
+    renderHomePoem(upcomingPoem);
+    return;
+  }
+
+  renderHomePoem(current);
 }
 
 async function init() {
@@ -72,11 +77,11 @@ async function init() {
 
   try {
     const poems = await loadJsonData(main.dataset.pageDataUrl || "");
-    renderHome(poems, effectiveDate);
+    await renderHome(poems, effectiveDate);
   } catch (error) {
-    const target = document.getElementById("home-excerpt");
+    const target = document.getElementById("home-content");
     if (target) {
-      target.innerHTML = `<span class="empty">${escapeHtml(error.message || "Failed to load poems.")}</span>`;
+      target.innerHTML = `<p class="empty">${escapeHtml(error.message || "Failed to load poems.")}</p>`;
     }
   } finally {
     markReady();

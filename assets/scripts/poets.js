@@ -1,10 +1,11 @@
 import {
-  compareAuthors,
   effectiveDateFromQueryOrNow,
   escapeHtml,
   formatAuthorIndexLabel,
   groupByAuthorInitial,
   loadJsonData,
+  sortAuthorInitials,
+  sortAuthors,
   selectPoemForDate
 } from "./shared/common.js";
 
@@ -21,20 +22,12 @@ function renderPoets(poems, effectiveDate) {
   }
 
   const grouped = groupByAuthorInitial(visible);
-  const letters = Array.from(grouped.keys()).sort((a, b) => {
-    if (a === "#") {
-      return 1;
-    }
-    if (b === "#") {
-      return -1;
-    }
-    return compareAuthors(a, b);
-  });
+  const letters = sortAuthorInitials(grouped.keys());
 
   treeEl.innerHTML = letters
     .map((letter) => {
       const authorsMap = grouped.get(letter);
-      const authors = Array.from(authorsMap.keys()).sort((a, b) => compareAuthors(a, b));
+      const authors = sortAuthors(authorsMap.keys());
       const poetBlocks = authors
         .map((author) => {
           const poemsByAuthor = authorsMap.get(author);

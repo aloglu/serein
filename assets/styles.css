@@ -244,96 +244,6 @@ main > .empty:only-child {
   text-align: center;
 }
 
-.home-kicker {
-  margin: 0 0 0.4rem;
-  color: var(--muted);
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.home-intro {
-  margin: 1rem 0 0;
-  max-width: 62ch;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.home-feature {
-  margin-top: 3rem;
-}
-
-.home-feature-header {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  align-items: baseline;
-  flex-wrap: wrap;
-}
-
-.home-section-label,
-.home-feature-date {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.88rem;
-}
-
-.home-section-label {
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.home-poem-card {
-  margin-top: 0.9rem;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: var(--card-bg);
-  padding: 1.3rem 1.25rem 1.35rem;
-  box-shadow: var(--card-shadow);
-}
-
-.home-poem-title {
-  margin: 0;
-  font-size: 1.7rem;
-  line-height: 1.2;
-}
-
-.home-poem-title a {
-  text-decoration: none;
-}
-
-.home-poem-meta {
-  margin-top: 0.75rem;
-}
-
-.home-poem-excerpt {
-  margin: 1rem 0 0;
-  color: var(--text);
-  line-height: 1.85;
-}
-
-.home-actions {
-  margin: 1.25rem 0 0;
-}
-
-.home-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  padding: 0.72rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: color-mix(in oklab, var(--card-bg) 85%, transparent);
-  text-decoration: none;
-}
-
-.home-grid {
-  margin-top: 2.2rem;
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 
 .about-kicker {
   margin: 0 0 0.4rem;
@@ -560,13 +470,6 @@ main > .empty:only-child {
     font-size: 2.3rem;
   }
 
-  .home-feature-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.35rem;
-  }
-
-  .home-grid,
   .about-grid {
     grid-template-columns: 1fr;
   }

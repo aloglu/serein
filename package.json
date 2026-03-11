@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "dev": "node scripts/build.mjs --watch",
+    "test": "node --test \"tests/*.test.mjs\"",
     "normalize:poems": "node scripts/normalize-poems.mjs",
     "normalize:filenames": "node scripts/normalize-poems.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",

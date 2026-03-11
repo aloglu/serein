@@ -84,6 +84,18 @@ export function selectPoemForDate(poems, dateStr) {
   };
 }
 
+export function comparePoemsByDateDesc(left, right) {
+  return right.date.localeCompare(left.date) || left.title.localeCompare(right.title);
+}
+
+export function sortDesc(values) {
+  return Array.from(values).sort((left, right) => right.localeCompare(left));
+}
+
+export function sortMapKeysDesc(map) {
+  return sortDesc(map.keys());
+}
+
 const authorCollator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
 const SMALL_NUMBER_WORDS = [
   "zero",
@@ -210,9 +222,27 @@ export function compareAuthors(left, right) {
   );
 }
 
+export function sortAuthors(values) {
+  return Array.from(values).sort(compareAuthors);
+}
+
+export function compareAuthorInitials(left, right) {
+  if (left === "#") {
+    return 1;
+  }
+  if (right === "#") {
+    return -1;
+  }
+  return compareAuthors(left, right);
+}
+
+export function sortAuthorInitials(values) {
+  return Array.from(values).sort(compareAuthorInitials);
+}
+
 export function groupByYearMonth(poems) {
   const grouped = new Map();
-  const sorted = poems.slice().sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+  const sorted = poems.slice().sort(comparePoemsByDateDesc);
 
   for (const poem of sorted) {
     const parts = parseDateParts(poem.date) || {};
@@ -238,7 +268,7 @@ export function groupByAuthorInitial(poems) {
   const grouped = new Map();
   const sorted = poems
     .slice()
-    .sort((a, b) => compareAuthors(a.author, b.author) || b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+    .sort((a, b) => compareAuthors(a.author, b.author) || comparePoemsByDateDesc(a, b));
 
   for (const poem of sorted) {
     const author = String(poem.author || "").trim() || "Unknown";
@@ -251,12 +281,6 @@ export function groupByAuthorInitial(poems) {
       authorsMap.set(author, []);
     }
     authorsMap.get(author).push(poem);
-  }
-
-  for (const authorsMap of grouped.values()) {
-    for (const poemsByAuthor of authorsMap.values()) {
-      poemsByAuthor.sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
-    }
   }
 
   return grouped;

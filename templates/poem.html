@@ -46,6 +46,7 @@
         const el = document.querySelector(selector);
         if (el) el.setAttribute("content", value);
       };
+      setMeta('meta[name="author"]', "");
       setMeta('meta[name="description"]', blockedDescription);
       setMeta('meta[property="og:title"]', blockedTitle);
       setMeta('meta[name="twitter:title"]', blockedTitle);
@@ -62,7 +63,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{APPLE_TOUCH_ICON_PATH}}">
 </head>
 <body>
-  <main data-poem-date="{{DATE}}" data-default-as-of="{{DEFAULT_AS_OF}}" data-poem-page="1">
+  <main data-poem-date="{{DATE}}" data-default-as-of="{{DEFAULT_AS_OF}}" data-page-data-url="{{PAGE_DATA_URL}}" data-poem-blocked="{{POEM_BLOCKED}}" data-poem-page="1">
     <h1>{{TITLE}}</h1>
     <p class="meta poem-meta">{{AUTHOR_META}}</p>
     <article id="poem-content" class="content-block">{{POEM_TEXT}}</article>

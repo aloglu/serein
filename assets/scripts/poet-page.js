@@ -1,4 +1,5 @@
 import {
+  sortMapKeysDesc,
   effectiveDateFromQueryOrNow,
   escapeHtml,
   formatPublishedPoemCount,
@@ -8,7 +9,7 @@ import {
   selectPoemForDate
 } from "./shared/common.js";
 
-function renderAuthorArchive(poems, authorRoute, effectiveDate) {
+function renderAuthorArchive(poems, effectiveDate) {
   const treeEl = document.getElementById("poet-page-tree");
   const metaEl = document.getElementById("poet-page-meta");
   if (!treeEl) {
@@ -16,9 +17,7 @@ function renderAuthorArchive(poems, authorRoute, effectiveDate) {
   }
 
   const { visible } = selectPoemForDate(poems, effectiveDate);
-  const authoredPoems = visible
-    .filter((poem) => poem.authorRoute === authorRoute)
-    .sort((a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title));
+  const authoredPoems = visible;
 
   if (metaEl) {
     metaEl.textContent = formatPublishedPoemCount(authoredPoems.length);
@@ -34,12 +33,12 @@ function renderAuthorArchive(poems, authorRoute, effectiveDate) {
   const currentYear = todayParts ? todayParts[1] : "";
   const currentMonth = todayParts ? todayParts[2] : "";
   const grouped = groupByYearMonth(authoredPoems);
-  const years = Array.from(grouped.keys()).sort((a, b) => b.localeCompare(a));
+  const years = sortMapKeysDesc(grouped);
 
   treeEl.innerHTML = years
     .map((year) => {
       const monthsMap = grouped.get(year);
-      const months = Array.from(monthsMap.keys()).sort((a, b) => b.localeCompare(a));
+      const months = sortMapKeysDesc(monthsMap);
       const yearOpen = year === currentYear ? " open" : "";
       const defaultOpenMonth = year === currentYear ? (months.includes(currentMonth) ? currentMonth : months[0] || "") : "";
       const monthBlocks = months
@@ -80,7 +79,7 @@ async function init() {
 
   try {
     const poems = await loadJsonData(main.dataset.pageDataUrl || "");
-    renderAuthorArchive(poems, main.dataset.authorRoute || "", effectiveDate);
+    renderAuthorArchive(poems, effectiveDate);
   } catch (error) {
     const target = document.getElementById("poet-page-tree");
     if (target) {

@@ -35,22 +35,25 @@ async function checkSourceUrl(url) {
 }
 
 const poems = await loadPoems();
-const sourceEntries = [];
-const seenSources = new Set();
+const sourceEntriesByUrl = new Map();
 
 for (const poem of poems) {
   const source = String(poem.source || "").trim();
-  if (!source || seenSources.has(source)) {
+  if (!source) {
     continue;
   }
-  seenSources.add(source);
-  sourceEntries.push({
-    source,
-    poems: poems
-      .filter((candidate) => String(candidate.source || "").trim() === source)
-      .map((candidate) => `${candidate.date}: ${candidate.title} by ${candidate.author}`)
-  });
+
+  if (!sourceEntriesByUrl.has(source)) {
+    sourceEntriesByUrl.set(source, {
+      source,
+      poems: []
+    });
+  }
+
+  sourceEntriesByUrl.get(source).poems.push(`${poem.date}: ${poem.title} by ${poem.author}`);
 }
+
+const sourceEntries = Array.from(sourceEntriesByUrl.values());
 
 if (sourceEntries.length === 0) {
   process.stdout.write("No source URLs found.\n");
