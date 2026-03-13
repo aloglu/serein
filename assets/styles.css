@@ -27,8 +27,16 @@
   --bg: #EFE2D0;
   --text: #2f2a25;
   --muted: #665f57;
+  --heading-prelude-height: 1rem;
+  --heading-prelude-gap: 0.7rem;
+  --subtle-meta: color-mix(in oklab, var(--bg) 72%, var(--text));
+  --byline-poet: color-mix(in oklab, var(--muted) 72%, var(--bg));
+  --byline-translator: color-mix(in oklab, var(--muted) 48%, var(--bg));
   --border: #d8cbb8;
-  --link-underline: color-mix(in oklab, var(--text), transparent 45%);
+  --source-divider: color-mix(in oklab, var(--border), transparent 52%);
+  --link-underline: color-mix(in oklab, var(--text), transparent 65%);
+  --link-hover: color-mix(in oklab, var(--text) 84%, #b46f2f);
+  --byline-link-hover: color-mix(in oklab, var(--byline-poet) 65%, var(--link-hover));
   --card-bg: rgba(255, 255, 255, 0.52);
   --note-bg: rgba(255, 255, 255, 0.45);
   --card-shadow: 0 8px 20px rgba(71, 56, 38, 0.05);
@@ -105,9 +113,10 @@ a {
   z-index: 0;
   text-decoration-line: underline;
   text-decoration-style: dotted;
-  text-decoration-thickness: 0.06em;
-  text-underline-offset: 0.12em;
+  text-decoration-thickness: 0.04em;
+  text-underline-offset: 0.2em;
   text-decoration-color: var(--link-underline);
+  transition: color 160ms ease, text-decoration-color 160ms ease;
 }
 
 a::after {
@@ -121,6 +130,12 @@ a::after {
   opacity: 0;
   pointer-events: none;
   z-index: -1;
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--link-hover);
+  text-decoration-color: color-mix(in oklab, var(--link-hover), transparent 42%);
 }
 
 
@@ -139,16 +154,77 @@ main > h1 {
   line-height: 1.15;
 }
 
+main > h1:first-child {
+  margin-top: calc(var(--heading-prelude-height) + var(--heading-prelude-gap));
+}
+
 .meta {
   color: var(--muted);
   margin: 0.35rem 0;
   font-size: 0.95rem;
 }
 
+.poem-meta:empty,
+.poem-date:empty {
+  display: none;
+}
+
+.poem-date {
+  display: flex;
+  align-items: flex-start;
+  min-height: var(--heading-prelude-height);
+  margin: 0 0 var(--heading-prelude-gap);
+  color: var(--subtle-meta);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
 .poem-meta {
   margin-top: 0.5rem;
   padding-top: 0.08rem;
   font-size: 1.06rem;
+}
+
+.poem-meta-block {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 0.32rem;
+  row-gap: 0.16rem;
+  align-items: baseline;
+  max-width: 100%;
+}
+
+.poem-meta-label {
+  font-size: 0.92em;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.poem-meta-value {
+  min-width: 0;
+}
+
+.poem-meta-label-author,
+.poem-meta-label-translator,
+.poem-meta-value-author,
+.poem-meta-value-translator,
+.poem-meta-separator {
+  color: var(--byline-poet);
+}
+
+.poem-meta-value-author a:hover,
+.poem-meta-value-author a:focus-visible {
+  color: var(--byline-link-hover);
+  text-decoration-color: color-mix(in oklab, var(--byline-link-hover), transparent 42%);
+}
+
+.poem-meta-label-translator {
+  font-size: 0.88em;
+}
+
+.poem-meta-value-translator {
+  font-size: 0.94em;
 }
 
 .separator-mark {
@@ -401,6 +477,8 @@ main > .empty:only-child {
   text-align: right;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .poet-authors {
@@ -415,20 +493,45 @@ main > .empty:only-child {
   color: var(--text);
 }
 
+.content-block .publication-note,
 .content-block .published-note {
   margin: 3rem 0 0;
-  color: var(--muted);
+  color: var(--subtle-meta);
   font-size: 0.91rem;
   line-height: 1.6;
-  font-style: italic;
 }
 
-.content-block .poet-page-note {
-  margin-top: 2.6rem;
+.content-block .publication-note {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  padding-top: 0.9rem;
+}
+
+.content-block .publication-note::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  border-top: 1px solid var(--source-divider);
+}
+
+.publication-label {
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .archive-poems a {
   color: var(--text);
+}
+
+.archive-poems a:hover,
+.archive-poems a:focus-visible,
+.poet-authors a:hover,
+.poet-authors a:focus-visible {
+  color: var(--link-hover);
+  text-decoration-color: color-mix(in oklab, var(--link-hover), transparent 42%);
 }
 
 .site-footer {
@@ -441,29 +544,6 @@ main > .empty:only-child {
   gap: 0.5rem;
   flex-wrap: wrap;
 }
-
-.hand-highlight {
-  margin: -2px -6px;
-  padding: 2px 6px;
-  border-radius: 0;
-  background: transparent center / 100% 100% no-repeat;
-  -webkit-box-decoration-break: clone;
-  box-decoration-break: clone;
-}
-
-.hand-highlight.hl-light-yellow { background-image: url("./highlights/light-yellow.svg"); }
-.hand-highlight.hl-mimosa { background-image: url("./highlights/mimosa.svg"); }
-.hand-highlight.hl-rose-gold { background-image: url("./highlights/rose-gold.svg"); }
-.hand-highlight.hl-violet { background-image: url("./highlights/violet.svg"); }
-.hand-highlight.hl-strawberry { background-image: url("./highlights/strawberry.svg"); }
-.hand-highlight.hl-red-brown { background-image: url("./highlights/red-brown.svg"); }
-.hand-highlight.hl-ecru { background-image: url("./highlights/ecru.svg"); }
-.hand-highlight.hl-gray { background-image: url("./highlights/gray.svg"); }
-.hand-highlight.hl-green { background-image: url("./highlights/green.svg"); }
-.hand-highlight.hl-mint-green { background-image: url("./highlights/mint-green.svg"); }
-.hand-highlight.hl-pink { background-image: url("./highlights/pink.svg"); }
-.hand-highlight.hl-blue { background-image: url("./highlights/blue.svg"); }
-.hand-highlight.hl-yellow { background-image: url("./highlights/mimosa.svg"); }
 
 @media (max-width: 720px) {
   main > h1 {
@@ -493,8 +573,11 @@ main > .empty:only-child {
     --bg: #1d1711;
     --text: #ebe0d2;
     --muted: #c0b39f;
+    --subtle-meta: color-mix(in oklab, var(--bg) 68%, var(--text));
     --border: #584836;
-    --link-underline: color-mix(in oklab, var(--text), transparent 35%);
+    --source-divider: color-mix(in oklab, var(--border), transparent 72%);
+    --link-underline: color-mix(in oklab, var(--text), transparent 55%);
+    --link-hover: color-mix(in oklab, var(--text) 78%, #e1a761);
     --card-bg: rgba(50, 40, 31, 0.72);
     --note-bg: rgba(42, 34, 26, 0.72);
     --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);

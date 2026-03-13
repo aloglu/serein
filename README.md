@@ -25,7 +25,7 @@ That pipeline is responsible for:
 - generating social cards and editorial reports
 - generating RSS and sitemap files when `SITE_URL` is present
 
-The project targets Node.js 20 and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks.
+The project targets Node.js 24 and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks.
 
 ## Content model
 
@@ -67,19 +67,12 @@ Before running `npm run normalize:poems`, the `date` frontmatter may also use sy
 
 The normalizer rewrites those symbolic values to concrete `YYYY-MM-DD` dates and then renames the poem file/path to match.
 
-The poem renderer also supports two small pieces of custom markup:
+The poem renderer also supports one small piece of custom markup:
 
 - `::line` builds one visual line from aligned segments. `|<...|` places text on the left, `|^...|` centers it, `|>...|` places it on the right, and `|~...|` inserts space.
 
   ```md
   ::line |<left phrase| |~3ch| |>right phrase|
-  ```
-
-- `==...==` applies an inline highlight. The first word inside the markers is the color, the remaining words are the highlighted text.
-
-  ```md
-  ==light-yellow highlighted text==
-  ==mimosa another highlight==
   ```
 
 ## Publishing model

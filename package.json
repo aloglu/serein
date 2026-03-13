@@ -11,7 +11,7 @@
     "normalize:filenames": "node scripts/normalize-poems.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",
     "editorial:links": "node scripts/editorial-check-links.mjs",
-    "preview": "npx serve dist",
+    "preview": "serve dist",
     "dev:preview": "concurrently -k -n build,serve -c yellow,cyan \"npm run dev\" \"npm run preview\"",
     "dev:preview:asof": "node scripts/dev-preview-asof.mjs"
   },
@@ -25,6 +25,7 @@
     "concurrently": "^9.2.1",
     "esbuild": "^0.27.3",
     "html-minifier-terser": "^7.2.0",
+    "serve": "^14.2.5",
     "sharp": "^0.34.5",
     "svgo": "^4.0.1",
     "ttf2woff2": "^8.0.1"

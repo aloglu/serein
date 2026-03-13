@@ -4,7 +4,7 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { marked } from "marked";
-import { expectedPoemFilename, integerToWords } from "./poem-filenames.mjs";
+import { expectedPoemFilename } from "./poem-filenames.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
@@ -15,21 +15,6 @@ const reportsDir = path.join(root, "reports");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
 const siteUrl = String(process.env.SITE_URL || "").trim().replace(/\/+$/, "");
-const INLINE_HIGHLIGHT_COLORS = new Set([
-  "yellow",
-  "light-yellow",
-  "mimosa",
-  "rose-gold",
-  "violet",
-  "strawberry",
-  "red-brown",
-  "ecru",
-  "gray",
-  "green",
-  "mint-green",
-  "pink",
-  "blue"
-]);
 
 const watchMode = process.argv.includes("--watch");
 const runtimeAsOfEnabled = (
@@ -628,14 +613,6 @@ function wrapCardText(text, maxCharsPerLine, maxLines) {
   return lines;
 }
 
-function renderCardTextLines(lines, { x, y, size, lineHeight, weight = "400", fill = "#2f2a25" }) {
-  return lines
-    .map(
-      (line, index) => `<text x="${x}" y="${y + (index * lineHeight)}" font-family="'Libre Baskerville'" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
-    )
-    .join("");
-}
-
 function renderCenteredCardTextLines(lines, { centerX, startY, size, lineHeight, weight = "400", fill = "#ebe0d2" }) {
   return lines
     .map(
@@ -794,25 +771,6 @@ function cdataSafe(input) {
   return String(input || "").replaceAll("]]>", "]]]]><![CDATA[>");
 }
 
-function decodeBasicHtmlEntities(input) {
-  return String(input || "")
-    .replaceAll("&nbsp;", " ")
-    .replaceAll("&amp;", "&")
-    .replaceAll("&lt;", "<")
-    .replaceAll("&gt;", ">")
-    .replaceAll("&quot;", '"')
-    .replaceAll("&#39;", "'");
-}
-
-function htmlToPlainWithLineBreaks(input) {
-  const withBreaks = String(input || "")
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/(p|div|h1|h2|h3|h4|h5|h6|li|blockquote)>/gi, "\n")
-    .replace(/<li[^>]*>/gi, "- ")
-    .replace(/<[^>]+>/g, "");
-  return decodeBasicHtmlEntities(withBreaks).replace(/\n{3,}/g, "\n\n").trim();
-}
-
 function plainTextExcerpt(input, maxLength = 220) {
   const normalized = String(input || "").replace(/\s+/g, " ").trim();
   if (normalized.length <= maxLength) {
@@ -845,67 +803,6 @@ function authorPagesWithPublishedPoems(publishedPoems) {
   return authorPages.filter((entry) => publishedAuthors.has(entry.author));
 }
 
-function spacerToSpaces(spacerWidth) {
-  const raw = String(spacerWidth || "").trim().toLowerCase();
-  const chMatch = raw.match(/^(\d+(?:\.\d+)?)ch$/);
-  if (chMatch) {
-    const count = Math.max(1, Math.min(16, Math.round(Number(chMatch[1]))));
-    return " ".repeat(count);
-  }
-  return "   ";
-}
-
-function withRssFriendlyAlignedPoetryLines(markdown) {
-  const lines = String(markdown || "").split("\n");
-  const transformed = [];
-  let activeFenceChar = "";
-
-  for (const line of lines) {
-    const fenceMatch = line.match(/^\s*(`{3,}|~{3,})/);
-    if (fenceMatch) {
-      const markerChar = fenceMatch[1][0];
-      if (!activeFenceChar) {
-        activeFenceChar = markerChar;
-      } else if (activeFenceChar === markerChar) {
-        activeFenceChar = "";
-      }
-      transformed.push(line);
-      continue;
-    }
-
-    if (activeFenceChar) {
-      transformed.push(line);
-      continue;
-    }
-
-    const segments = parsePoetryLineDirective(line);
-    if (!segments) {
-      transformed.push(line);
-      continue;
-    }
-
-    const plainLine = segments
-      .map((segment) => {
-        if (segment.align === "~") {
-          return spacerToSpaces(segment.spacerWidth);
-        }
-        return String(segment.text || "");
-      })
-      .join("")
-      .replace(/\s+$/g, "");
-    transformed.push(plainLine || " ");
-  }
-
-  return transformed.join("\n");
-}
-
-function renderRssPoemHtml(markdown, highlights = []) {
-  const withMarks = withLegacyHighlights(markdown, highlights);
-  const withAlignedLines = withRssFriendlyAlignedPoetryLines(withMarks);
-  const withInlineColors = withInlineColorHighlights(withAlignedLines);
-  return marked.parse(withInlineColors);
-}
-
 function fontPath(routePath, filename) {
   return routeRelativeAssetUrl(routePath, filename);
 }
@@ -916,58 +813,6 @@ function fontPreloads(routePath) {
     `<link rel="preload" href="${fontPath(routePath, fonts.regular400)}" as="font" type="font/woff2" crossorigin>`,
     `<link rel="preload" href="${fontPath(routePath, fonts.bold700)}" as="font" type="font/woff2" crossorigin>`
   ].join("\n  ");
-}
-
-function withLegacyHighlights(markdown, highlights = []) {
-  let rendered = markdown;
-  const tokens = [];
-  let tokenIndex = 0;
-
-  for (const item of highlights) {
-    if (!item?.text) {
-      continue;
-    }
-
-    const token = `__SEREIN_HL_${tokenIndex}__`;
-    tokenIndex += 1;
-    rendered = rendered.replaceAll(item.text, token);
-    tokens.push({
-      token,
-      text: item.text,
-      note: item.note || ""
-    });
-  }
-
-  let safe = rendered;
-
-  for (const item of tokens) {
-    const note = item.note ? ` title="${htmlEscape(item.note)}"` : "";
-    const mark = `<mark class="hand-highlight hl-yellow"${note}>${item.text}</mark>`;
-    safe = safe.replaceAll(item.token, mark);
-  }
-
-  return safe;
-}
-
-function withInlineColorHighlights(markdown) {
-  return String(markdown || "").replace(/==([^=\n][^=\n]*?)==/g, (_, rawInner) => {
-    const inner = String(rawInner || "").trim();
-    if (!inner) {
-      return "====";
-    }
-
-    const parts = inner.split(/\s+/);
-    const first = (parts[0] || "").toLowerCase();
-    let color = "light-yellow";
-    let text = inner;
-
-    if (INLINE_HIGHLIGHT_COLORS.has(first) && parts.length > 1) {
-      color = first === "yellow" ? "light-yellow" : first;
-      text = inner.slice(parts[0].length).trim();
-    }
-
-    return `<mark class="hand-highlight hl-${color}">${htmlEscape(text)}</mark>`;
-  });
 }
 
 function parsePoetryLineDirective(line) {
@@ -1221,29 +1066,32 @@ function validateCustomMarkdownSyntax(markdown, filename) {
   }
 }
 
-function renderPoemMarkdown(markdown, highlights = []) {
-  const withMarks = withLegacyHighlights(markdown, highlights);
-  const withAlignedLines = withAlignedPoetryLines(withMarks);
-  const withInlineColors = withInlineColorHighlights(withAlignedLines);
-  return marked.parse(withInlineColors);
+function renderPoemMarkdown(markdown) {
+  const withAlignedLines = withAlignedPoetryLines(markdown);
+  return marked.parse(withAlignedLines);
 }
 
-function renderRssPoemMarkdown(markdown, highlights = []) {
-  const withMarks = withLegacyHighlights(markdown, highlights);
-  const withAlignedLines = withInlineStyledAlignedPoetryLines(withMarks);
-  const withInlineColors = withInlineColorHighlights(withAlignedLines);
-  return marked.parse(withInlineColors);
+function renderRssPoemMarkdown(markdown) {
+  const withAlignedLines = withInlineStyledAlignedPoetryLines(markdown);
+  return marked.parse(withAlignedLines);
 }
 
 function poemUsesCustomMarkup(markdown) {
   const source = String(markdown || "");
-  if (/(^|\n)\s*::line\b/m.test(source)) {
-    return true;
+  return /(^|\n)\s*::line\b/m.test(source);
+}
+
+function renderRssCustomMarkupFallback(link) {
+  return `<p>This poem uses special formatting that is not suited for RSS feeds. Please <a href="${htmlEscape(
+    link
+  )}">visit the website to read it</a>.</p>`;
+}
+
+function renderRssItemDescription(poem, usesCustomMarkup) {
+  if (usesCustomMarkup) {
+    return `${poem.title} by ${poem.author}. This poem uses special formatting. Visit the website to read it.`;
   }
-  if (/==([^=\n][^=\n]*?)==/.test(source)) {
-    return true;
-  }
-  return false;
+  return plainTextExcerpt(poem.searchText || markdownStrip(poem.poem));
 }
 
 function validatePoem(poem, filename) {
@@ -1257,10 +1105,6 @@ function validatePoem(poem, filename) {
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(poem.date)) {
     throw new Error(`Invalid date '${poem.date}' in ${filename}. Expected YYYY-MM-DD.`);
-  }
-
-  if (!Array.isArray(poem.highlights)) {
-    poem.highlights = [];
   }
 
   if (typeof poem.publication !== "string") {
@@ -1402,8 +1246,7 @@ export function preparePoems(poems, authorRouteByName = new Map()) {
       ...poem,
       authorRoute: authorRouteByName.get(poem.author) || ""
     }),
-    poemHtml: renderPoemContent(poem, { includePublishedNote: false }),
-    poemHtmlWithPublishedNote: renderPoemContent(poem, { includePublishedNote: true }),
+    poemHtml: renderPoemContent(poem),
     searchText: markdownStrip(poem.poem)
   }));
 }
@@ -1429,29 +1272,32 @@ function renderPublicationMeta(poem) {
     return publication;
   }
   if (!publication) {
-    return `<a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Source</a>`;
+    return `<a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Link</a>`;
   }
-  return `${publication}<span aria-hidden="true" class="separator-mark meta-separator">&middot;</span><a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Source</a>`;
+  return `${publication}<span aria-hidden="true" class="separator-mark meta-separator">&middot;</span><a href="${htmlEscape(source)}" target="_blank" rel="noreferrer">Link</a>`;
 }
 
 function renderTranslatorMeta(poem) {
   const translator = htmlEscape(poem.translator || "");
-  return translator ? `translated by ${translator}` : "";
+  return translator || "";
 }
 
 function renderAuthorMeta(poem) {
   const authorName = htmlEscape(poem.author || "");
   const author = poem.authorRoute ? routeLink(poem.authorRoute, poem.author || "") : authorName;
-  const parts = [author];
+  const parts = [
+    '<span class="poem-meta-label poem-meta-label-author">By</span>',
+    `<span class="poem-meta-value poem-meta-value-author">${author}</span>`
+  ];
   const translator = renderTranslatorMeta(poem);
-  const details = renderPublicationMeta(poem);
   if (translator) {
-    parts.push(translator);
+    parts.push(
+      '<span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;</span>',
+      '<span class="poem-meta-label poem-meta-label-translator">Tr.</span>',
+      `<span class="poem-meta-value poem-meta-value-translator">${translator}</span>`
+    );
   }
-  if (details) {
-    parts.push(details);
-  }
-  return parts.join('<span aria-hidden="true" class="separator-mark meta-separator">&middot;</span>');
+  return `<span class="poem-meta-block">${parts.join("")}</span>`;
 }
 
 function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "", twitterCard = "summary", socialMeta = "" } = {}) {
@@ -1515,11 +1361,20 @@ async function renderPoemPageData(poem) {
       author: poem.author,
       description: poemMetaDescription(poem),
       authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
-      poemHtml: poem.poemHtmlWithPublishedNote || renderPoemContent(poem, { includePublishedNote: true })
+      poemHtml: poem.poemHtml || renderPoemContent(poem)
     })
   });
   poemPageDataCache.set(poem.date, assetPath);
   return assetPath;
+}
+
+function homePoemPayload(poem) {
+  return {
+    title: poem.title,
+    dateHtml: renderDateMeta(poem),
+    authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
+    poemHtml: poem.poemHtml || renderPoemContent(poem)
+  };
 }
 
 async function renderHomePoemData(poem) {
@@ -1531,11 +1386,7 @@ async function renderHomePoemData(poem) {
     name: `home-poem-data-${poem.date}`,
     extension: ".json",
     subdir: "assets/data/home",
-    contents: JSON.stringify({
-      title: poem.title,
-      authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
-      poemHtml: poem.poemHtml || renderPoemContent(poem, { includePublishedNote: false })
-    })
+    contents: JSON.stringify(homePoemPayload(poem))
   });
   homePoemDataCache.set(poem.date, assetPath);
   return assetPath;
@@ -1546,7 +1397,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
   const authorMeta = blocked ? "" : (poem.authorMetaHtml || renderAuthorMeta(poem));
   const poemHtml = blocked
     ? renderBlockedPoemContent()
-    : (poem.poemHtmlWithPublishedNote || renderPoemContent(poem, { includePublishedNote: true }));
+    : (poem.poemHtml || renderPoemContent(poem));
   return withCommonPageAssets(template, routePath, {
     scriptName: "poem",
     robotsMeta: noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">',
@@ -1560,8 +1411,8 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replaceAll("{{TITLE}}", htmlEscape(blocked ? blockedPoemTitle : poem.title))
     .replaceAll("{{AUTHOR}}", htmlEscape(blocked ? "" : poem.author))
     .replaceAll("{{DESCRIPTION}}", htmlEscape(description))
-    .replaceAll("{{PUBLICATION}}", htmlEscape(poem.publication))
     .replaceAll("{{DATE}}", htmlEscape(poem.date))
+    .replaceAll("{{DATE_META}}", renderDateMeta(poem))
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{POEM_BLOCKED}}", blocked ? "1" : "0")
@@ -1637,11 +1488,12 @@ async function renderHome(poems, defaultAsOf = "") {
   const fallbackDate = effectivePublicationCutoff(defaultAsOf);
   const fallbackPoems = filterPoemsOnOrBefore(poems, fallbackDate);
   const fallbackPoem = fallbackPoems.find((poem) => poem.date === fallbackDate) || fallbackPoems[fallbackPoems.length - 1] || null;
+  const fallbackDateHtml = fallbackPoem ? renderDateMeta(fallbackPoem) : "";
   const fallbackTitle = fallbackPoem ? htmlEscape(fallbackPoem.title) : "A Poem Per Day";
   const fallbackMeta = fallbackPoem ? fallbackPoem.authorMetaHtml || renderAuthorMeta(fallbackPoem) : "";
   const fallbackDescription = "A new poem every day, published at midnight in your local time.";
   const fallbackBody = fallbackPoem
-    ? fallbackPoem.poemHtml || renderPoemContent(fallbackPoem, { includePublishedNote: false })
+    ? fallbackPoem.poemHtml || renderPoemContent(fallbackPoem)
     : '<p class="empty">No poem is published for today.</p>';
   const html = withCommonPageAssets(template, "/", {
     scriptName: "home",
@@ -1653,6 +1505,7 @@ async function renderHome(poems, defaultAsOf = "") {
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
+    .replace("{{FALLBACK_DATE_HTML}}", fallbackDateHtml)
     .replace("{{FALLBACK_TITLE}}", fallbackTitle)
     .replace("{{FALLBACK_META}}", fallbackMeta)
     .replace("{{FALLBACK_POEM_HTML}}", fallbackBody)
@@ -1670,7 +1523,7 @@ function monthLabel(monthNumber) {
   return new Intl.DateTimeFormat("en-US", { month: "long", timeZone: "UTC" }).format(dt);
 }
 
-function longDateLabel(yyyyMmDd) {
+function displayDateLabel(yyyyMmDd) {
   const parts = parseDateParts(yyyyMmDd);
   if (!parts) {
     return String(yyyyMmDd || "");
@@ -1682,6 +1535,14 @@ function longDateLabel(yyyyMmDd) {
     year: "numeric",
     timeZone: "UTC"
   }).format(dt);
+}
+
+function renderDateMeta(poem) {
+  const date = String(poem.date || "").trim();
+  if (!date) {
+    return "";
+  }
+  return `<time datetime="${htmlEscape(date)}">${htmlEscape(displayDateLabel(date))}</time>`;
 }
 
 function renderArchiveRow(poem, fromRoute) {
@@ -1843,30 +1704,6 @@ function authorRouteMap(authorPagesList) {
   return new Map(authorPagesList.map((entry) => [entry.author, entry.route]));
 }
 
-function groupPoemsByAuthorInitial(publishedPoems) {
-  const groups = new Map();
-  const sorted = publishedPoems
-    .slice()
-    .sort((a, b) => compareAuthorsBySurname(a.author, b.author) || comparePoemsByDateDesc(a, b));
-
-  for (const poem of sorted) {
-    const author = String(poem.author || "").trim() || "Unknown";
-    const initial = authorInitial(author);
-    if (!groups.has(initial)) {
-      groups.set(initial, new Map());
-    }
-
-    const authorsMap = groups.get(initial);
-    if (!authorsMap.has(author)) {
-      authorsMap.set(author, []);
-    }
-
-    authorsMap.get(author).push(poem);
-  }
-
-  return groups;
-}
-
 function groupAuthorPagesByInitial(authorPagesList) {
   const groups = new Map();
   const sorted = authorPagesList
@@ -1985,21 +1822,11 @@ function poetCountNoun(count) {
   return count === 1 ? "poem" : "poems";
 }
 
-function spelloutCount(count) {
-  if (!Number.isInteger(count) || count < 0) {
-    return String(count);
-  }
+function poetMetaLabel(_author, count) {
   if (count === 0) {
-    return "no";
+    return "has no published poems";
   }
-  return integerToWords(String(count)) || String(count);
-}
-
-function poetMetaLabel(author, count) {
-  if (count === 0) {
-    return `${author} does not have a published poem on A Poem Per Day yet.`;
-  }
-  return `${author} has ${spelloutCount(count)} published ${poetCountNoun(count)} on A Poem Per Day.`;
+  return `has ${count} published ${poetCountNoun(count)}`;
 }
 
 async function renderPoetPages(poems, defaultAsOf = "") {
@@ -2025,7 +1852,6 @@ async function renderPoetPages(poems, defaultAsOf = "") {
       .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
       .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
       .replace("{{AUTHOR_ROUTE}}", htmlEscape(authorPage.route))
-      .replace("{{POET_META}}", htmlEscape(poetMetaLabel(authorPage.author, fallbackPoems.length)))
       .replace("{{FALLBACK_POEMS}}", rows)
       .replace("{{PAGE_DATA_URL}}", poetPageDataPath(authorPage.route));
 
@@ -2033,16 +1859,21 @@ async function renderPoetPages(poems, defaultAsOf = "") {
   }
 }
 
-function renderPublishedOnNote(poem) {
-  return `<p class="published-note">Published on ${htmlEscape(longDateLabel(poem.date))}</p>`;
+function renderPublicationNote(poem) {
+  const publicationMeta = renderPublicationMeta(poem);
+  if (!publicationMeta) {
+    return "";
+  }
+  return `<p class="publication-note"><span class="publication-label">Source: </span>${publicationMeta}</p>`;
 }
 
-function renderPoemContent(poem, { includePublishedNote = true } = {}) {
-  const poemHtml = renderPoemMarkdown(poem.poem, poem.highlights);
-  if (!includePublishedNote) {
+function renderPoemContent(poem, { includePublicationNote = true } = {}) {
+  const poemHtml = renderPoemMarkdown(poem.poem);
+  if (!includePublicationNote) {
     return poemHtml;
   }
-  return `${poemHtml}${renderPublishedOnNote(poem)}`;
+  const publicationNote = renderPublicationNote(poem);
+  return publicationNote ? `${poemHtml}${publicationNote}` : poemHtml;
 }
 
 async function renderHomeData(poems, defaultAsOf = "") {
@@ -2051,16 +1882,22 @@ async function renderHomeData(poems, defaultAsOf = "") {
   const visiblePoems = runtimeAsOfEnabled
     ? poems
     : filterPoemsOnOrBefore(poems, publicationCutoff);
+  const recentVisiblePoems = runtimeAsOfEnabled
+    ? []
+    : visiblePoems.slice(-2);
   const upcomingPoems = runtimeAsOfEnabled
     ? []
     : poems.filter((poem) => poem.date > publicationCutoff && poem.date <= clientDataCutoff);
   const home = {
-    poems: visiblePoems.map((poem) => ({
-      title: poem.title,
-      date: poem.date,
-      authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
-      poemHtml: poem.poemHtml || renderPoemContent(poem, { includePublishedNote: false })
-    })),
+    poems: runtimeAsOfEnabled
+      ? await mapWithConcurrency(visiblePoems, async (poem) => ({
+        date: poem.date,
+        pageDataUrl: await renderHomePoemData(poem)
+      }))
+      : recentVisiblePoems.map((poem) => ({
+        date: poem.date,
+        ...homePoemPayload(poem)
+      })),
     upcoming: await mapWithConcurrency(upcomingPoems, async (poem) => ({
       date: poem.date,
       pageDataUrl: await renderHomePoemData(poem)
@@ -2120,6 +1957,9 @@ async function renderPoetPageDataAssets(authorPagesList, defaultAsOf = "") {
         date: poem.date,
         route: poem.route
       }));
+    if (poems.length === 0) {
+      return null;
+    }
     const assetPath = await writeFingerprintedAsset({
       name: `poet-page-data-${authorPage.slug}`,
       extension: ".json",
@@ -2129,7 +1969,7 @@ async function renderPoetPageDataAssets(authorPagesList, defaultAsOf = "") {
     return [authorPage.route, assetPath];
   });
 
-  return Object.fromEntries(entries);
+  return Object.fromEntries(entries.filter(Boolean));
 }
 
 async function buildBundledAssetManifest() {
@@ -2492,13 +2332,11 @@ async function renderRssFeed(poems, defaultAsOf = "") {
 
       const pubDate = rfc822FromYyyyMmDd(poem.date);
       const itemTitle = poem.title;
-      const poemHtml = renderRssPoemMarkdown(poem.poem, poem.highlights);
-      const itemDescription = plainTextExcerpt(poem.searchText || markdownStrip(poem.poem));
-      const contentHtml = poemUsesCustomMarkup(poem.poem)
-        ? `<p>This poem uses special formatting that is not suited for RSS feeds. Please <a href="${htmlEscape(
-            link
-          )}">visit the website to read it</a>.</p>`
-        : poemHtml;
+      const usesCustomMarkup = poemUsesCustomMarkup(poem.poem);
+      const itemDescription = renderRssItemDescription(poem, usesCustomMarkup);
+      const contentHtml = usesCustomMarkup
+        ? renderRssCustomMarkupFallback(link)
+        : renderRssPoemMarkdown(poem.poem);
 
       return `<item>
       <title>${htmlEscape(itemTitle)}</title>

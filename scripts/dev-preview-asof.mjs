@@ -55,23 +55,26 @@ function run() {
     serve.kill("SIGTERM");
   };
 
-  const onExit = (name, code) => {
-    if (code !== 0) {
-      console.error(`${name} exited with code ${code}`);
+  const onExit = (name, code, signal) => {
+    const terminatedByExpectedSignal = shuttingDown && (signal === "SIGTERM" || signal === "SIGINT");
+    if (code === 0 || terminatedByExpectedSignal) {
       terminate();
-      process.exit(code ?? 1);
+      process.exit(0);
       return;
     }
+
+    const reason = signal ? `signal ${signal}` : `code ${code}`;
+    console.error(`${name} exited with ${reason}`);
     terminate();
-    process.exit(0);
+    process.exit(code ?? 1);
   };
 
-  build.on("exit", (code) => {
-    onExit("build", code);
+  build.on("exit", (code, signal) => {
+    onExit("build", code, signal);
   });
 
-  serve.on("exit", (code) => {
-    onExit("serve", code);
+  serve.on("exit", (code, signal) => {
+    onExit("serve", code, signal);
   });
 
   process.on("SIGINT", terminate);

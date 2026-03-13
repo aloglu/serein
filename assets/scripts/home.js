@@ -1,11 +1,11 @@
 import {
   effectiveDateFromQueryOrNow,
-  escapeHtml,
   loadJsonData,
   selectPoemForDate
 } from "./shared/common.js";
 
 function renderHomePoem(poem) {
+  const dateEl = document.getElementById("home-date");
   const titleEl = document.getElementById("home-title");
   const metaEl = document.getElementById("home-meta");
   const contentEl = document.getElementById("home-content");
@@ -14,47 +14,57 @@ function renderHomePoem(poem) {
   }
 
   if (!poem) {
+    if (dateEl) {
+      dateEl.innerHTML = "";
+    }
     titleEl.textContent = "A Poem Per Day";
     metaEl.textContent = "";
     contentEl.innerHTML = '<p class="empty">No poem is available for your local date yet.</p>';
     return;
   }
 
+  if (dateEl) {
+    dateEl.innerHTML = poem.dateHtml || "";
+  }
   titleEl.textContent = poem.title || "A Poem Per Day";
   metaEl.innerHTML = poem.authorMetaHtml || "";
   contentEl.innerHTML = poem.poemHtml || '<p class="empty">Poem content is unavailable.</p>';
 }
 
-function normalizeHomePayload(payload) {
-  if (Array.isArray(payload)) {
-    return {
-      poems: payload,
-      upcoming: []
-    };
+async function resolveHomePoem(entry) {
+  if (!entry) {
+    return null;
   }
-
-  return {
-    poems: Array.isArray(payload?.poems) ? payload.poems : [],
-    upcoming: Array.isArray(payload?.upcoming) ? payload.upcoming : []
-  };
+  if (entry.pageDataUrl) {
+    return loadJsonData(entry.pageDataUrl);
+  }
+  return entry;
 }
 
 async function renderHome(payload, effectiveDate) {
-  const { poems, upcoming } = normalizeHomePayload(payload);
+  const poems = Array.isArray(payload?.poems) ? payload.poems : [];
+  const upcoming = Array.isArray(payload?.upcoming) ? payload.upcoming : [];
   const { current } = selectPoemForDate(poems, effectiveDate);
+  const upcomingEntry = upcoming.find((entry) => entry?.date === effectiveDate);
   if (current?.date === effectiveDate) {
-    renderHomePoem(current);
+    const currentPoem = await resolveHomePoem(current);
+    renderHomePoem(currentPoem);
     return;
   }
 
-  const upcomingEntry = upcoming.find((entry) => entry?.date === effectiveDate && entry?.pageDataUrl);
   if (upcomingEntry) {
-    const upcomingPoem = await loadJsonData(upcomingEntry.pageDataUrl);
+    const upcomingPoem = await resolveHomePoem(upcomingEntry);
     renderHomePoem(upcomingPoem);
     return;
   }
 
-  renderHomePoem(current);
+  if (current) {
+    const currentPoem = await resolveHomePoem(current);
+    renderHomePoem(currentPoem);
+    return;
+  }
+
+  renderHomePoem(null);
 }
 
 async function init() {
@@ -79,10 +89,7 @@ async function init() {
     const poems = await loadJsonData(main.dataset.pageDataUrl || "");
     await renderHome(poems, effectiveDate);
   } catch (error) {
-    const target = document.getElementById("home-content");
-    if (target) {
-      target.innerHTML = `<p class="empty">${escapeHtml(error.message || "Failed to load poems.")}</p>`;
-    }
+    console.error("Failed to refresh home content.", error);
   } finally {
     markReady();
   }

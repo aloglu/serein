@@ -57,6 +57,10 @@ function runBuild(extraEnv = {}) {
   });
 }
 
+function escapeRegex(input) {
+  return String(input).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 async function readDistFile(...segments) {
   return readFile(path.join(distDir, ...segments), "utf8");
 }
@@ -177,6 +181,10 @@ Line two of the synthetic gating fixture.
     assert.equal(Array.isArray(homeData.poems), true);
     assert.equal(Array.isArray(homeData.upcoming), true);
     assert.doesNotMatch(JSON.stringify(homeData), /Line one of the synthetic gating fixture/);
+    assert.equal(homeData.poems.length <= 2, true);
+    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "poemHtml"), true);
+    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "authorMetaHtml"), true);
+    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "pageDataUrl"), false);
     assert.equal(homeData.upcoming.length, 1);
     assert.equal(homeData.upcoming[0]?.date, targetDate);
     assert.match(homeData.upcoming[0]?.pageDataUrl || "", new RegExp(`^/assets/data/home/home-poem-data-${targetDate}-[a-f0-9]{10}\\.json$`));
@@ -211,8 +219,99 @@ Line two of the synthetic gating fixture.
   }
 });
 
+test("home and poem pages render date, byline prefixes, and publication footer separately", { concurrency: false }, async () => {
+  const [targetDate] = await nextUnusedPoemDates(1);
+  const expectedDateLabel = new Intl.DateTimeFormat("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC"
+  }).format(new Date(`${targetDate}T00:00:00Z`));
+  const fixture = {
+    relativePath: poemRelativePath(targetDate, "synthetic-layout-meta-fixture"),
+    contents: `---
+title: Synthetic Layout Meta Fixture
+author: Test Layout Fixture Poet
+translator: Test Layout Fixture Translator
+publication: Synthetic Review
+date: ${targetDate}
+source: https://example.com/layout-source
+---
+
+Synthetic layout fixture line one.
+Synthetic layout fixture line two.
+`
+  };
+
+  try {
+    const fullPath = path.join(poemsDir, fixture.relativePath);
+    await mkdir(path.dirname(fullPath), { recursive: true });
+    await writeFile(fullPath, fixture.contents, "utf8");
+
+    await runBuild({ SEREIN_AS_OF: targetDate });
+
+    const poemPageHtml = await readDistFile(...targetDate.split("-").flatMap((part, index) => (
+      index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
+    )));
+    assert.match(poemPageHtml, new RegExp(`<p class="meta poem-date"><time datetime="${targetDate}">${expectedDateLabel}<\\/time><\\/p>`));
+    assert.match(poemPageHtml, /<span class="poem-meta-label poem-meta-label-author">By<\/span><span class="poem-meta-value poem-meta-value-author"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
+    assert.doesNotMatch(poemPageHtml, /translated by/);
+    assert.doesNotMatch(poemPageHtml, /Published on/);
+    assert.match(poemPageHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
+
+    const homeHtml = await readDistFile("index.html");
+    assert.match(homeHtml, new RegExp(`<p id="home-date" class="meta poem-date"><time datetime="${targetDate}">${expectedDateLabel}<\\/time><\\/p>`));
+    assert.match(homeHtml, /<span class="poem-meta-label poem-meta-label-author">By<\/span><span class="poem-meta-value poem-meta-value-author"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
+    assert.match(homeHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
+  } finally {
+    await rm(path.join(poemsDir, fixture.relativePath), { force: true });
+  }
+});
+
+test("rss falls back cleanly for poems that use custom markup", { concurrency: false }, async () => {
+  const [targetDate] = await nextUnusedPoemDates(1);
+  const fixture = {
+    relativePath: poemRelativePath(targetDate, "rss-custom-markup-fixture"),
+    contents: `---
+title: RSS Custom Markup Fixture
+author: Test RSS Poet
+date: ${targetDate}
+---
+
+::line |<left phrase| |~4ch| |>right phrase|
+`
+  };
+
+  try {
+    const fullPath = path.join(poemsDir, fixture.relativePath);
+    await mkdir(path.dirname(fullPath), { recursive: true });
+    await writeFile(fullPath, fixture.contents, "utf8");
+
+    await runBuild({ SEREIN_AS_OF: targetDate });
+
+    const rssXml = await readDistFile("rss.xml");
+    const poemLink = `${defaultSiteUrl}/${targetDate.replaceAll("-", "/")}/`;
+    const itemMatch = rssXml.match(new RegExp(
+      `<item>[\\s\\S]*?<title>RSS Custom Markup Fixture<\\/title>[\\s\\S]*?<link>${escapeRegex(poemLink)}<\\/link>[\\s\\S]*?<description><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/description>[\\s\\S]*?<content:encoded><!\\[CDATA\\[([\\s\\S]*?)\\]\\]><\\/content:encoded>[\\s\\S]*?<\\/item>`
+    ));
+
+    assert.ok(itemMatch, "Expected RSS item for the custom-markup fixture");
+    assert.equal(
+      itemMatch[1],
+      "RSS Custom Markup Fixture by Test RSS Poet. This poem uses special formatting. Visit the website to read it."
+    );
+    assert.equal(
+      itemMatch[2],
+      `<p>This poem uses special formatting that is not suited for RSS feeds. Please <a href="${poemLink}">visit the website to read it</a>.</p>`
+    );
+    assert.doesNotMatch(itemMatch[1], /::line/);
+  } finally {
+    await rm(path.join(poemsDir, fixture.relativePath), { force: true });
+  }
+});
+
 test("poets fallback uses canonical author routes even when future-only authors share a slug", { concurrency: false }, async () => {
-  const [publishedDate, futureDate] = await nextUnusedPoemDates(2);
+  const [publishedDate, , futureDate] = await nextUnusedPoemDates(3);
   // Temporary synthetic poem fixtures created for this test and removed in the finally block.
   const fixtures = [
     {
@@ -259,10 +358,17 @@ Synthetic future route collision fixture.
     const publishedPoetPage = await readDistFile("poets", "test-zebra-2", "index.html");
     assert.match(publishedPoetPage, /<title>Test Zebra \| A Poem Per Day<\/title>/);
     assert.match(publishedPoetPage, /content="index, follow"/);
+    assert.match(publishedPoetPage, /<h1 id="poet-page-author">Test Zebra<\/h1>\s*<div class="content-block poet-page-content">/);
+    assert.doesNotMatch(publishedPoetPage, /poet-page-meta/);
+    assert.doesNotMatch(publishedPoetPage, /Test Zebra has one published poem on A Poem Per Day\./);
 
     const futureOnlyPoetPage = await readDistFile("poets", "test-zebra", "index.html");
     assert.match(futureOnlyPoetPage, /<title>Test-Zebra \| A Poem Per Day<\/title>/);
     assert.match(futureOnlyPoetPage, /content="noindex, nofollow"/);
+    assert.match(futureOnlyPoetPage, /data-page-data-url=""/);
+
+    const poetDataFiles = await readDirNamesIfExists(path.join(distDir, "assets", "data", "poets"));
+    assert.doesNotMatch(poetDataFiles.join("\n"), /^poet-page-data-test-zebra-[a-f0-9]{10}\.json$/m);
   } finally {
     for (const fixture of fixtures) {
       await rm(path.join(poemsDir, fixture.relativePath), { force: true });

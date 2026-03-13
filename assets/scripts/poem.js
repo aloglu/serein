@@ -23,7 +23,7 @@ function setMetaContent(selector, value) {
 
 function renderBlockedPoem(main, { withCountdown = true } = {}) {
   const titleEl = main.querySelector("h1");
-  const metaEl = main.querySelector(".meta");
+  const metaEl = main.querySelector(".poem-meta");
   const contentEl = document.getElementById("poem-content");
 
   document.title = blockedTitle;
@@ -49,7 +49,7 @@ function renderBlockedPoem(main, { withCountdown = true } = {}) {
 
 function renderPublishedPoem(main, poem) {
   const titleEl = main.querySelector("h1");
-  const metaEl = main.querySelector(".meta");
+  const metaEl = main.querySelector(".poem-meta");
   const contentEl = document.getElementById("poem-content");
   const pageTitle = poem?.title ? `${poem.title} | A Poem Per Day` : "A Poem Per Day";
 

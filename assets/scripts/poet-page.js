@@ -2,7 +2,6 @@ import {
   sortMapKeysDesc,
   effectiveDateFromQueryOrNow,
   escapeHtml,
-  formatPublishedPoemCount,
   groupByYearMonth,
   loadJsonData,
   monthLabel,
@@ -11,17 +10,12 @@ import {
 
 function renderAuthorArchive(poems, effectiveDate) {
   const treeEl = document.getElementById("poet-page-tree");
-  const metaEl = document.getElementById("poet-page-meta");
   if (!treeEl) {
     return;
   }
 
   const { visible } = selectPoemForDate(poems, effectiveDate);
   const authoredPoems = visible;
-
-  if (metaEl) {
-    metaEl.textContent = formatPublishedPoemCount(authoredPoems.length);
-  }
 
   if (authoredPoems.length === 0) {
     const authorName = document.getElementById("poet-page-author")?.textContent || "this poet";
@@ -78,7 +72,11 @@ async function init() {
   }
 
   try {
-    const poems = await loadJsonData(main.dataset.pageDataUrl || "");
+    const dataUrl = main.dataset.pageDataUrl || "";
+    if (!dataUrl) {
+      return;
+    }
+    const poems = await loadJsonData(dataUrl);
     renderAuthorArchive(poems, effectiveDate);
   } catch (error) {
     const target = document.getElementById("poet-page-tree");

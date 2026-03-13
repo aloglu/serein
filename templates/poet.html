@@ -51,14 +51,13 @@
   <link rel="icon" type="image/png" sizes="32x32" href="{{FAVICON_32_PATH}}">
   <link rel="apple-touch-icon" sizes="180x180" href="{{APPLE_TOUCH_ICON_PATH}}">
 </head>
-<body>
-  <main data-default-as-of="{{DEFAULT_AS_OF}}" data-rendered-as-of="{{RENDERED_AS_OF}}" data-author-route="{{AUTHOR_ROUTE}}" data-page-data-url="{{PAGE_DATA_URL}}" data-dynamic-page="1">
-    <h1 id="poet-page-author">{{AUTHOR}}</h1>
-    <div class="content-block">
-      <div id="poet-page-tree" class="archive-tree">{{FALLBACK_POEMS}}</div>
-      <p class="published-note poet-page-note" id="poet-page-meta">{{POET_META}}</p>
-    </div>
-  </main>
+  <body>
+    <main data-default-as-of="{{DEFAULT_AS_OF}}" data-rendered-as-of="{{RENDERED_AS_OF}}" data-author-route="{{AUTHOR_ROUTE}}" data-page-data-url="{{PAGE_DATA_URL}}" data-dynamic-page="1">
+      <h1 id="poet-page-author">{{AUTHOR}}</h1>
+      <div class="content-block poet-page-content">
+        <div id="poet-page-tree" class="archive-tree">{{FALLBACK_POEMS}}</div>
+      </div>
+    </main>
   {{FOOTER}}
   <script src="{{SCRIPT_PATH}}" defer></script>
 </body>
