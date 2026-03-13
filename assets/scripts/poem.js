@@ -4,11 +4,14 @@ import {
   loadJsonData,
   runtimeAsOfEnabled
 } from "./shared/common.js";
+import { initLinkPrefetching } from "./shared/prefetch.js";
 import {
   formatFutureAvailabilityCountdown,
   nextFutureAvailabilityDelay,
   startScheduledCountdown
 } from "./shared/countdown.js";
+
+initLinkPrefetching();
 
 const blockedHeading = "Not Available Yet";
 const blockedTitle = `${blockedHeading} | A Poem Per Day`;

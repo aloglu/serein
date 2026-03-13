@@ -439,3 +439,31 @@ Synthetic two-day horizon fixture.
     }
   }
 });
+
+test("page bundles include guarded link prefetching for likely next navigations", { concurrency: false }, async () => {
+  await runBuild();
+
+  const homeHtml = await readDistFile("index.html");
+  assert.match(homeHtml, /data-prefetch="eager">Archive<\/a>/);
+  assert.match(homeHtml, /data-prefetch="eager">About<\/a>/);
+
+  const bundlePatterns = [
+    /^home-[A-Z0-9]+\.js$/,
+    /^archive-[A-Z0-9]+\.js$/,
+    /^poets-[A-Z0-9]+\.js$/,
+    /^poetPage-[A-Z0-9]+\.js$/,
+    /^about-[A-Z0-9]+\.js$/,
+    /^poem-[A-Z0-9]+\.js$/
+  ];
+
+  for (const pattern of bundlePatterns) {
+    const bundlePath = await findDistFile("assets", pattern);
+    const contents = await readFile(bundlePath, "utf8");
+    assert.match(contents, /prefetch/);
+    assert.match(contents, /pointerenter/);
+    assert.match(contents, /touchstart/);
+    assert.match(contents, /saveData/);
+    assert.match(contents, /requestIdleCallback/);
+    assert.match(contents, /data-prefetch="eager"|data-prefetch=\\"eager\\"/);
+  }
+});

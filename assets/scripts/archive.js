@@ -8,6 +8,9 @@ import {
   parseDateParts,
   selectPoemForDate
 } from "./shared/common.js";
+import { initLinkPrefetching } from "./shared/prefetch.js";
+
+initLinkPrefetching();
 
 function renderArchive(poems, effectiveDate) {
   const treeEl = document.getElementById("archive-tree");

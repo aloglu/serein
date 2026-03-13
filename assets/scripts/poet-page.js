@@ -7,6 +7,9 @@ import {
   monthLabel,
   selectPoemForDate
 } from "./shared/common.js";
+import { initLinkPrefetching } from "./shared/prefetch.js";
+
+initLinkPrefetching();
 
 function renderAuthorArchive(poems, effectiveDate) {
   const treeEl = document.getElementById("poet-page-tree");

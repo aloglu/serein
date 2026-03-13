@@ -8,6 +8,9 @@ import {
   sortAuthors,
   selectPoemForDate
 } from "./shared/common.js";
+import { initLinkPrefetching } from "./shared/prefetch.js";
+
+initLinkPrefetching();
 
 function renderPoets(poems, effectiveDate) {
   const treeEl = document.getElementById("poets-tree");

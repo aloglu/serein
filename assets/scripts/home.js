@@ -3,6 +3,9 @@ import {
   loadJsonData,
   selectPoemForDate
 } from "./shared/common.js";
+import { initLinkPrefetching } from "./shared/prefetch.js";
+
+initLinkPrefetching();
 
 function renderHomePoem(poem) {
   const dateEl = document.getElementById("home-date");

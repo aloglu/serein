@@ -1255,10 +1255,10 @@ function renderFooter(routePath) {
   const prefix = relativePrefix(routePath);
   const links = [];
   if (routePath !== "/") {
-    links.push(`<a href="${prefix}">Today</a>`);
+    links.push(`<a href="${prefix}" data-prefetch="eager">Today</a>`);
   }
-  links.push(`<a href="${prefix}archive/">Archive</a>`);
-  links.push(`<a href="${prefix}about/">About</a>`);
+  links.push(`<a href="${prefix}archive/" data-prefetch="eager">Archive</a>`);
+  links.push(`<a href="${prefix}about/" data-prefetch="eager">About</a>`);
   return `<footer class="site-footer">${links.join('<span aria-hidden="true" class="separator-mark">&bull;</span>')}</footer>`;
 }
 
@@ -2262,7 +2262,7 @@ async function renderNotFoundPage() {
       <p><a href="/">Go to Today</a> or browse the <a href="/archive/">archive</a>.</p>
     </article>
   </main>
-  <footer class="site-footer"><a href="/">Today</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/archive/">Archive</a><span aria-hidden="true" class="separator-mark">&bull;</span><a href="/about/">About</a></footer>
+  ${renderFooter("/")}
 </body>
 </html>
 `;
