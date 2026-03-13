@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import process from "node:process";
 
 function readArgValue(flagName) {
@@ -38,12 +38,21 @@ function run() {
   if (!npmCli) {
     throw new Error("Could not resolve npm CLI path from npm_execpath.");
   }
+  const initialBuildArgs = ["scripts/build.mjs"];
   const buildArgs = ["scripts/build.mjs", "--watch"];
   if (asOf) {
+    initialBuildArgs.push("--as-of", asOf);
     buildArgs.push("--as-of", asOf);
   }
+  const initialBuild = spawnSync(nodeBin, initialBuildArgs, { stdio: "inherit", env });
+  if ((initialBuild.status ?? 0) !== 0) {
+    process.exit(initialBuild.status ?? 1);
+  }
+  if (initialBuild.signal) {
+    process.exit(1);
+  }
   const build = spawn(nodeBin, buildArgs, { stdio: "inherit", env });
-  const serve = spawn(nodeBin, [npmCli, "run", "preview"], { stdio: "inherit", env });
+  const serve = spawn(nodeBin, [npmCli, "run", "preview:serve"], { stdio: "inherit", env });
 
   let shuttingDown = false;
   const terminate = () => {

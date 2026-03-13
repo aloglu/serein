@@ -11,8 +11,9 @@
     "normalize:filenames": "node scripts/normalize-poems.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",
     "editorial:links": "node scripts/editorial-check-links.mjs",
-    "preview": "serve dist",
-    "dev:preview": "concurrently -k -n build,serve -c yellow,cyan \"npm run dev\" \"npm run preview\"",
+    "preview": "npm run build && npm run preview:serve --",
+    "preview:serve": "serve dist",
+    "dev:preview": "npm run build && concurrently -k -n build,serve -c yellow,cyan \"npm run dev\" \"npm run preview:serve\"",
     "dev:preview:asof": "node scripts/dev-preview-asof.mjs"
   },
   "engines": {
