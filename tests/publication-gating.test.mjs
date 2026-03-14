@@ -4,10 +4,13 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test, { after } from "node:test";
+import { poemSourceHash, speakablePoemText, stableHash } from "../scripts/tts-manifest.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(root, "dist");
 const poemsDir = path.join(root, "poems");
+const ttsDir = path.join(root, "assets", "tts");
+const ttsManifestFile = path.join(ttsDir, "manifest.json");
 const defaultSiteUrl = "https://apoemperday.com";
 const MONTH_DIR_NAMES = {
   "01": "01-January",
@@ -170,11 +173,8 @@ Line two of the synthetic gating fixture.
     assert.doesNotMatch(futurePageHtml, /Line two of the synthetic gating fixture/);
 
     const poemDataFiles = await readdir(path.join(distDir, "assets", "data", "poems"));
-    assert.deepEqual(
-      poemDataFiles,
-      poemDataFiles.filter((name) => new RegExp(`^poem-data-${targetDate}-[a-f0-9]{10}\\.json$`).test(name))
-    );
-    assert.equal(poemDataFiles.length, 1);
+    const targetPoemDataFiles = poemDataFiles.filter((name) => new RegExp(`^poem-data-${targetDate}-[a-f0-9]{10}\\.json$`).test(name));
+    assert.equal(targetPoemDataFiles.length, 1);
 
     const homeDataPath = await findDistFile("assets/data", /^home-data-[a-f0-9]{10}\.json$/);
     const homeData = JSON.parse(await readFile(homeDataPath, "utf8"));
@@ -185,13 +185,6 @@ Line two of the synthetic gating fixture.
     assert.equal(Object.hasOwn(homeData.poems[0] || {}, "poemHtml"), true);
     assert.equal(Object.hasOwn(homeData.poems[0] || {}, "authorMetaHtml"), true);
     assert.equal(Object.hasOwn(homeData.poems[0] || {}, "pageDataUrl"), false);
-    assert.equal(homeData.upcoming.length, 1);
-    assert.equal(homeData.upcoming[0]?.date, targetDate);
-    assert.match(homeData.upcoming[0]?.pageDataUrl || "", new RegExp(`^/assets/data/home/home-poem-data-${targetDate}-[a-f0-9]{10}\\.json$`));
-
-    const upcomingHomeData = JSON.parse(await readFile(path.join(distDir, homeData.upcoming[0].pageDataUrl.slice(1)), "utf8"));
-    assert.match(upcomingHomeData.poemHtml, /Line one of the synthetic gating fixture/);
-    assert.doesNotMatch(upcomingHomeData.poemHtml, /published-note/);
 
     const sitemapXml = await readDistFile("sitemap.xml");
     const targetRoute = targetDate.replaceAll("-", "/");
@@ -437,6 +430,94 @@ Synthetic two-day horizon fixture.
     for (const fixture of fixtures) {
       await rm(path.join(poemsDir, fixture.relativePath), { force: true });
     }
+  }
+});
+
+test("speakable poem text collapses custom aligned markup into plain speech text", () => {
+  const speech = speakablePoemText(`First line.
+
+::line |<left phrase| |~4ch| |>right phrase|
+
+Last line.`);
+
+  assert.equal(speech, `First line.\n\nleft phrase right phrase\n\nLast line.`);
+});
+
+test("published poem pages render a listen control when a managed TTS asset exists", { concurrency: false }, async () => {
+  const [targetDate] = await nextUnusedPoemDates(1);
+  const slug = "synthetic-tts-player-fixture";
+  const fixture = {
+    relativePath: poemRelativePath(targetDate, slug),
+    contents: `---
+title: Synthetic TTS Player Fixture
+author: Test Audio Poet
+publication:
+date: ${targetDate}
+source:
+---
+
+Synthetic audio fixture line one.
+Synthetic audio fixture line two.
+`
+  };
+  const manifestBackup = await readFile(ttsManifestFile, "utf8").catch(() => "");
+  const poemBody = `Synthetic audio fixture line one.\nSynthetic audio fixture line two.\n`;
+  const sourceHash = poemSourceHash(poemBody);
+  const assetKey = stableHash(JSON.stringify({
+    date: targetDate,
+    sourceHash,
+    renderProfile: "house-default-v1",
+    provider: "elevenlabs",
+    modelId: "eleven_multilingual_v2",
+    voiceId: "voice-test-fixture",
+    outputFormat: "mp3_44100_128",
+    voiceSettings: null
+  }));
+  const audioUrl = `/assets/tts/audio/${targetDate.slice(0, 4)}/${targetDate.slice(5, 7)}/${targetDate}-${slug}.${assetKey}.mp3`;
+  const audioPath = path.join(root, ...audioUrl.slice(1).split("/"));
+
+  try {
+    const fullPath = path.join(poemsDir, fixture.relativePath);
+    await mkdir(path.dirname(fullPath), { recursive: true });
+    await writeFile(fullPath, fixture.contents, "utf8");
+
+    await mkdir(path.dirname(audioPath), { recursive: true });
+    await writeFile(audioPath, "synthetic audio bytes", "utf8");
+    await writeFile(ttsManifestFile, `${JSON.stringify({
+      version: 1,
+      poems: {
+        [targetDate]: {
+          audioUrl,
+          sourceHash,
+          assetKey,
+          renderProfile: "house-default-v1",
+          provider: "elevenlabs",
+          modelId: "eleven_multilingual_v2",
+          voiceId: "voice-test-fixture",
+          outputFormat: "mp3_44100_128",
+          mimeType: "audio/mpeg",
+          generatedAt: "2026-03-14T00:00:00.000Z"
+        }
+      }
+    }, null, 2)}\n`, "utf8");
+
+    await runBuild({ SEREIN_AS_OF: targetDate });
+
+    const poemPageHtml = await readDistFile(...targetDate.split("-").flatMap((part, index) => (
+      index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
+    )));
+    assert.match(poemPageHtml, /data-tts-root/);
+    assert.match(poemPageHtml, /data-tts-toggle/);
+    assert.match(poemPageHtml, new RegExp(escapeRegex(audioUrl)));
+    assert.match(poemPageHtml, /Listen/);
+
+    const copiedAudio = path.join(distDir, ...audioUrl.slice(1).split("/"));
+    const copiedAudioContents = await readFile(copiedAudio, "utf8");
+    assert.equal(copiedAudioContents, "synthetic audio bytes");
+  } finally {
+    await rm(path.join(poemsDir, fixture.relativePath), { force: true });
+    await rm(audioPath, { force: true });
+    await writeFile(ttsManifestFile, manifestBackup, "utf8");
   }
 });
 

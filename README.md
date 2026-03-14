@@ -27,6 +27,10 @@ That pipeline is responsible for:
 
 The project targets Node.js 24 and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks.
 
+## TTS support
+
+The website supports pre-generated text-to-speech audio for poem pages.
+
 ## Content model
 
 Each poem is stored as a Markdown file with frontmatter.

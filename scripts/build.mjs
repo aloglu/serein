@@ -5,6 +5,7 @@ import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { marked } from "marked";
 import { expectedPoemFilename } from "./poem-filenames.mjs";
+import { audioUrlToRepoPath, loadTtsManifest } from "./tts-manifest.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
@@ -51,6 +52,7 @@ let socialCardStats = { generated: 0, cached: 0 };
 let socialCardFontConfigPath = "";
 let homePoemDataCache = new Map();
 let poemPageDataCache = new Map();
+let ttsManifest = { version: 1, poems: {} };
 const SOCIAL_CARD_CACHE_VERSION = "png-v3";
 const BACKGROUND_TASK_CONCURRENCY = 4;
 
@@ -251,6 +253,46 @@ async function fileExists(filePath) {
   } catch {
     return false;
   }
+}
+
+async function copyDirectoryContents(sourceDir, targetDir) {
+  if (!(await fileExists(sourceDir))) {
+    return;
+  }
+
+  await mkdir(targetDir, { recursive: true });
+  const entries = await readdir(sourceDir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const sourcePath = path.join(sourceDir, entry.name);
+    const targetPath = path.join(targetDir, entry.name);
+    if (entry.isDirectory()) {
+      await copyDirectoryContents(sourcePath, targetPath);
+      continue;
+    }
+    if (entry.isFile()) {
+      await mkdir(path.dirname(targetPath), { recursive: true });
+      await copyFile(sourcePath, targetPath);
+    }
+  }
+}
+
+async function loadValidatedTtsManifest() {
+  const manifest = await loadTtsManifest(root);
+  const poems = {};
+
+  for (const [date, entry] of Object.entries(manifest.poems || {})) {
+    const audioPath = audioUrlToRepoPath(entry.audioUrl, root);
+    if (!audioPath || !(await fileExists(audioPath))) {
+      continue;
+    }
+    poems[date] = entry;
+  }
+
+  return {
+    version: manifest.version,
+    poems
+  };
 }
 
 function outputWebPath(filePath) {
@@ -1347,6 +1389,40 @@ function renderBlockedPoemContent() {
   return '<p>This poem will become available in <strong id="future-availability-countdown">--</strong> in your local time.</p>';
 }
 
+function ttsDataForPoem(poem) {
+  const entry = ttsManifest?.poems?.[poem.date];
+  if (!entry?.audioUrl) {
+    return null;
+  }
+
+  return {
+    audioUrl: entry.audioUrl,
+    mimeType: entry.mimeType || "audio/mpeg",
+    renderProfile: entry.renderProfile || ""
+  };
+}
+
+function renderPoemTtsBlock(tts) {
+  if (!tts?.audioUrl) {
+    return "";
+  }
+
+  return `<div class="poem-tts" data-tts-root>
+    <button class="tts-toggle" type="button" data-tts-toggle aria-label="Listen to this poem">
+      <span class="tts-toggle-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+          <path d="M3 9v6h4l5 4V5L7 9H3Zm12.5 3a4.5 4.5 0 0 0-2.35-3.95v7.9A4.5 4.5 0 0 0 15.5 12Zm-2.35-8.77v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54Z"></path>
+        </svg>
+      </span>
+      <span class="tts-toggle-label" data-tts-label>Listen</span>
+    </button>
+    <p class="meta poem-tts-status" data-tts-status aria-live="polite"></p>
+    <audio preload="none" data-tts-audio>
+      <source src="${htmlEscape(tts.audioUrl)}" type="${htmlEscape(tts.mimeType || "audio/mpeg")}">
+    </audio>
+  </div>`;
+}
+
 async function renderPoemPageData(poem) {
   if (poemPageDataCache.has(poem.date)) {
     return poemPageDataCache.get(poem.date);
@@ -1361,7 +1437,8 @@ async function renderPoemPageData(poem) {
       author: poem.author,
       description: poemMetaDescription(poem),
       authorMetaHtml: poem.authorMetaHtml || renderAuthorMeta(poem),
-      poemHtml: poem.poemHtml || renderPoemContent(poem)
+      poemHtml: poem.poemHtml || renderPoemContent(poem),
+      tts: ttsDataForPoem(poem)
     })
   });
   poemPageDataCache.set(poem.date, assetPath);
@@ -1398,6 +1475,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
   const poemHtml = blocked
     ? renderBlockedPoemContent()
     : (poem.poemHtml || renderPoemContent(poem));
+  const poemTts = blocked ? "" : renderPoemTtsBlock(ttsDataForPoem(poem));
   return withCommonPageAssets(template, routePath, {
     scriptName: "poem",
     robotsMeta: noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">',
@@ -1418,6 +1496,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replace("{{POEM_BLOCKED}}", blocked ? "1" : "0")
     .replace("{{PAGE_DATA_URL}}", pageDataUrl ? routeRelativeAssetUrl(routePath, pageDataUrl) : "")
     .replaceAll("{{AUTHOR_META}}", authorMeta)
+    .replace("{{TTS_BLOCK}}", poemTts)
     .replaceAll("{{POEM_TEXT}}", poemHtml);
 }
 
@@ -2032,12 +2111,13 @@ async function buildBundledAssetManifest() {
 }
 
 async function buildAssetManifest(poems, defaultAsOf = "") {
-  const [bundledAssets, homeData, archiveData, poetsData, poetPageData, circle32, circle192, circle512, ios180] = await Promise.all([
+  const [bundledAssets, homeData, archiveData, poetsData, poetPageData, _copiedTtsAudio, circle32, circle192, circle512, ios180] = await Promise.all([
     buildBundledAssetManifest(),
     renderHomeData(poems, defaultAsOf),
     renderArchiveData(poems, defaultAsOf),
     renderPoetsData(poems, defaultAsOf),
     renderPoetPageDataAssets(authorPages, defaultAsOf),
+    copyDirectoryContents(path.join(assetsDir, "tts", "audio"), path.join(distDir, "assets", "tts", "audio")),
     copyFingerprintedAsset(iconSourceEntries.circle32, { subdir: "assets/branding" }),
     copyFingerprintedAsset(iconSourceEntries.circle192, { subdir: "assets/branding" }),
     copyFingerprintedAsset(iconSourceEntries.circle512, { subdir: "assets/branding" }),
@@ -2388,6 +2468,7 @@ export async function build() {
   socialCardStats = { generated: 0, cached: 0 };
   homePoemDataCache = new Map();
   poemPageDataCache = new Map();
+  ttsManifest = await loadValidatedTtsManifest();
   const loadedPoems = await loadPoems();
   authorPages = buildAuthorPages(loadedPoems);
   const poems = preparePoems(loadedPoems, authorRouteMap(authorPages));

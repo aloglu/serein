@@ -1,0 +1,60 @@
+name: Sync TTS Assets
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "poems/**"
+      - "scripts/tts-*.mjs"
+      - "scripts/tts-config.mjs"
+      - "scripts/tts-manifest.mjs"
+      - "package.json"
+      - "package-lock.json"
+  schedule:
+    # Run shortly before the daily Pages deploy window.
+    - cron: "30 20 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.event_name != 'push' || github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync generated TTS assets
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ vars.ELEVENLABS_VOICE_ID }}
+          ELEVENLABS_MODEL_ID: ${{ vars.ELEVENLABS_MODEL_ID }}
+          ELEVENLABS_OUTPUT_FORMAT: ${{ vars.ELEVENLABS_OUTPUT_FORMAT }}
+          ELEVENLABS_VOICE_SETTINGS: ${{ vars.ELEVENLABS_VOICE_SETTINGS }}
+          TTS_RENDER_PROFILE: ${{ vars.TTS_RENDER_PROFILE }}
+        run: npm run tts:sync
+
+      - name: Commit generated assets
+        run: |
+          if git diff --quiet -- assets/tts; then
+            echo "No TTS asset changes to commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/tts
+          git commit -m "chore(tts): sync generated assets"
+          git push
