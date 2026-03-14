@@ -4,6 +4,7 @@ import {
   selectPoemForDate
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
+import { bindTtsPlayers, resetTtsPlayback } from "./shared/tts.js";
 
 initLinkPrefetching();
 
@@ -26,11 +27,13 @@ function renderHomePoem(poem) {
     return;
   }
 
+  resetTtsPlayback();
   if (dateEl) {
     dateEl.innerHTML = poem.dateHtml || "";
   }
   titleEl.textContent = poem.title || "A Poem Per Day";
   metaEl.innerHTML = poem.authorMetaHtml || "";
+  bindTtsPlayers(metaEl);
   contentEl.innerHTML = poem.poemHtml || '<p class="empty">Poem content is unavailable.</p>';
 }
 
@@ -84,6 +87,7 @@ async function init() {
   const renderedAsOf = main.dataset.renderedAsOf || "";
   const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
   if (/^\d{4}-\d{2}-\d{2}$/.test(renderedAsOf) && renderedAsOf === effectiveDate) {
+    bindTtsPlayers(main);
     markReady();
     return;
   }

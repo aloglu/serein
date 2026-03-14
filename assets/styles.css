@@ -126,7 +126,16 @@ a::after {
   right: -4px;
   bottom: 0.02em;
   height: 1.05em;
-  background: url("./highlights/light-yellow.svg") center / 100% 100% no-repeat;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    transparent 18%,
+    color-mix(in oklab, #f0d98f, transparent 36%) 18%,
+    color-mix(in oklab, #f0d98f, transparent 12%) 88%,
+    transparent 88%,
+    transparent 100%
+  );
+  border-radius: 0.2em;
   opacity: 0;
   pointer-events: none;
   z-index: -1;
@@ -186,10 +195,6 @@ main > h1:first-child {
   font-size: 1.06rem;
 }
 
-#poem-tts-slot:empty {
-  display: none;
-}
-
 .poem-meta-block {
   display: flex;
   flex-wrap: wrap;
@@ -242,60 +247,47 @@ main > h1:first-child {
   margin: 0 0.35rem;
 }
 
-.poem-tts {
-  display: flex;
+.poem-meta-tts {
+  display: inline-flex;
   align-items: center;
-  gap: 0.9rem;
-  margin-top: 1.4rem;
+  line-height: 1;
 }
 
 .tts-toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.62rem;
-  padding: 0.68rem 1rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--card-bg);
-  color: var(--text);
+  justify-content: center;
+  min-width: 1rem;
+  min-height: 1rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--byline-poet);
   font: inherit;
+  font-size: 0.92rem;
+  line-height: 1;
   cursor: pointer;
-  box-shadow: var(--card-shadow);
-  transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  transition: color 160ms ease, opacity 160ms ease;
 }
 
 .tts-toggle:hover,
 .tts-toggle:focus-visible {
-  border-color: color-mix(in oklab, var(--text), var(--border) 55%);
-  background: color-mix(in oklab, var(--card-bg) 88%, white);
-  transform: translateY(-1px);
+  color: var(--byline-link-hover);
+}
+
+.tts-toggle:focus-visible {
+  outline: 1px solid color-mix(in oklab, var(--byline-link-hover), transparent 55%);
+  outline-offset: 0.16rem;
+}
+
+.tts-toggle[aria-busy="true"] {
+  opacity: 0.72;
 }
 
 .tts-toggle-icon {
-  display: inline-flex;
-  width: 1.1rem;
-  height: 1.1rem;
-}
-
-.tts-toggle-icon svg {
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
-}
-
-.tts-toggle-label {
-  font-size: 0.98rem;
-}
-
-.poem-tts-status {
-  margin: 0;
-  min-height: 1.1rem;
-  color: var(--subtle-meta);
-  font-size: 0.84rem;
-}
-
-.poem-tts audio {
-  display: none;
+  display: inline-block;
+  min-width: 1em;
+  text-align: center;
 }
 
 .content-block {

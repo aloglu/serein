@@ -1,8 +1,9 @@
-import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { loadPoems } from "./build.mjs";
 import { assertTtsProfileIsReady, resolveTtsProfile } from "./tts-config.mjs";
+import { assetKeyForPoem, listManagedAudioFiles, selectedDates } from "./tts-pipeline.mjs";
 import {
   audioUrlToRepoPath,
   buildManagedAudioUrl,
@@ -10,7 +11,6 @@ import {
   loadTtsManifest,
   poemSourceHash,
   speakablePoemText,
-  stableHash,
   ttsAudioDir,
   writeTtsManifest
 } from "./tts-manifest.mjs";
@@ -18,27 +18,6 @@ import {
 const root = process.cwd();
 const dryRun = process.argv.includes("--dry-run");
 const force = process.argv.includes("--force");
-
-function readArgValue(flagName) {
-  const index = process.argv.indexOf(flagName);
-  if (index < 0) {
-    return "";
-  }
-  return String(process.argv[index + 1] || "").trim();
-}
-
-function selectedDates() {
-  const raw = readArgValue("--date");
-  if (!raw) {
-    return new Set();
-  }
-  return new Set(
-    raw
-      .split(",")
-      .map((value) => value.trim())
-      .filter(Boolean)
-  );
-}
 
 async function fetchOpenAiAudio({ profile, text }) {
   const endpoint = "https://api.openai.com/v1/audio/speech";
@@ -75,28 +54,6 @@ async function fetchOpenAiAudio({ profile, text }) {
   return Buffer.from(await response.arrayBuffer());
 }
 
-async function listManagedAudioFiles(dirPath) {
-  if (!(await fileExists(dirPath))) {
-    return [];
-  }
-
-  const entries = await readdir(dirPath, { withFileTypes: true });
-  const files = [];
-
-  for (const entry of entries) {
-    const fullPath = path.join(dirPath, entry.name);
-    if (entry.isDirectory()) {
-      files.push(...await listManagedAudioFiles(fullPath));
-      continue;
-    }
-    if (entry.isFile()) {
-      files.push(fullPath);
-    }
-  }
-
-  return files;
-}
-
 async function pruneUnusedAudioFiles(activeAudioUrls) {
   const managedRoot = ttsAudioDir(root);
   const activePaths = new Set(
@@ -124,20 +81,6 @@ async function pruneUnusedAudioFiles(activeAudioUrls) {
   }
 
   return deletedCount;
-}
-
-function assetKeyForPoem({ poem, profile, sourceHash }) {
-  return stableHash(JSON.stringify({
-    date: poem.date,
-    sourceHash,
-    renderProfile: profile.renderProfile,
-    provider: profile.provider,
-    modelId: profile.modelId,
-    voice: profile.voice,
-    outputFormat: profile.outputFormat,
-    instructions: profile.instructions,
-    speed: profile.speed
-  }));
 }
 
 async function main() {

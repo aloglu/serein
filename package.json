@@ -5,19 +5,14 @@
   "description": "Markdown-first static daily poem publisher",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "dev": "node scripts/build.mjs --watch",
     "test": "node --test",
     "normalize:poems": "node scripts/normalize-poems.mjs",
-    "normalize:filenames": "node scripts/normalize-poems.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",
-    "editorial:links": "node scripts/editorial-check-links.mjs",
+    "tts:poem": "node scripts/tts-poem.mjs",
     "tts:sync": "node scripts/tts-sync.mjs",
-    "tts:sync:dry-run": "node scripts/tts-sync.mjs --dry-run",
-    "tts:voices": "node scripts/tts-voices.mjs",
-    "preview": "npm run build && npm run preview:serve --",
-    "preview:serve": "serve dist",
-    "dev:preview": "npm run build && concurrently -k -n build,serve -c yellow,cyan \"npm run dev\" \"npm run preview:serve\"",
-    "dev:preview:asof": "node scripts/dev-preview-asof.mjs"
+    "tts:preview": "node scripts/tts-preview.mjs",
+    "preview": "node scripts/preview.mjs",
+    "preview:asof": "node scripts/preview.mjs --watch"
   },
   "engines": {
     "node": ">=24"
@@ -26,7 +21,6 @@
     "marked": "^17.0.4"
   },
   "devDependencies": {
-    "concurrently": "^9.2.1",
     "esbuild": "^0.27.3",
     "html-minifier-terser": "^7.2.0",
     "serve": "^14.2.5",

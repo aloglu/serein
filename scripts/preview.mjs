@@ -1,5 +1,9 @@
 import { spawn, spawnSync } from "node:child_process";
+import { createRequire } from "node:module";
 import process from "node:process";
+
+const require = createRequire(import.meta.url);
+const serveCliPath = require.resolve("serve/build/main.js");
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -20,8 +24,7 @@ function parseAsOfArg() {
   return raw;
 }
 
-function run() {
-  const asOf = parseAsOfArg();
+function sanitizedEnv() {
   const env = {};
   for (const [key, value] of Object.entries(process.env)) {
     if (!key || key.includes("\u0000") || key.includes("=") || /^\s/.test(key) || /\s/.test(key)) {
@@ -32,27 +35,48 @@ function run() {
     }
     env[key] = value;
   }
+  return env;
+}
 
-  const nodeBin = process.execPath;
-  const npmCli = process.env.npm_execpath;
-  if (!npmCli) {
-    throw new Error("Could not resolve npm CLI path from npm_execpath.");
+function buildArgs({ asOf, watch }) {
+  const args = ["scripts/build.mjs"];
+  if (watch) {
+    args.push("--watch");
   }
-  const initialBuildArgs = ["scripts/build.mjs"];
-  const buildArgs = ["scripts/build.mjs", "--watch"];
   if (asOf) {
-    initialBuildArgs.push("--as-of", asOf);
-    buildArgs.push("--as-of", asOf);
+    args.push("--as-of", asOf);
   }
-  const initialBuild = spawnSync(nodeBin, initialBuildArgs, { stdio: "inherit", env });
+  return args;
+}
+
+function run() {
+  const asOf = parseAsOfArg();
+  const watch = process.argv.includes("--watch");
+  const env = sanitizedEnv();
+  const nodeBin = process.execPath;
+
+  const initialBuild = spawnSync(nodeBin, buildArgs({ asOf, watch: false }), {
+    stdio: "inherit",
+    env
+  });
   if ((initialBuild.status ?? 0) !== 0) {
     process.exit(initialBuild.status ?? 1);
   }
   if (initialBuild.signal) {
     process.exit(1);
   }
-  const build = spawn(nodeBin, buildArgs, { stdio: "inherit", env });
-  const serve = spawn(nodeBin, [npmCli, "run", "preview:serve"], { stdio: "inherit", env });
+
+  const processes = [];
+  if (watch) {
+    processes.push({
+      name: "build",
+      child: spawn(nodeBin, buildArgs({ asOf, watch: true }), { stdio: "inherit", env })
+    });
+  }
+  processes.push({
+    name: "serve",
+    child: spawn(nodeBin, [serveCliPath, "dist"], { stdio: "inherit", env })
+  });
 
   let shuttingDown = false;
   const terminate = () => {
@@ -60,8 +84,9 @@ function run() {
       return;
     }
     shuttingDown = true;
-    build.kill("SIGTERM");
-    serve.kill("SIGTERM");
+    for (const processEntry of processes) {
+      processEntry.child.kill("SIGTERM");
+    }
   };
 
   const onExit = (name, code, signal) => {
@@ -78,13 +103,11 @@ function run() {
     process.exit(code ?? 1);
   };
 
-  build.on("exit", (code, signal) => {
-    onExit("build", code, signal);
-  });
-
-  serve.on("exit", (code, signal) => {
-    onExit("serve", code, signal);
-  });
+  for (const processEntry of processes) {
+    processEntry.child.on("exit", (code, signal) => {
+      onExit(processEntry.name, code, signal);
+    });
+  }
 
   process.on("SIGINT", terminate);
   process.on("SIGTERM", terminate);

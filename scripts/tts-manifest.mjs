@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { speakablePoetryLineDirective } from "./poetry-line.mjs";
 
 export const TTS_MANIFEST_VERSION = 1;
 
@@ -35,20 +36,6 @@ export function normalizeNewlines(input) {
   return String(input || "").replace(/\r\n/g, "\n");
 }
 
-function spokenCustomLine(line) {
-  const segments = Array.from(String(line).matchAll(/\|([<^>~])([^|]*)\|/g));
-  if (segments.length === 0) {
-    return String(line).replace(/^::line\s*/, "").trim();
-  }
-
-  return segments
-    .filter((segment) => segment[1] !== "~")
-    .map((segment) => String(segment[2] || "").trim())
-    .filter(Boolean)
-    .join(" ")
-    .trim();
-}
-
 export function speakablePoemText(poemBody) {
   const lines = normalizeNewlines(poemBody)
     .split("\n")
@@ -58,7 +45,7 @@ export function speakablePoemText(poemBody) {
         return "";
       }
       if (trimmed.startsWith("::line")) {
-        return spokenCustomLine(trimmed);
+        return speakablePoetryLineDirective(trimmed) ?? String(trimmed).replace(/^::line\s*/, "").trim();
       }
       return line.replace(/\s+$/g, "");
     });

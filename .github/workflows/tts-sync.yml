@@ -1,26 +1,33 @@
-name: Sync TTS Assets
+name: Validate TTS Assets
 
 on:
   push:
     branches: ["**"]
     paths:
+      - "assets/tts/**"
+      - "scripts/build.mjs"
+      - "scripts/poetry-line.mjs"
       - "poems/**"
       - "scripts/tts-*.mjs"
       - "scripts/tts-config.mjs"
       - "scripts/tts-manifest.mjs"
       - "package.json"
       - "package-lock.json"
-  schedule:
-    # Run shortly before the daily Pages deploy window.
-    - cron: "30 20 * * *"
+  pull_request:
+    paths:
+      - "assets/tts/**"
+      - "scripts/build.mjs"
+      - "scripts/poetry-line.mjs"
+      - "poems/**"
+      - "scripts/tts-*.mjs"
+      - "scripts/tts-config.mjs"
+      - "scripts/tts-manifest.mjs"
+      - "package.json"
+      - "package-lock.json"
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  sync:
-    if: github.event_name != 'push' || github.ref_name == github.event.repository.default_branch
+  validate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -36,26 +43,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Sync generated TTS assets
+      - name: Validate committed TTS assets
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_TTS_VOICE: ${{ vars.OPENAI_TTS_VOICE }}
           OPENAI_TTS_MODEL: ${{ vars.OPENAI_TTS_MODEL }}
           OPENAI_TTS_RESPONSE_FORMAT: ${{ vars.OPENAI_TTS_RESPONSE_FORMAT }}
           OPENAI_TTS_INSTRUCTIONS: ${{ vars.OPENAI_TTS_INSTRUCTIONS }}
           OPENAI_TTS_SPEED: ${{ vars.OPENAI_TTS_SPEED }}
           TTS_RENDER_PROFILE: ${{ vars.TTS_RENDER_PROFILE }}
-        run: npm run tts:sync
-
-      - name: Commit generated assets
-        run: |
-          if git diff --quiet -- assets/tts; then
-            echo "No TTS asset changes to commit."
-            exit 0
-          fi
-
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add assets/tts
-          git commit -m "chore(tts): sync generated assets"
-          git push
+        run: node scripts/tts-check.mjs

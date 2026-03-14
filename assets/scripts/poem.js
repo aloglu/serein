@@ -5,6 +5,7 @@ import {
   runtimeAsOfEnabled
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
+import { bindTtsPlayers, resetTtsPlayback } from "./shared/tts.js";
 import {
   formatFutureAvailabilityCountdown,
   nextFutureAvailabilityDelay,
@@ -24,102 +25,9 @@ function setMetaContent(selector, value) {
   }
 }
 
-function renderTtsBlock(tts) {
-  if (!tts?.audioUrl) {
-    return "";
-  }
-
-  const mimeType = escapeHtml(tts?.mimeType || "audio/mpeg");
-  const audioUrl = escapeHtml(tts.audioUrl);
-
-  return `<div class="poem-tts" data-tts-root>
-    <button class="tts-toggle" type="button" data-tts-toggle aria-label="Listen to this poem">
-      <span class="tts-toggle-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-          <path d="M3 9v6h4l5 4V5L7 9H3Zm12.5 3a4.5 4.5 0 0 0-2.35-3.95v7.9A4.5 4.5 0 0 0 15.5 12Zm-2.35-8.77v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54Z"></path>
-        </svg>
-      </span>
-      <span class="tts-toggle-label" data-tts-label>Listen</span>
-    </button>
-    <p class="meta poem-tts-status" data-tts-status aria-live="polite"></p>
-    <audio preload="none" data-tts-audio>
-      <source src="${audioUrl}" type="${mimeType}">
-    </audio>
-  </div>`;
-}
-
-function bindTtsPlayers(scope = document) {
-  const players = scope.querySelectorAll("[data-tts-root]");
-
-  for (const player of players) {
-    if (player.dataset.ttsBound === "1") {
-      continue;
-    }
-
-    player.dataset.ttsBound = "1";
-    const button = player.querySelector("[data-tts-toggle]");
-    const label = player.querySelector("[data-tts-label]");
-    const status = player.querySelector("[data-tts-status]");
-    const audio = player.querySelector("[data-tts-audio]");
-
-    if (!button || !label || !status || !audio) {
-      continue;
-    }
-
-    const updateUi = (state) => {
-      if (state === "playing") {
-        label.textContent = "Pause";
-        status.textContent = "Playing audio.";
-        return;
-      }
-      if (state === "loading") {
-        label.textContent = "Loading...";
-        status.textContent = "Loading audio.";
-        return;
-      }
-      if (state === "paused") {
-        label.textContent = audio.currentTime > 0 ? "Resume" : "Listen";
-        status.textContent = audio.currentTime > 0 ? "Playback paused." : "";
-        return;
-      }
-      if (state === "ended") {
-        label.textContent = "Listen again";
-        status.textContent = "Playback finished.";
-        return;
-      }
-      if (state === "error") {
-        label.textContent = "Listen";
-        status.textContent = "Audio is unavailable right now.";
-      }
-    };
-
-    button.addEventListener("click", async () => {
-      if (!audio.paused && !audio.ended) {
-        audio.pause();
-        return;
-      }
-
-      updateUi("loading");
-      try {
-        await audio.play();
-      } catch {
-        updateUi("error");
-      }
-    });
-
-    audio.addEventListener("play", () => updateUi("playing"));
-    audio.addEventListener("pause", () => updateUi(audio.ended ? "ended" : "paused"));
-    audio.addEventListener("ended", () => updateUi("ended"));
-    audio.addEventListener("waiting", () => updateUi("loading"));
-    audio.addEventListener("error", () => updateUi("error"));
-    updateUi("paused");
-  }
-}
-
 function renderBlockedPoem(main, { withCountdown = true } = {}) {
   const titleEl = main.querySelector("h1");
   const metaEl = main.querySelector(".poem-meta");
-  const ttsSlot = document.getElementById("poem-tts-slot");
   const contentEl = document.getElementById("poem-content");
 
   document.title = blockedTitle;
@@ -130,14 +38,12 @@ function renderBlockedPoem(main, { withCountdown = true } = {}) {
   setMetaContent('meta[property="og:description"]', blockedDescription);
   setMetaContent('meta[name="twitter:description"]', blockedDescription);
 
+  resetTtsPlayback();
   if (titleEl) {
     titleEl.textContent = blockedHeading;
   }
   if (metaEl) {
     metaEl.textContent = "";
-  }
-  if (ttsSlot) {
-    ttsSlot.innerHTML = "";
   }
   if (contentEl) {
     contentEl.innerHTML = withCountdown
@@ -149,7 +55,6 @@ function renderBlockedPoem(main, { withCountdown = true } = {}) {
 function renderPublishedPoem(main, poem) {
   const titleEl = main.querySelector("h1");
   const metaEl = main.querySelector(".poem-meta");
-  const ttsSlot = document.getElementById("poem-tts-slot");
   const contentEl = document.getElementById("poem-content");
   const pageTitle = poem?.title ? `${poem.title} | A Poem Per Day` : "A Poem Per Day";
 
@@ -161,15 +66,13 @@ function renderPublishedPoem(main, poem) {
   setMetaContent('meta[property="og:description"]', poem?.description || "");
   setMetaContent('meta[name="twitter:description"]', poem?.description || "");
 
+  resetTtsPlayback();
   if (titleEl) {
     titleEl.textContent = poem?.title || "";
   }
   if (metaEl) {
     metaEl.innerHTML = poem?.authorMetaHtml || "";
-  }
-  if (ttsSlot) {
-    ttsSlot.innerHTML = renderTtsBlock(poem?.tts || null);
-    bindTtsPlayers(ttsSlot);
+    bindTtsPlayers(metaEl);
   }
   if (contentEl) {
     contentEl.innerHTML = poem?.poemHtml || '<p class="empty">Poem content is unavailable.</p>';

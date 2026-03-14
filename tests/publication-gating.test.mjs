@@ -443,7 +443,15 @@ Last line.`);
   assert.equal(speech, `First line.\n\nleft phrase right phrase\n\nLast line.`);
 });
 
-test("published poem pages render a listen control when a managed TTS asset exists", { concurrency: false }, async () => {
+test("speakable poem text keeps shorthand text from custom aligned markup lines", () => {
+  const speech = speakablePoemText(`A small white piece
+::line |~4ch| of an ancient mosaic,
+::line |~2ch| Did anyone see her`);
+
+  assert.equal(speech, `A small white piece\nof an ancient mosaic,\nDid anyone see her`);
+});
+
+test("published poem and home pages render an inline listen control when a managed TTS asset exists", { concurrency: false }, async () => {
   const [targetDate] = await nextUnusedPoemDates(1);
   const slug = "synthetic-tts-player-fixture";
   const fixture = {
@@ -511,8 +519,18 @@ Synthetic audio fixture line two.
     )));
     assert.match(poemPageHtml, /data-tts-root/);
     assert.match(poemPageHtml, /data-tts-toggle/);
+    assert.match(poemPageHtml, /data-tts-icon/);
     assert.match(poemPageHtml, new RegExp(escapeRegex(audioUrl)));
-    assert.match(poemPageHtml, /Listen/);
+    assert.match(poemPageHtml, /aria-label="Play poem audio"/);
+    assert.match(
+      poemPageHtml,
+      /poem-meta-value-author[^>]*>.*?Test Audio Poet.*?poem-meta-separator.*?poem-meta-tts/s
+    );
+    assert.doesNotMatch(poemPageHtml, /poem-tts-slot/);
+
+    const homeHtml = await readDistFile("index.html");
+    assert.match(homeHtml, /data-tts-root/);
+    assert.match(homeHtml, new RegExp(escapeRegex(audioUrl)));
 
     const copiedAudio = path.join(distDir, ...audioUrl.slice(1).split("/"));
     const copiedAudioContents = await readFile(copiedAudio, "utf8");
