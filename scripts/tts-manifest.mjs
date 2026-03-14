@@ -119,9 +119,11 @@ export function normalizeTtsManifest(input) {
       renderProfile: String(entry.renderProfile || "").trim(),
       provider: String(entry.provider || "").trim(),
       modelId: String(entry.modelId || "").trim(),
-      voiceId: String(entry.voiceId || "").trim(),
+      voice: String(entry.voice || entry.voiceId || "").trim(),
       outputFormat: String(entry.outputFormat || "").trim(),
       mimeType: String(entry.mimeType || "").trim(),
+      instructions: String(entry.instructions || "").trim(),
+      speed: Number.isFinite(Number(entry.speed)) ? Number(entry.speed) : null,
       generatedAt: String(entry.generatedAt || "").trim()
     };
   }

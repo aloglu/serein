@@ -40,27 +40,27 @@ function selectedDates() {
   );
 }
 
-async function fetchElevenLabsAudio({ profile, text }) {
-  const endpoint = new URL(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(profile.voiceId)}`);
-  if (!profile.enableLogging) {
-    endpoint.searchParams.set("enable_logging", "false");
-  }
-
+async function fetchOpenAiAudio({ profile, text }) {
+  const endpoint = "https://api.openai.com/v1/audio/speech";
   const body = {
-    text,
-    model_id: profile.modelId,
-    output_format: profile.outputFormat
+    input: text,
+    model: profile.modelId,
+    voice: profile.voice,
+    response_format: profile.outputFormat
   };
 
-  if (profile.voiceSettings) {
-    body.voice_settings = profile.voiceSettings;
+  if (profile.instructions) {
+    body.instructions = profile.instructions;
+  }
+  if (typeof profile.speed === "number") {
+    body.speed = profile.speed;
   }
 
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "xi-api-key": profile.apiKey
+      Authorization: `Bearer ${profile.apiKey}`
     },
     body: JSON.stringify(body)
   });
@@ -68,7 +68,7 @@ async function fetchElevenLabsAudio({ profile, text }) {
   if (!response.ok) {
     const errorText = await response.text().catch(() => "");
     throw new Error(
-      `ElevenLabs request failed (${response.status} ${response.statusText}). ${errorText}`.trim()
+      `OpenAI request failed (${response.status} ${response.statusText}). ${errorText}`.trim()
     );
   }
 
@@ -133,9 +133,10 @@ function assetKeyForPoem({ poem, profile, sourceHash }) {
     renderProfile: profile.renderProfile,
     provider: profile.provider,
     modelId: profile.modelId,
-    voiceId: profile.voiceId,
+    voice: profile.voice,
     outputFormat: profile.outputFormat,
-    voiceSettings: profile.voiceSettings
+    instructions: profile.instructions,
+    speed: profile.speed
   }));
 }
 
@@ -201,9 +202,11 @@ async function main() {
         renderProfile: profile.renderProfile,
         provider: profile.provider,
         modelId: profile.modelId,
-        voiceId: profile.voiceId,
+        voice: profile.voice,
         outputFormat: profile.outputFormat,
         mimeType: profile.mimeType,
+        instructions: profile.instructions,
+        speed: profile.speed,
         generatedAt: new Date().toISOString()
       };
       activeAudioUrls.add(audioUrl);
@@ -212,7 +215,7 @@ async function main() {
     }
 
     console.log(`Generating ${poem.date} ${poem.title}`);
-    const audioBuffer = await fetchElevenLabsAudio({ profile, text: speakableText });
+    const audioBuffer = await fetchOpenAiAudio({ profile, text: speakableText });
     const outputPath = audioUrlToRepoPath(audioUrl, root);
     await mkdir(path.dirname(outputPath), { recursive: true });
     await writeFile(outputPath, audioBuffer);
@@ -225,9 +228,11 @@ async function main() {
       renderProfile: profile.renderProfile,
       provider: profile.provider,
       modelId: profile.modelId,
-      voiceId: profile.voiceId,
+      voice: profile.voice,
       outputFormat: profile.outputFormat,
       mimeType: profile.mimeType,
+      instructions: profile.instructions,
+      speed: profile.speed,
       generatedAt: new Date().toISOString()
     };
     activeAudioUrls.add(audioUrl);

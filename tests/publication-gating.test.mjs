@@ -467,11 +467,12 @@ Synthetic audio fixture line two.
     date: targetDate,
     sourceHash,
     renderProfile: "house-default-v1",
-    provider: "elevenlabs",
-    modelId: "eleven_multilingual_v2",
-    voiceId: "voice-test-fixture",
-    outputFormat: "mp3_44100_128",
-    voiceSettings: null
+    provider: "openai",
+    modelId: "gpt-4o-mini-tts",
+    voice: "sage",
+    outputFormat: "mp3",
+    instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
+    speed: 0.96
   }));
   const audioUrl = `/assets/tts/audio/${targetDate.slice(0, 4)}/${targetDate.slice(5, 7)}/${targetDate}-${slug}.${assetKey}.mp3`;
   const audioPath = path.join(root, ...audioUrl.slice(1).split("/"));
@@ -491,11 +492,13 @@ Synthetic audio fixture line two.
           sourceHash,
           assetKey,
           renderProfile: "house-default-v1",
-          provider: "elevenlabs",
-          modelId: "eleven_multilingual_v2",
-          voiceId: "voice-test-fixture",
-          outputFormat: "mp3_44100_128",
+          provider: "openai",
+          modelId: "gpt-4o-mini-tts",
+          voice: "sage",
+          outputFormat: "mp3",
           mimeType: "audio/mpeg",
+          instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
+          speed: 0.96,
           generatedAt: "2026-03-14T00:00:00.000Z"
         }
       }
