@@ -61,6 +61,12 @@ function runBuild(extraEnv = {}) {
   });
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 function escapeRegex(input) {
   return String(input).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -134,8 +140,23 @@ async function readDirNamesIfExists(targetPath) {
   }
 }
 
+async function removeDirWithRetries(targetPath, attempts = 6) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    try {
+      await rm(targetPath, { recursive: true, force: true });
+      return;
+    } catch (error) {
+      const retryable = error?.code === "EBUSY" || error?.code === "EPERM" || error?.code === "ENOTEMPTY";
+      if (!retryable || attempt === attempts - 1) {
+        throw error;
+      }
+      await sleep(50 * (attempt + 1));
+    }
+  }
+}
+
 after(async () => {
-  await rm(distDir, { recursive: true, force: true });
+  await removeDirWithRetries(distDir);
 });
 
 test("publication gating keeps future poem HTML out of backdated builds", { concurrency: false }, async () => {
@@ -555,7 +576,8 @@ Synthetic audio fixture line two.
     )));
     assert.match(poemPageHtml, /data-tts-root/);
     assert.match(poemPageHtml, /data-tts-toggle/);
-    assert.match(poemPageHtml, /data-tts-icon/);
+    assert.match(poemPageHtml, /class="tts-toggle-icon"/);
+    assert.match(poemPageHtml, /data-tts-speed/);
     assert.match(poemPageHtml, /data-tts-status/);
     assert.match(poemPageHtml, /role="status"/);
     assert.match(poemPageHtml, new RegExp(escapeRegex(audioUrl)));
