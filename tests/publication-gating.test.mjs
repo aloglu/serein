@@ -7,7 +7,7 @@ import test, { after } from "node:test";
 import { poemSourceHash, speakablePoemScript, speakablePoemText, stableHash } from "../scripts/tts-manifest.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const distDir = path.join(root, "dist");
+const distDir = path.join(root, ".cache", "test-dist", String(process.pid));
 const poemsDir = path.join(root, "poems");
 const ttsDir = path.join(root, "assets", "tts");
 const ttsManifestFile = path.join(ttsDir, "manifest.json");
@@ -34,6 +34,7 @@ function runBuild(extraEnv = {}) {
       env: {
         ...process.env,
         SITE_URL: defaultSiteUrl,
+        SEREIN_DIST_DIR: distDir,
         ...extraEnv
       },
       stdio: ["ignore", "pipe", "pipe"]
@@ -134,7 +135,7 @@ async function readDirNamesIfExists(targetPath) {
 }
 
 after(async () => {
-  await runBuild();
+  await rm(distDir, { recursive: true, force: true });
 });
 
 test("publication gating keeps future poem HTML out of backdated builds", { concurrency: false }, async () => {
@@ -555,6 +556,8 @@ Synthetic audio fixture line two.
     assert.match(poemPageHtml, /data-tts-root/);
     assert.match(poemPageHtml, /data-tts-toggle/);
     assert.match(poemPageHtml, /data-tts-icon/);
+    assert.match(poemPageHtml, /data-tts-status/);
+    assert.match(poemPageHtml, /role="status"/);
     assert.match(poemPageHtml, new RegExp(escapeRegex(audioUrl)));
     assert.match(poemPageHtml, /aria-label="Play poem audio"/);
     assert.match(
@@ -566,6 +569,7 @@ Synthetic audio fixture line two.
     const homeHtml = await readDistFile("index.html");
     assert.match(homeHtml, /data-tts-root/);
     assert.match(homeHtml, new RegExp(escapeRegex(audioUrl)));
+    assert.match(homeHtml, /<nav class="site-footer-nav" aria-label="Footer">/);
 
     const copiedAudio = path.join(distDir, ...audioUrl.slice(1).split("/"));
     const copiedAudioContents = await readFile(copiedAudio, "utf8");

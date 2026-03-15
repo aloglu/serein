@@ -1,9 +1,11 @@
 import { spawn, spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
+import path from "node:path";
 import process from "node:process";
 
 const require = createRequire(import.meta.url);
 const serveCliPath = require.resolve("serve/build/main.js");
+const previewDistDir = path.join(".cache", "preview-dist");
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -52,8 +54,12 @@ function buildArgs({ asOf, watch }) {
 function run() {
   const asOf = parseAsOfArg();
   const watch = process.argv.includes("--watch");
-  const env = sanitizedEnv();
+  const env = {
+    ...sanitizedEnv(),
+    SEREIN_DIST_DIR: previewDistDir
+  };
   const nodeBin = process.execPath;
+  const servedDir = path.resolve(process.cwd(), env.SEREIN_DIST_DIR);
 
   const initialBuild = spawnSync(nodeBin, buildArgs({ asOf, watch: false }), {
     stdio: "inherit",
@@ -75,7 +81,7 @@ function run() {
   }
   processes.push({
     name: "serve",
-    child: spawn(nodeBin, [serveCliPath, "dist"], { stdio: "inherit", env })
+    child: spawn(nodeBin, [serveCliPath, servedDir], { stdio: "inherit", env })
   });
 
   let shuttingDown = false;

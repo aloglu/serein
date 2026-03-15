@@ -10,13 +10,22 @@ import { audioUrlToRepoPath, loadTtsManifest } from "./tts-manifest.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
-const distDir = path.join(root, "dist");
 const cacheDir = path.join(root, ".cache");
 const socialCardCacheDir = path.join(cacheDir, "social-cards");
 const reportsDir = path.join(root, "reports");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
 const siteUrl = String(process.env.SITE_URL || "").trim().replace(/\/+$/, "");
+
+function resolveDistDir(env = process.env) {
+  const raw = String(env.SEREIN_DIST_DIR || "").trim();
+  if (!raw) {
+    return path.join(root, "dist");
+  }
+  return path.isAbsolute(raw) ? path.normalize(raw) : path.join(root, raw);
+}
+
+const distDir = resolveDistDir();
 
 const watchMode = process.argv.includes("--watch");
 const runtimeAsOfEnabled = (
@@ -1197,7 +1206,7 @@ function renderFooter(routePath) {
   }
   links.push(`<a href="${prefix}archive/" data-prefetch="eager">Archive</a>`);
   links.push(`<a href="${prefix}about/" data-prefetch="eager">About</a>`);
-  return `<footer class="site-footer">${links.join('<span aria-hidden="true" class="separator-mark">&bull;</span>')}</footer>`;
+  return `<footer class="site-footer"><nav class="site-footer-nav" aria-label="Footer">${links.join('<span aria-hidden="true" class="separator-mark">&bull;</span>')}</nav></footer>`;
 }
 
 function renderPublicationMeta(poem) {
@@ -1225,7 +1234,7 @@ function renderInlineTtsControl(tts) {
     return "";
   }
 
-  return `<span class="poem-meta-tts" data-tts-root data-tts-audio-url="${htmlEscape(tts.audioUrl)}"><button class="tts-toggle" type="button" data-tts-toggle aria-label="Play poem audio" title="Play poem audio"><span class="tts-toggle-icon" data-tts-icon aria-hidden="true">&#x1F50A;&#xFE0E;</span></button></span>`;
+  return `<span class="poem-meta-tts" data-tts-root data-tts-audio-url="${htmlEscape(tts.audioUrl)}"><button class="tts-toggle" type="button" data-tts-toggle aria-label="Play poem audio" title="Play poem audio"><span class="tts-toggle-icon" data-tts-icon aria-hidden="true">&#x1F50A;&#xFE0E;</span></button><span class="visually-hidden" data-tts-status aria-live="polite" aria-atomic="true" role="status"></span></span>`;
 }
 
 function renderAuthorMeta(poem, tts = null) {
