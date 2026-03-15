@@ -56,9 +56,37 @@ export function speakablePoemText(poemBody) {
     .trim();
 }
 
+export function speakablePoemScript(poem) {
+  if (typeof poem === "string") {
+    return speakablePoemText(poem);
+  }
+
+  const title = String(poem?.title || "").trim();
+  const author = String(poem?.author || "").trim();
+  const translator = String(poem?.translator || "").trim();
+  const poemText = speakablePoemText(poem?.poem || "");
+  const preambleParts = [];
+
+  if (title && author && translator) {
+    preambleParts.push(`${title}, by ${author}, translated by ${translator}.`);
+  } else if (title && author) {
+    preambleParts.push(`${title}, by ${author}.`);
+  } else if (title) {
+    preambleParts.push(title);
+  }
+
+  if (!preambleParts.length) {
+    return poemText;
+  }
+  if (!poemText) {
+    return preambleParts.join("\n\n").trim();
+  }
+
+  return `${preambleParts.join("\n\n")}\n\n${poemText}`.trim();
+}
+
 export function poemSourceHash(poem) {
-  const source = typeof poem === "string" ? poem : poem?.poem || "";
-  return stableHash(speakablePoemText(source));
+  return stableHash(speakablePoemScript(poem));
 }
 
 export function audioUrlToRepoPath(audioUrl, root = process.cwd()) {

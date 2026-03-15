@@ -10,7 +10,7 @@ import {
   fileExists,
   loadTtsManifest,
   poemSourceHash,
-  speakablePoemText,
+  speakablePoemScript,
   ttsAudioDir,
   writeTtsManifest
 } from "./tts-manifest.mjs";
@@ -83,6 +83,22 @@ async function pruneUnusedAudioFiles(activeAudioUrls) {
   return deletedCount;
 }
 
+async function removeSupersededAudioFile(audioUrl) {
+  const targetPath = audioUrlToRepoPath(audioUrl, root);
+  if (!targetPath || !(await fileExists(targetPath))) {
+    return false;
+  }
+
+  if (dryRun) {
+    console.log(`Would delete stale TTS asset: ${path.relative(root, targetPath)}`);
+    return true;
+  }
+
+  await rm(targetPath, { force: true });
+  console.log(`Deleted stale TTS asset: ${path.relative(root, targetPath)}`);
+  return true;
+}
+
 async function main() {
   const profile = resolveTtsProfile(process.env);
   const dateFilter = selectedDates();
@@ -109,7 +125,7 @@ async function main() {
       continue;
     }
 
-    const speakableText = speakablePoemText(poem.poem);
+    const speakableText = speakablePoemScript(poem);
     const sourceHash = poemSourceHash(poem);
     const assetKey = assetKeyForPoem({ poem, profile, sourceHash });
     const audioUrl = buildManagedAudioUrl({
@@ -119,6 +135,7 @@ async function main() {
     });
     const existingEntry = manifest.poems[poem.date];
     const existingPath = existingEntry?.audioUrl ? audioUrlToRepoPath(existingEntry.audioUrl, root) : "";
+    const previousAudioUrl = existingEntry?.audioUrl || "";
     const existingMatches = (
       !force
       && existingEntry?.sourceHash === sourceHash
@@ -179,9 +196,20 @@ async function main() {
       generatedAt: new Date().toISOString()
     };
     activeAudioUrls.add(audioUrl);
+
+    if (previousAudioUrl && previousAudioUrl !== audioUrl) {
+      const removed = await removeSupersededAudioFile(previousAudioUrl);
+      if (removed) {
+        deleted += 1;
+      }
+    }
   }
 
-  deleted = await pruneUnusedAudioFiles(activeAudioUrls);
+  if (dateFilter.size === 0) {
+    deleted += await pruneUnusedAudioFiles(activeAudioUrls);
+  } else {
+    console.log("Skipped global stale asset pruning because sync was filtered by date.");
+  }
 
   if (!dryRun) {
     await writeTtsManifest(nextManifest, root);

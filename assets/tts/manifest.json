@@ -2,9 +2,9 @@
   "version": 1,
   "poems": {
     "2026-02-26": {
-      "audioUrl": "/assets/tts/audio/2026/02/2026-02-26-vegetarians.8f9215bc920aab52.mp3",
-      "sourceHash": "a11f01e41a27f0d3",
-      "assetKey": "8f9215bc920aab52",
+      "audioUrl": "/assets/tts/audio/2026/02/2026-02-26-vegetarians.8c49b2dc69121acf.mp3",
+      "sourceHash": "22306a34ab2a0281",
+      "assetKey": "8c49b2dc69121acf",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -13,12 +13,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:21:27.043Z"
+      "generatedAt": "2026-03-15T00:17:37.529Z"
     },
     "2026-02-27": {
-      "audioUrl": "/assets/tts/audio/2026/02/2026-02-27-mirror.8063b4be440e6bcc.mp3",
-      "sourceHash": "c6f17d38d3433f53",
-      "assetKey": "8063b4be440e6bcc",
+      "audioUrl": "/assets/tts/audio/2026/02/2026-02-27-mirror.20ec3f8b57e7a888.mp3",
+      "sourceHash": "a9f7557e7123a029",
+      "assetKey": "20ec3f8b57e7a888",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -27,12 +27,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T23:57:32.334Z"
+      "generatedAt": "2026-03-15T00:17:46.242Z"
     },
     "2026-02-28": {
-      "audioUrl": "/assets/tts/audio/2026/02/2026-02-28-the-strangers-case.ab0854e761ecb298.mp3",
-      "sourceHash": "8b67030a39486032",
-      "assetKey": "ab0854e761ecb298",
+      "audioUrl": "/assets/tts/audio/2026/02/2026-02-28-the-strangers-case.e357169aa19ed19e.mp3",
+      "sourceHash": "137a3e3234c26723",
+      "assetKey": "e357169aa19ed19e",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -41,12 +41,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:21:53.152Z"
+      "generatedAt": "2026-03-15T00:18:01.597Z"
     },
     "2026-03-01": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-01-masks.e7c689f56d799263.mp3",
-      "sourceHash": "6cd32862c21ad046",
-      "assetKey": "e7c689f56d799263",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-01-masks.ea262e049cbf0df1.mp3",
+      "sourceHash": "ff9771b0aa7e29bf",
+      "assetKey": "ea262e049cbf0df1",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -55,12 +55,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:21:55.397Z"
+      "generatedAt": "2026-03-15T00:18:04.566Z"
     },
     "2026-03-02": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-02-war.13359c72eeae5989.mp3",
-      "sourceHash": "d9c199173bd7f3e4",
-      "assetKey": "13359c72eeae5989",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-02-war.d44b991b89171fb9.mp3",
+      "sourceHash": "3c49795ef0a38518",
+      "assetKey": "d44b991b89171fb9",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -69,12 +69,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:21:58.419Z"
+      "generatedAt": "2026-03-15T00:18:08.307Z"
     },
     "2026-03-03": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-03-in-this-short-life-that-only-lasts-an-hour.f12e342c63fbd220.mp3",
-      "sourceHash": "40fc6e6f7b1a77f2",
-      "assetKey": "f12e342c63fbd220",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-03-in-this-short-life-that-only-lasts-an-hour.309ef0bae86cd101.mp3",
+      "sourceHash": "d5a60a38bcc68c6b",
+      "assetKey": "309ef0bae86cd101",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -83,12 +83,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:21:59.790Z"
+      "generatedAt": "2026-03-15T00:18:09.978Z"
     },
     "2026-03-04": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-04-good-morning-i-am-not-going-to-commit-suicide-today.64fd12ef3e417d36.mp3",
-      "sourceHash": "3b8f13822ff43247",
-      "assetKey": "64fd12ef3e417d36",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-04-good-morning-i-am-not-going-to-commit-suicide-today.ef7dd23244bb950e.mp3",
+      "sourceHash": "5a0dd13de64887af",
+      "assetKey": "ef7dd23244bb950e",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -97,12 +97,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:05.587Z"
+      "generatedAt": "2026-03-15T00:18:15.848Z"
     },
     "2026-03-05": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-05-a-dream-dreamt-by-fernando-pessoa-in-which-i-play-the-role-of-fernando-pessoa.59cdf36bba1059ae.mp3",
-      "sourceHash": "cc8232225e89fcdb",
-      "assetKey": "59cdf36bba1059ae",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-05-a-dream-dreamt-by-fernando-pessoa-in-which-i-play-the-role-of-fernando-pessoa.1ca73e6314055123.mp3",
+      "sourceHash": "97e07a22f19846f2",
+      "assetKey": "1ca73e6314055123",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -111,12 +111,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:17.415Z"
+      "generatedAt": "2026-03-15T00:18:29.222Z"
     },
     "2026-03-06": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-06-tired.8b15819b692216b2.mp3",
-      "sourceHash": "c4e85e074ea84661",
-      "assetKey": "8b15819b692216b2",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-06-tired.98aec084d66b7390.mp3",
+      "sourceHash": "1211f2be23eac33a",
+      "assetKey": "98aec084d66b7390",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -125,12 +125,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:20.781Z"
+      "generatedAt": "2026-03-15T00:18:32.160Z"
     },
     "2026-03-07": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-07-untitled.f6652b69256a0148.mp3",
-      "sourceHash": "d9b838a85fc1452e",
-      "assetKey": "f6652b69256a0148",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-07-untitled.ccdf9c702e6b6fdb.mp3",
+      "sourceHash": "488e04bc198cdc72",
+      "assetKey": "ccdf9c702e6b6fdb",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -139,12 +139,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:22.509Z"
+      "generatedAt": "2026-03-15T00:18:34.661Z"
     },
     "2026-03-08": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-08-on-the-birth-of-a-son.62e81137e9c57740.mp3",
-      "sourceHash": "dd27f6d3d681e94c",
-      "assetKey": "62e81137e9c57740",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-08-on-the-birth-of-a-son.a105b7b52f69bc3f.mp3",
+      "sourceHash": "819175d0ee4e6930",
+      "assetKey": "a105b7b52f69bc3f",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -153,12 +153,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:25.522Z"
+      "generatedAt": "2026-03-15T00:18:38.443Z"
     },
     "2026-03-09": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-09-what-remains.164cfc582e8da112.mp3",
-      "sourceHash": "e6aad0bbfb31bbad",
-      "assetKey": "164cfc582e8da112",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-09-what-remains.83ea7270811e365a.mp3",
+      "sourceHash": "fafd6a2590110b02",
+      "assetKey": "83ea7270811e365a",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -167,12 +167,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:31.114Z"
+      "generatedAt": "2026-03-15T00:18:43.958Z"
     },
     "2026-03-10": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-10-my-country-i-will-build-you-again.2f05d22c9e85779d.mp3",
-      "sourceHash": "b7dd29daa4503629",
-      "assetKey": "2f05d22c9e85779d",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-10-my-country-i-will-build-you-again.2f5b6539ec44c5fb.mp3",
+      "sourceHash": "4c6b6fe3bc18a617",
+      "assetKey": "2f5b6539ec44c5fb",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -181,12 +181,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:41.998Z"
+      "generatedAt": "2026-03-15T00:18:54.746Z"
     },
     "2026-03-11": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-11-an-annual-of-the-dark-physics.5cfdf933a4168b87.mp3",
-      "sourceHash": "27184e544f4c8fc7",
-      "assetKey": "5cfdf933a4168b87",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-11-an-annual-of-the-dark-physics.9c50c28839884431.mp3",
+      "sourceHash": "fea8f841c99b527b",
+      "assetKey": "9c50c28839884431",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -195,12 +195,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:22:50.438Z"
+      "generatedAt": "2026-03-15T00:19:03.591Z"
     },
     "2026-03-12": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-12-untitled.05828a6e75d70b38.mp3",
-      "sourceHash": "573805674b973071",
-      "assetKey": "05828a6e75d70b38",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-12-untitled.101374220a360975.mp3",
+      "sourceHash": "48a3e3cd3a15e307",
+      "assetKey": "101374220a360975",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -209,12 +209,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T23:57:36.765Z"
+      "generatedAt": "2026-03-15T00:19:07.686Z"
     },
     "2026-03-13": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-13-unfold-your-own-myth.d7d1b2901aeea78c.mp3",
-      "sourceHash": "0a4cdd8e5f9ef60c",
-      "assetKey": "d7d1b2901aeea78c",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-13-unfold-your-own-myth.a838424f4f525e98.mp3",
+      "sourceHash": "c47afb766441421b",
+      "assetKey": "a838424f4f525e98",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -223,12 +223,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:05.752Z"
+      "generatedAt": "2026-03-15T00:19:21.314Z"
     },
     "2026-03-14": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.e15b575cf609bdca.mp3",
-      "sourceHash": "9e07b863ba27201c",
-      "assetKey": "e15b575cf609bdca",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.c2952faf95763b7a.mp3",
+      "sourceHash": "ccbd8f2a5573db9e",
+      "assetKey": "c2952faf95763b7a",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -237,12 +237,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:14.858Z"
+      "generatedAt": "2026-03-15T00:19:30.029Z"
     },
     "2026-03-15": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-15-the-52-hertz-whale.310f0ad8efb41c61.mp3",
-      "sourceHash": "81e449dd651e2e77",
-      "assetKey": "310f0ad8efb41c61",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-15-the-52-hertz-whale.644ad3899a992610.mp3",
+      "sourceHash": "c35ac7e6272544cd",
+      "assetKey": "644ad3899a992610",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -251,12 +251,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:19.787Z"
+      "generatedAt": "2026-03-15T00:19:35.156Z"
     },
     "2026-03-16": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-16-monopoly.168dfb27e177c09d.mp3",
-      "sourceHash": "bd426df1769550fc",
-      "assetKey": "168dfb27e177c09d",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-16-monopoly.ce13269b6f2c8bc4.mp3",
+      "sourceHash": "89b080c6f839e9f2",
+      "assetKey": "ce13269b6f2c8bc4",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -265,12 +265,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T23:57:45.532Z"
+      "generatedAt": "2026-03-15T00:19:45.244Z"
     },
     "2026-03-17": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-17-crying.ee4baaa2db1af929.mp3",
-      "sourceHash": "bef64ffa3d93eaff",
-      "assetKey": "ee4baaa2db1af929",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-17-crying.bd8494298e65bf35.mp3",
+      "sourceHash": "b37645ba7e6ae590",
+      "assetKey": "bd8494298e65bf35",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -279,12 +279,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:31.887Z"
+      "generatedAt": "2026-03-15T00:19:49.807Z"
     },
     "2026-03-18": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-18-ozymandias.aaa468065feeb2af.mp3",
-      "sourceHash": "6e1b65239524a3d5",
-      "assetKey": "aaa468065feeb2af",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-18-ozymandias.26cc3281d991d6c4.mp3",
+      "sourceHash": "f1aeaa893010f7d2",
+      "assetKey": "26cc3281d991d6c4",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -293,12 +293,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:40.303Z"
+      "generatedAt": "2026-03-15T00:19:57.793Z"
     },
     "2026-03-19": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-19-fifteen.4b7f2aea0314c9ab.mp3",
-      "sourceHash": "2e4e6c65174bde83",
-      "assetKey": "4b7f2aea0314c9ab",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-19-fifteen.a5b5a6f50604d2a9.mp3",
+      "sourceHash": "8d66539c1b147ee6",
+      "assetKey": "a5b5a6f50604d2a9",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -307,12 +307,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:45.125Z"
+      "generatedAt": "2026-03-15T00:20:01.311Z"
     },
     "2026-03-20": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-20-men-and-their-boring-arguments.1a91428129a7d230.mp3",
-      "sourceHash": "e0cc1e961698c65f",
-      "assetKey": "1a91428129a7d230",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-20-men-and-their-boring-arguments.fc309be1e720a891.mp3",
+      "sourceHash": "a5176d3a84544393",
+      "assetKey": "fc309be1e720a891",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -321,12 +321,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:54.528Z"
+      "generatedAt": "2026-03-15T00:20:09.771Z"
     },
     "2026-03-21": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-21-for-jane.3a4d385fdf3517a2.mp3",
-      "sourceHash": "35d5eef71188f9a5",
-      "assetKey": "3a4d385fdf3517a2",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-21-for-jane.fb260902dd4e89d3.mp3",
+      "sourceHash": "5dd1d4072ed80055",
+      "assetKey": "fb260902dd4e89d3",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -335,12 +335,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:23:59.070Z"
+      "generatedAt": "2026-03-15T00:20:15.399Z"
     },
     "2026-03-22": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-22-finding-my-boyfriend-in-bed-with-a-stranger.fccc55471a5c2c67.mp3",
-      "sourceHash": "5606f5067bd3caed",
-      "assetKey": "fccc55471a5c2c67",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-22-finding-my-boyfriend-in-bed-with-a-stranger.f90d9fdaffc3546e.mp3",
+      "sourceHash": "a9c6e4923c615ab4",
+      "assetKey": "f90d9fdaffc3546e",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -349,12 +349,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:05.021Z"
+      "generatedAt": "2026-03-15T00:20:22.714Z"
     },
     "2026-03-23": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-23-missed-time.d37ce0209af67751.mp3",
-      "sourceHash": "9e5e4360e7bd0dd4",
-      "assetKey": "d37ce0209af67751",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-23-missed-time.45226b44ba3ff2df.mp3",
+      "sourceHash": "2a57e61b77a99258",
+      "assetKey": "45226b44ba3ff2df",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -363,12 +363,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:08.760Z"
+      "generatedAt": "2026-03-15T00:20:27.526Z"
     },
     "2026-03-24": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-24-this-room.89bf98db258b4949.mp3",
-      "sourceHash": "ef290c81a36a4b8b",
-      "assetKey": "89bf98db258b4949",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-24-this-room.02b3190c8a8249fb.mp3",
+      "sourceHash": "20fbe822b46deebc",
+      "assetKey": "02b3190c8a8249fb",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -377,12 +377,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:13.212Z"
+      "generatedAt": "2026-03-15T00:20:33.141Z"
     },
     "2026-03-25": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-25-what-kind-of-times-are-these.76ff6fc3dbb2346d.mp3",
-      "sourceHash": "e37fe9034db9ba4f",
-      "assetKey": "76ff6fc3dbb2346d",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-25-what-kind-of-times-are-these.cadea6f840d3daba.mp3",
+      "sourceHash": "ad8e86d718a87568",
+      "assetKey": "cadea6f840d3daba",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -391,12 +391,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:21.584Z"
+      "generatedAt": "2026-03-15T00:20:43.285Z"
     },
     "2026-03-26": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-26-i-have-to-tell-you.3cd162432035e7de.mp3",
-      "sourceHash": "0f2e0e593a45d99f",
-      "assetKey": "3cd162432035e7de",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-26-i-have-to-tell-you.95f7e440bbdc1c86.mp3",
+      "sourceHash": "1d60f213173a5843",
+      "assetKey": "95f7e440bbdc1c86",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -405,12 +405,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:23.361Z"
+      "generatedAt": "2026-03-15T00:20:45.361Z"
     },
     "2026-03-27": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-27-i-am-panting.5cfa502140b67113.mp3",
-      "sourceHash": "ebcdd558f04888c9",
-      "assetKey": "5cfa502140b67113",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-27-i-am-panting.95f4447677fdac1f.mp3",
+      "sourceHash": "5c8eef6081ff2be5",
+      "assetKey": "95f4447677fdac1f",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -419,12 +419,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:26.739Z"
+      "generatedAt": "2026-03-15T00:20:49.201Z"
     },
     "2026-03-28": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-28-nobody-comes.7a2406271e0ea299.mp3",
-      "sourceHash": "98d98e5ca4c10b53",
-      "assetKey": "7a2406271e0ea299",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-28-nobody-comes.6b3d16e5896e79a4.mp3",
+      "sourceHash": "7f0bb5a05b0fd6b6",
+      "assetKey": "6b3d16e5896e79a4",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -433,12 +433,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:32.460Z"
+      "generatedAt": "2026-03-15T00:20:54.977Z"
     },
     "2026-03-29": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-29-wont-you-celebrate-with-me.b64bfbbbd84c0813.mp3",
-      "sourceHash": "0376f2a00dd560d5",
-      "assetKey": "b64bfbbbd84c0813",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-29-wont-you-celebrate-with-me.adfcdd82c91a7899.mp3",
+      "sourceHash": "7ba47b6fc9b9240a",
+      "assetKey": "adfcdd82c91a7899",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -447,12 +447,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:36.665Z"
+      "generatedAt": "2026-03-15T00:21:00.287Z"
     },
     "2026-03-30": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-30-an-affair.0e735bf4f387c48e.mp3",
-      "sourceHash": "01cd3d3df04a6f08",
-      "assetKey": "0e735bf4f387c48e",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-30-an-affair.5e9c54e1ed0a01c9.mp3",
+      "sourceHash": "072335c208e13ff7",
+      "assetKey": "5e9c54e1ed0a01c9",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -461,12 +461,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:37.941Z"
+      "generatedAt": "2026-03-15T00:21:01.961Z"
     },
     "2026-03-31": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-31-ghosting.744351af75062abe.mp3",
-      "sourceHash": "fdfe52803d355023",
-      "assetKey": "744351af75062abe",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-31-ghosting.0a4d5da4466d6661.mp3",
+      "sourceHash": "1198ef645d242a39",
+      "assetKey": "0a4d5da4466d6661",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -475,12 +475,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:39.727Z"
+      "generatedAt": "2026-03-15T00:21:04.471Z"
     },
     "2026-04-01": {
-      "audioUrl": "/assets/tts/audio/2026/04/2026-04-01-spring.e67af1dc85199659.mp3",
-      "sourceHash": "dd174d1bcd254dd5",
-      "assetKey": "e67af1dc85199659",
+      "audioUrl": "/assets/tts/audio/2026/04/2026-04-01-spring.b30e249657a44bd3.mp3",
+      "sourceHash": "decd355b0b681415",
+      "assetKey": "b30e249657a44bd3",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -489,12 +489,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:46.744Z"
+      "generatedAt": "2026-03-15T00:21:11.101Z"
     },
     "2026-04-24": {
-      "audioUrl": "/assets/tts/audio/2026/04/2026-04-24-miracle-number-i.6c2e7929842b08df.mp3",
-      "sourceHash": "dd35c729f90f9244",
-      "assetKey": "6c2e7929842b08df",
+      "audioUrl": "/assets/tts/audio/2026/04/2026-04-24-miracle-number-i.11b627cc636ce6be.mp3",
+      "sourceHash": "cf35fbb87b9b5d47",
+      "assetKey": "11b627cc636ce6be",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -503,12 +503,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:54.919Z"
+      "generatedAt": "2026-03-15T00:21:20.059Z"
     },
     "2026-05-05": {
-      "audioUrl": "/assets/tts/audio/2026/05/2026-05-05-let-me-tell-you.84829e7d3fdc7aeb.mp3",
-      "sourceHash": "a244614b8259e8bb",
-      "assetKey": "84829e7d3fdc7aeb",
+      "audioUrl": "/assets/tts/audio/2026/05/2026-05-05-let-me-tell-you.afad2364161a8757.mp3",
+      "sourceHash": "8de464ff5ed07f78",
+      "assetKey": "afad2364161a8757",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -517,12 +517,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:24:58.943Z"
+      "generatedAt": "2026-03-15T00:21:23.894Z"
     },
     "2026-06-13": {
-      "audioUrl": "/assets/tts/audio/2026/06/2026-06-13-fear.1cf9878ddaa1d344.mp3",
-      "sourceHash": "dca64a1e94eb2aeb",
-      "assetKey": "1cf9878ddaa1d344",
+      "audioUrl": "/assets/tts/audio/2026/06/2026-06-13-fear.a365302b9fac29a2.mp3",
+      "sourceHash": "04dea24606726b63",
+      "assetKey": "a365302b9fac29a2",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -531,12 +531,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:25:01.925Z"
+      "generatedAt": "2026-03-15T00:21:26.809Z"
     },
     "2026-10-07": {
-      "audioUrl": "/assets/tts/audio/2026/10/2026-10-07-if-i-must-die.8e8d19c5e8081d0f.mp3",
-      "sourceHash": "23909663488327a4",
-      "assetKey": "8e8d19c5e8081d0f",
+      "audioUrl": "/assets/tts/audio/2026/10/2026-10-07-if-i-must-die.8952b290f87f2f1c.mp3",
+      "sourceHash": "2e830798b0430574",
+      "assetKey": "8952b290f87f2f1c",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -545,12 +545,12 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:25:08.048Z"
+      "generatedAt": "2026-03-15T00:21:32.341Z"
     },
     "2027-04-24": {
-      "audioUrl": "/assets/tts/audio/2027/04/2027-04-24-miracle-number-ii.824ea37e6b6ba8e5.mp3",
-      "sourceHash": "ab7aa1db4776f069",
-      "assetKey": "824ea37e6b6ba8e5",
+      "audioUrl": "/assets/tts/audio/2027/04/2027-04-24-miracle-number-ii.f12dd30a065b1475.mp3",
+      "sourceHash": "1e8769cda67d6927",
+      "assetKey": "f12dd30a065b1475",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -559,7 +559,7 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
       "speed": 0.96,
-      "generatedAt": "2026-03-14T20:25:15.904Z"
+      "generatedAt": "2026-03-15T00:21:40.352Z"
     }
   }
 }

@@ -4,7 +4,7 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test, { after } from "node:test";
-import { poemSourceHash, speakablePoemText, stableHash } from "../scripts/tts-manifest.mjs";
+import { poemSourceHash, speakablePoemScript, speakablePoemText, stableHash } from "../scripts/tts-manifest.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(root, "dist");
@@ -451,6 +451,37 @@ test("speakable poem text keeps shorthand text from custom aligned markup lines"
   assert.equal(speech, `A small white piece\nof an ancient mosaic,\nDid anyone see her`);
 });
 
+test("speakable poem script includes title, author, translator, and a pause before the poem", () => {
+  const speech = speakablePoemScript({
+    title: "The 52-Hertz Whale",
+    author: "Joseph Fasano",
+    translator: "Test Translator",
+    poem: "They have called it\nthe loneliest of things."
+  });
+
+  assert.equal(
+    speech,
+    "The 52-Hertz Whale, by Joseph Fasano, translated by Test Translator.\n\nThey have called it\nthe loneliest of things."
+  );
+});
+
+test("poem source hash changes when TTS metadata changes", () => {
+  const base = {
+    title: "Poem",
+    author: "Author",
+    translator: "",
+    poem: "Only the body stays the same."
+  };
+
+  assert.notEqual(
+    poemSourceHash(base),
+    poemSourceHash({
+      ...base,
+      translator: "Translator"
+    })
+  );
+});
+
 test("published poem and home pages render an inline listen control when a managed TTS asset exists", { concurrency: false }, async () => {
   const [targetDate] = await nextUnusedPoemDates(1);
   const slug = "synthetic-tts-player-fixture";
@@ -469,8 +500,12 @@ Synthetic audio fixture line two.
 `
   };
   const manifestBackup = await readFile(ttsManifestFile, "utf8").catch(() => "");
-  const poemBody = `Synthetic audio fixture line one.\nSynthetic audio fixture line two.\n`;
-  const sourceHash = poemSourceHash(poemBody);
+  const sourceHash = poemSourceHash({
+    title: fixture.contents.match(/^title:\s*(.+)$/m)?.[1] || "",
+    author: fixture.contents.match(/^author:\s*(.+)$/m)?.[1] || "",
+    translator: fixture.contents.match(/^translator:\s*(.+)$/m)?.[1] || "",
+    poem: "Synthetic audio fixture line one.\nSynthetic audio fixture line two.\n"
+  });
   const assetKey = stableHash(JSON.stringify({
     date: targetDate,
     sourceHash,
