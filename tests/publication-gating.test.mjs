@@ -536,7 +536,7 @@ Synthetic audio fixture line two.
     modelId: "gpt-4o-mini-tts",
     voice: "sage",
     outputFormat: "mp3",
-    instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
+    instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
     speed: 0.96
   }));
   const audioUrl = `/assets/tts/audio/${targetDate.slice(0, 4)}/${targetDate.slice(5, 7)}/${targetDate}-${slug}.${assetKey}.mp3`;
@@ -562,7 +562,7 @@ Synthetic audio fixture line two.
           voice: "sage",
           outputFormat: "mp3",
           mimeType: "audio/mpeg",
-          instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
+          instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
           speed: 0.96,
           generatedAt: "2026-03-14T00:00:00.000Z"
         }

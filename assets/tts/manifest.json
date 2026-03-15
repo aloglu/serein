@@ -212,18 +212,18 @@
       "generatedAt": "2026-03-15T00:19:07.686Z"
     },
     "2026-03-13": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-13-unfold-your-own-myth.a838424f4f525e98.mp3",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-13-unfold-your-own-myth.9e4a1d9b308af5f0.mp3",
       "sourceHash": "c47afb766441421b",
-      "assetKey": "a838424f4f525e98",
+      "assetKey": "9e4a1d9b308af5f0",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
       "voice": "sage",
       "outputFormat": "mp3",
       "mimeType": "audio/mpeg",
-      "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
+      "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T00:19:21.314Z"
+      "generatedAt": "2026-03-15T15:31:26.278Z"
     },
     "2026-03-14": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.c2952faf95763b7a.mp3",
@@ -506,18 +506,18 @@
       "generatedAt": "2026-03-15T00:21:20.059Z"
     },
     "2026-05-05": {
-      "audioUrl": "/assets/tts/audio/2026/05/2026-05-05-let-me-tell-you.afad2364161a8757.mp3",
+      "audioUrl": "/assets/tts/audio/2026/05/2026-05-05-let-me-tell-you.2cbbab1cfdd03d98.mp3",
       "sourceHash": "8de464ff5ed07f78",
-      "assetKey": "afad2364161a8757",
+      "assetKey": "2cbbab1cfdd03d98",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
       "voice": "sage",
       "outputFormat": "mp3",
       "mimeType": "audio/mpeg",
-      "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
+      "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T00:21:23.894Z"
+      "generatedAt": "2026-03-15T15:34:35.428Z"
     },
     "2026-06-13": {
       "audioUrl": "/assets/tts/audio/2026/06/2026-06-13-fear.a365302b9fac29a2.mp3",

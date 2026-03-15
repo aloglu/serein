@@ -6,7 +6,7 @@ const PROFILE_DEFAULTS = {
     modelId: "gpt-4o-mini-tts",
     outputFormat: "mp3",
     voice: "sage",
-    instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical.",
+    instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
     speed: 0.96
   }
 };
