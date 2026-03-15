@@ -1,10 +1,11 @@
 const playback = new Audio();
-const touchSlowPressMs = 450;
+const playbackSpeedOptions = [0.5, 1, 1.5, 2];
 
 let activePlayer = null;
 let activeUrl = "";
 let suppressPauseUi = false;
 let activeSpeed = 1;
+let openSpeedMenuPlayer = null;
 
 function setStatusText(player, text) {
   const status = player?.querySelector("[data-tts-status]");
@@ -18,8 +19,20 @@ function formatSpeed(speed) {
   return `${speed}x`;
 }
 
+function getSpeedControl(player) {
+  return player?.querySelector("[data-tts-speed]") ?? null;
+}
+
+function getSpeedMenu(player) {
+  return player?.querySelector("[data-tts-speed-menu]") ?? null;
+}
+
+function getSpeedOptions(player) {
+  return Array.from(player?.querySelectorAll("[data-tts-speed-option]") ?? []);
+}
+
 function updateSpeedControl(player, { visible = false, speed = activeSpeed } = {}) {
-  const control = player?.querySelector("[data-tts-speed]");
+  const control = getSpeedControl(player);
   if (!control) {
     return;
   }
@@ -27,17 +40,84 @@ function updateSpeedControl(player, { visible = false, speed = activeSpeed } = {
   control.textContent = formatSpeed(speed);
   control.setAttribute(
     "aria-label",
-    `Playback speed ${formatSpeed(speed)}. Click or tap for 2x. Right-click or press and hold for 0.5x.`
+    `Playback speed ${formatSpeed(speed)}. Choose playback speed.`
   );
   control.setAttribute("title", `Playback speed ${formatSpeed(speed)}`);
   control.hidden = !visible;
   control.setAttribute("aria-hidden", visible ? "false" : "true");
   control.tabIndex = visible ? 0 : -1;
+  if (!visible) {
+    control.setAttribute("aria-expanded", "false");
+  }
+  updateSpeedMenuOptions(player, speed);
 }
 
 function shouldShowSpeedControl(player) {
   const button = player?.querySelector("[data-tts-toggle]");
   return button?.dataset.ttsState === "playing";
+}
+
+function updateSpeedMenuOptions(player, speed = activeSpeed) {
+  for (const option of getSpeedOptions(player)) {
+    const value = Number(option.dataset.ttsSpeedValue);
+    const selected = value === speed;
+    option.setAttribute("aria-pressed", selected ? "true" : "false");
+  }
+}
+
+function closeSpeedMenu(player = openSpeedMenuPlayer, { restoreFocus = false } = {}) {
+  if (!player) {
+    return;
+  }
+
+  const control = getSpeedControl(player);
+  const menu = getSpeedMenu(player);
+  if (menu) {
+    menu.hidden = true;
+  }
+  if (control) {
+    control.setAttribute("aria-expanded", "false");
+    if (restoreFocus && !control.hidden) {
+      control.focus();
+    }
+  }
+  if (openSpeedMenuPlayer === player) {
+    openSpeedMenuPlayer = null;
+  }
+}
+
+function openSpeedMenu(player, { focusSelected = false } = {}) {
+  if (!player || !shouldShowSpeedControl(player)) {
+    return;
+  }
+
+  if (openSpeedMenuPlayer && openSpeedMenuPlayer !== player) {
+    closeSpeedMenu(openSpeedMenuPlayer);
+  }
+
+  const control = getSpeedControl(player);
+  const menu = getSpeedMenu(player);
+  if (!control || !menu) {
+    return;
+  }
+
+  updateSpeedMenuOptions(player, activeSpeed);
+  menu.hidden = false;
+  control.setAttribute("aria-expanded", "true");
+  openSpeedMenuPlayer = player;
+
+  if (focusSelected) {
+    const selectedOption = getSpeedOptions(player).find((option) => option.getAttribute("aria-pressed") === "true");
+    selectedOption?.focus();
+  }
+}
+
+function toggleSpeedMenu(player, { focusSelected = false } = {}) {
+  if (openSpeedMenuPlayer === player) {
+    closeSpeedMenu(player, { restoreFocus: !focusSelected });
+    return;
+  }
+  openSpeedMenu(player, { focusSelected });
 }
 
 function setPlaybackSpeed(speed, { announce = true, visible = null } = {}) {
@@ -53,22 +133,6 @@ function setPlaybackSpeed(speed, { announce = true, visible = null } = {}) {
       setStatusText(activePlayer, `Playback speed ${formatSpeed(speed)}.`);
     }
   }
-}
-
-function toggleFastSpeed() {
-  if (activeSpeed < 1) {
-    setPlaybackSpeed(1);
-    return;
-  }
-  setPlaybackSpeed(activeSpeed === 2 ? 1 : 2);
-}
-
-function toggleSlowSpeed() {
-  if (activeSpeed > 1) {
-    setPlaybackSpeed(1);
-    return;
-  }
-  setPlaybackSpeed(activeSpeed === 0.5 ? 1 : 0.5);
 }
 
 function resetPlaybackSpeed() {
@@ -95,6 +159,7 @@ function setPlayerState(player, state) {
   if (state === "loading") {
     button.setAttribute("aria-label", "Loading poem audio");
     button.setAttribute("title", "Loading poem audio");
+    closeSpeedMenu(player);
     updateSpeedControl(player, { visible: false });
     setStatusText(player, "Loading poem audio.");
     return;
@@ -103,6 +168,7 @@ function setPlayerState(player, state) {
   if (state === "ended") {
     button.setAttribute("aria-label", "Play poem audio again");
     button.setAttribute("title", "Play poem audio again");
+    closeSpeedMenu(player);
     updateSpeedControl(player, { visible: false });
     setStatusText(player, "Poem audio ended.");
     return;
@@ -111,6 +177,7 @@ function setPlayerState(player, state) {
   if (state === "error") {
     button.setAttribute("aria-label", "Poem audio is unavailable");
     button.setAttribute("title", "Poem audio is unavailable");
+    closeSpeedMenu(player);
     updateSpeedControl(player, { visible: false });
     setStatusText(player, "Poem audio is unavailable.");
     return;
@@ -118,6 +185,7 @@ function setPlayerState(player, state) {
 
   button.setAttribute("aria-label", "Play poem audio");
   button.setAttribute("title", "Play poem audio");
+  closeSpeedMenu(player);
   updateSpeedControl(player, { visible: false });
   setStatusText(player, "Poem audio paused.");
 }
@@ -179,6 +247,7 @@ export function bindTtsPlayers(scope = document) {
     player.dataset.ttsBound = "1";
     const button = player.querySelector("[data-tts-toggle]");
     const speedControl = player.querySelector("[data-tts-speed]");
+    const speedMenu = getSpeedMenu(player);
     const url = String(player.dataset.ttsAudioUrl || "").trim();
 
     if (!button || !url) {
@@ -226,56 +295,13 @@ export function bindTtsPlayers(scope = document) {
       }
     });
 
-    if (speedControl) {
-      let touchSlowTimer = null;
-      let touchSlowTriggered = false;
-
-      const clearTouchSlowTimer = () => {
-        if (touchSlowTimer !== null) {
-          window.clearTimeout(touchSlowTimer);
-          touchSlowTimer = null;
-        }
-      };
-
-      speedControl.addEventListener("pointerdown", (event) => {
-        if (event.pointerType !== "touch") {
-          return;
-        }
-
-        clearTouchSlowTimer();
-        touchSlowTriggered = false;
-        touchSlowTimer = window.setTimeout(() => {
-          touchSlowTimer = null;
-          if (activePlayer !== player || playback.paused || playback.ended) {
-            return;
-          }
-          touchSlowTriggered = true;
-          toggleSlowSpeed();
-        }, touchSlowPressMs);
-      });
-
-      speedControl.addEventListener("pointerup", clearTouchSlowTimer);
-      speedControl.addEventListener("pointercancel", clearTouchSlowTimer);
-      speedControl.addEventListener("pointerleave", clearTouchSlowTimer);
-
+    if (speedControl && speedMenu) {
       speedControl.addEventListener("click", (event) => {
         event.preventDefault();
-        if (touchSlowTriggered) {
-          touchSlowTriggered = false;
-          return;
-        }
         if (activePlayer !== player || playback.paused || playback.ended) {
           return;
         }
-        toggleFastSpeed();
-      });
-
-      speedControl.addEventListener("contextmenu", (event) => {
-        event.preventDefault();
-        if (activePlayer !== player || playback.paused || playback.ended) {
-          return;
-        }
-        toggleSlowSpeed();
+        toggleSpeedMenu(player);
       });
 
       speedControl.addEventListener("keydown", (event) => {
@@ -283,20 +309,81 @@ export function bindTtsPlayers(scope = document) {
           return;
         }
 
-        if (event.key === "ArrowUp" || event.key === "ArrowRight") {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp" || event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          toggleFastSpeed();
+          openSpeedMenu(player, { focusSelected: true });
           return;
         }
 
-        if (event.key === "ArrowDown" || event.key === "ArrowLeft") {
+        if (event.key === "Escape" && openSpeedMenuPlayer === player) {
           event.preventDefault();
-          toggleSlowSpeed();
+          closeSpeedMenu(player, { restoreFocus: true });
         }
       });
+
+      for (const option of getSpeedOptions(player)) {
+        option.addEventListener("click", (event) => {
+          event.preventDefault();
+          if (activePlayer !== player || playback.paused || playback.ended) {
+            return;
+          }
+          const speed = Number(option.dataset.ttsSpeedValue);
+          if (!playbackSpeedOptions.includes(speed)) {
+            return;
+          }
+          setPlaybackSpeed(speed);
+          closeSpeedMenu(player, { restoreFocus: true });
+        });
+
+        option.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            event.preventDefault();
+            closeSpeedMenu(player, { restoreFocus: true });
+            return;
+          }
+
+          const options = getSpeedOptions(player);
+          const currentIndex = options.indexOf(option);
+          if (currentIndex === -1) {
+            return;
+          }
+
+          if (event.key === "ArrowDown" || event.key === "ArrowRight") {
+            event.preventDefault();
+            options[(currentIndex + 1) % options.length]?.focus();
+            return;
+          }
+
+          if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
+            event.preventDefault();
+            options[(currentIndex - 1 + options.length) % options.length]?.focus();
+          }
+        });
+      }
     }
 
     setPlayerState(player, "paused");
     setStatusText(player, "");
   }
+}
+
+if (typeof document !== "undefined" && document.body && !document.body.dataset.ttsMenusBound) {
+  document.body.dataset.ttsMenusBound = "1";
+
+  document.addEventListener("pointerdown", (event) => {
+    if (!openSpeedMenuPlayer) {
+      return;
+    }
+    if (event.target instanceof Node && openSpeedMenuPlayer.contains(event.target)) {
+      return;
+    }
+    closeSpeedMenu(openSpeedMenuPlayer);
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape" || !openSpeedMenuPlayer) {
+      return;
+    }
+    closeSpeedMenu(openSpeedMenuPlayer, { restoreFocus: true });
+  });
 }
