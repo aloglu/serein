@@ -82,6 +82,7 @@ The poem renderer also supports one small piece of custom markup:
 ## Publishing model
 
 Each poem is published at `/YYYY/MM/DD/`.
+Once a poem is published, its raw Markdown source is also available at `/YYYY/MM/DD.md`.
 
 The homepage, archive, poets index, and poet pages resolve against the viewer's local date. Future-dated poem pages are generated in advance but remain unavailable until local midnight on the scheduled date.
 

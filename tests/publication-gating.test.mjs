@@ -162,6 +162,7 @@ after(async () => {
 test("publication gating keeps future poem HTML out of backdated builds", { concurrency: false }, async () => {
   const [targetDate] = await nextUnusedPoemDates(1);
   const blockedAsOf = addDaysToYyyyMmDd(targetDate, -1);
+  const [year, month, day] = targetDate.split("-");
   const fixture = {
     relativePath: poemRelativePath(targetDate, "synthetic-publication-gating-fixture"),
     contents: `---
@@ -214,6 +215,10 @@ Line two of the synthetic gating fixture.
 
     const socialFiles = await readdir(path.join(distDir, "social"));
     assert.doesNotMatch(socialFiles.join("\n"), new RegExp(`poem-${targetDate}\\.png`));
+    assert.equal(
+      (await readDirNamesIfExists(path.join(distDir, year, month))).includes(`${day}.md`),
+      false
+    );
 
     await runBuild({ SEREIN_AS_OF: targetDate });
 
@@ -227,8 +232,14 @@ Line two of the synthetic gating fixture.
     assert.match(publishedPageHtml, /data-poem-blocked="0"/);
     assert.doesNotMatch(publishedPageHtml, new RegExp(`assets/data/poems/poem-data-${targetDate}-`));
 
+    const rawMarkdown = await readDistFile(year, month, `${day}.md`);
+    assert.equal(rawMarkdown, fixture.contents);
+
     const normalBuildPoemDataFiles = await readDirNamesIfExists(path.join(distDir, "assets", "data", "poems"));
     assert.doesNotMatch(normalBuildPoemDataFiles.join("\n"), new RegExp(`poem-data-${targetDate}-[a-f0-9]{10}\\.json`));
+
+    const headersFile = await readDistFile("_headers");
+    assert.match(headersFile, /\/\*\.md\s+Content-Type: text\/markdown; charset=utf-8\s+X-Content-Type-Options: nosniff\s+X-Robots-Tag: noindex, nofollow/s);
   } finally {
     await rm(path.join(poemsDir, fixture.relativePath), { force: true });
   }

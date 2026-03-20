@@ -64,7 +64,7 @@ let homePoemDataCache = new Map();
 let poemPageDataCache = new Map();
 let ttsManifest = { version: 1, poems: {} };
 const fileStatCache = new Map();
-const SOCIAL_CARD_CACHE_VERSION = "png-v3";
+const SOCIAL_CARD_CACHE_VERSION = "png-v4-font-fallback";
 const BACKGROUND_TASK_CONCURRENCY = 4;
 
 function readArgValue(flagName) {
@@ -732,7 +732,8 @@ function wrapCardText(text, maxCharsPerLine, maxLines) {
 function renderCenteredCardTextLines(lines, { centerX, startY, size, lineHeight, weight = "400", fill = "#ebe0d2" }) {
   return lines
     .map(
-      (line, index) => `<text x="${centerX}" y="${startY + (index * lineHeight)}" text-anchor="middle" font-family="'Libre Baskerville'" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
+      // Fall back to broadly available serif fonts if custom font loading fails during rasterization.
+      (line, index) => `<text x="${centerX}" y="${startY + (index * lineHeight)}" text-anchor="middle" font-family="'Libre Baskerville', 'DejaVu Serif', 'Noto Serif', Georgia, serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
     )
     .join("");
 }
@@ -1528,6 +1529,16 @@ async function writeRoutedPage(routePath, html) {
   await writeFile(path.join(dirPath, "index.html"), finalHtml, "utf8");
 }
 
+async function copyRoutedFile(routePath, sourcePath) {
+  if (!routePath || routePath === "/") {
+    throw new Error(`Invalid routed file path '${routePath}'.`);
+  }
+
+  const outputPath = path.join(distDir, ...routePath.slice(1).split("/"));
+  await mkdir(path.dirname(outputPath), { recursive: true });
+  await copyFile(sourcePath, outputPath);
+}
+
 async function renderPoemPages(publishedPoems, defaultAsOf = "") {
   const template = await readTemplate("poem.html");
   const publicationCutoff = effectivePublicationCutoff(defaultAsOf);
@@ -1547,6 +1558,17 @@ async function renderPoemPages(publishedPoems, defaultAsOf = "") {
     });
     await writeRoutedPage(poem.route, html);
   }
+}
+
+async function renderPublishedPoemMarkdownFiles(poems, defaultAsOf = "") {
+  const publishedPoems = publishedPoemsForDate(poems, defaultAsOf);
+
+  await mapWithConcurrency(publishedPoems, async (poem) => {
+    if (!poem.sourceFullPath) {
+      return;
+    }
+    await copyRoutedFile(`${poem.route}.md`, poem.sourceFullPath);
+  });
 }
 
 async function renderArchive(poems, defaultAsOf = "") {
@@ -2184,6 +2206,11 @@ async function renderHeadersFile() {
   const headers = `/assets/*
   Cache-Control: public, max-age=31536000, immutable
 
+/*.md
+  Content-Type: text/markdown; charset=utf-8
+  X-Content-Type-Options: nosniff
+  X-Robots-Tag: noindex, nofollow
+
 /*
   Cache-Control: public, max-age=0, must-revalidate
 `;
@@ -2507,6 +2534,7 @@ function buildRenderTasks(poems, asOfDate) {
   return [
     () => renderHome(poems, asOfDate),
     () => renderPoemPages(poems, asOfDate),
+    () => renderPublishedPoemMarkdownFiles(poems, asOfDate),
     () => renderArchive(poems, asOfDate),
     () => renderPoets(poems, asOfDate),
     () => renderPoetPages(poems, asOfDate),
