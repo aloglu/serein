@@ -64,7 +64,7 @@ let homePoemDataCache = new Map();
 let poemPageDataCache = new Map();
 let ttsManifest = { version: 1, poems: {} };
 const fileStatCache = new Map();
-const SOCIAL_CARD_CACHE_VERSION = "png-v4-font-fallback";
+const SOCIAL_CARD_CACHE_VERSION = "png-v5-fontconfig-fallback";
 const BACKGROUND_TASK_CONCURRENCY = 4;
 
 function readArgValue(flagName) {
@@ -294,12 +294,26 @@ async function ensureSocialCardFontConfig() {
   const fontCacheDir = path.join(cacheDir, "fontconfig");
   const configPath = path.join(fontCacheDir, "fonts.conf");
   await mkdir(fontCacheDir, { recursive: true });
+  const fontDirectories = [
+    path.join(assetsDir, "fonts"),
+    process.env.WINDIR ? path.join(process.env.WINDIR, "Fonts") : "",
+    "/usr/share/fonts",
+    "/usr/local/share/fonts",
+    "/usr/share/fonts/truetype",
+    "/usr/share/fonts/opentype",
+    "/System/Library/Fonts",
+    "/Library/Fonts"
+  ]
+    .map((dir) => String(dir || "").trim())
+    .filter(Boolean);
+  const fontDirectoryTags = [...new Set(fontDirectories)]
+    .map((dir) => `  <dir>${xmlEscape(dir)}</dir>`)
+    .join("\n");
 
   const fontConfigXml = `<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
 <fontconfig>
-  <reset-dirs />
-  <dir>${xmlEscape(path.join(assetsDir, "fonts"))}</dir>
+${fontDirectoryTags}
   <cachedir>${xmlEscape(fontCacheDir)}</cachedir>
   <config></config>
 </fontconfig>
@@ -732,10 +746,18 @@ function wrapCardText(text, maxCharsPerLine, maxLines) {
 function renderCenteredCardTextLines(lines, { centerX, startY, size, lineHeight, weight = "400", fill = "#ebe0d2" }) {
   return lines
     .map(
-      // Fall back to broadly available serif fonts if custom font loading fails during rasterization.
-      (line, index) => `<text x="${centerX}" y="${startY + (index * lineHeight)}" text-anchor="middle" font-family="'Libre Baskerville', 'DejaVu Serif', 'Noto Serif', Georgia, serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
+      // Prefer the bundled face, but keep system serif families available for Linux-based build environments.
+      (line, index) => `<text x="${centerX}" y="${startY + (index * lineHeight)}" text-anchor="middle" font-family="'Libre Baskerville', 'Noto Serif', 'DejaVu Serif', Georgia, serif" font-size="${size}" font-weight="${weight}" fill="${fill}">${htmlEscape(line)}</text>`
     )
     .join("");
+}
+
+function versionedSocialCardPath(webPath, svgContents) {
+  const normalizedPath = String(webPath || "").trim();
+  if (!normalizedPath) {
+    return "";
+  }
+  return `${normalizedPath}?v=${socialCardCacheKey(svgContents).slice(0, 12)}`;
 }
 
 function renderSocialCardSvg({ title, subtitle = "" }) {
@@ -803,39 +825,40 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
   ];
 
   for (const [route, filename, title, alt] of staticRouteCards) {
+    const svgContents = renderSocialCardSvg({
+      title
+    });
+    const cardPath = await writeSocialCard(filename, svgContents);
     routeCards.set(route, {
-      path: await writeSocialCard(
-        filename,
-        renderSocialCardSvg({
-          title
-        })
-      ),
+      path: versionedSocialCardPath(cardPath, svgContents),
       alt
     });
   }
 
-  const poemCardEntries = await mapWithConcurrency(publishedPoems, async (poem) => [poem.route, {
-    path: await writeSocialCard(
-      `poem-${poem.date}.png`,
-      renderSocialCardSvg({
-        title: poem.title
-      })
-    ),
-    alt: poem.title
-  }]);
+  const poemCardEntries = await mapWithConcurrency(publishedPoems, async (poem) => {
+    const svgContents = renderSocialCardSvg({
+      title: poem.title
+    });
+    const cardPath = await writeSocialCard(`poem-${poem.date}.png`, svgContents);
+    return [poem.route, {
+      path: versionedSocialCardPath(cardPath, svgContents),
+      alt: poem.title
+    }];
+  });
   for (const [route, card] of poemCardEntries) {
     routeCards.set(route, card);
   }
 
-  const authorCardEntries = await mapWithConcurrency(publishedAuthorPages, async (authorPage) => [authorPage.route, {
-    path: await writeSocialCard(
-      `poet-${authorPage.slug}.png`,
-      renderSocialCardSvg({
-        title: authorPage.author
-      })
-    ),
-    alt: `${authorPage.author} on A Poem Per Day`
-  }]);
+  const authorCardEntries = await mapWithConcurrency(publishedAuthorPages, async (authorPage) => {
+    const svgContents = renderSocialCardSvg({
+      title: authorPage.author
+    });
+    const cardPath = await writeSocialCard(`poet-${authorPage.slug}.png`, svgContents);
+    return [authorPage.route, {
+      path: versionedSocialCardPath(cardPath, svgContents),
+      alt: `${authorPage.author} on A Poem Per Day`
+    }];
+  });
   for (const [route, card] of authorCardEntries) {
     routeCards.set(route, card);
   }
