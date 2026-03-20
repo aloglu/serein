@@ -63,6 +63,7 @@ let socialCardFontConfigPath = "";
 let homePoemDataCache = new Map();
 let poemPageDataCache = new Map();
 let ttsManifest = { version: 1, poems: {} };
+const fileStatCache = new Map();
 const SOCIAL_CARD_CACHE_VERSION = "png-v3";
 const BACKGROUND_TASK_CONCURRENCY = 4;
 
@@ -159,6 +160,15 @@ function htmlEscape(input) {
     .replaceAll("'", "&#39;");
 }
 
+function jsonLdEscape(input) {
+  return String(input || "")
+    .replaceAll("<", "\\u003c")
+    .replaceAll(">", "\\u003e")
+    .replaceAll("&", "\\u0026")
+    .replaceAll("\u2028", "\\u2028")
+    .replaceAll("\u2029", "\\u2029");
+}
+
 function markdownStrip(input) {
   return String(input || "")
     .replace(/<[^>]+>/g, " ")
@@ -170,6 +180,52 @@ function markdownStrip(input) {
 async function readTemplate(name) {
   const fullPath = path.join(templatesDir, name);
   return readFile(fullPath, "utf8");
+}
+
+async function cachedStat(targetPath) {
+  const normalizedPath = path.normalize(targetPath);
+  if (fileStatCache.has(normalizedPath)) {
+    return fileStatCache.get(normalizedPath);
+  }
+  const targetStat = await stat(normalizedPath);
+  fileStatCache.set(normalizedPath, targetStat);
+  return targetStat;
+}
+
+function mostRecentIsoTimestamp(values) {
+  const timestamps = values
+    .map((value) => {
+      if (!value) {
+        return NaN;
+      }
+      if (value instanceof Date) {
+        return value.getTime();
+      }
+      const parsed = new Date(value);
+      return Number.isNaN(parsed.getTime()) ? NaN : parsed.getTime();
+    })
+    .filter((value) => Number.isFinite(value));
+
+  if (timestamps.length === 0) {
+    return "";
+  }
+
+  return new Date(Math.max(...timestamps)).toISOString();
+}
+
+function sitemapLastmodTag(lastModifiedAt) {
+  const raw = String(lastModifiedAt || "").trim();
+  if (!raw) {
+    return "";
+  }
+  return `<lastmod>${htmlEscape(raw)}</lastmod>`;
+}
+
+function jsonLdScript(value) {
+  if (!value || typeof value !== "object") {
+    return "";
+  }
+  return `<script type="application/ld+json">${jsonLdEscape(JSON.stringify(value))}</script>`;
 }
 
 async function loadEsbuildBundle() {
@@ -855,6 +911,14 @@ function authorPagesWithPublishedPoems(publishedPoems) {
   return authorPages.filter((entry) => publishedAuthors.has(entry.author));
 }
 
+async function templateModifiedAt(name) {
+  return (await cachedStat(path.join(templatesDir, name))).mtime.toISOString();
+}
+
+function poemsModifiedAt(poems) {
+  return mostRecentIsoTimestamp(poems.map((poem) => poem.sourceModifiedAt));
+}
+
 function fontPath(routePath, filename) {
   return routeRelativeAssetUrl(routePath, filename);
 }
@@ -1141,6 +1205,7 @@ export async function loadPoems() {
     }
 
     const raw = await readFile(file.fullPath, "utf8");
+    const sourceStats = await cachedStat(file.fullPath);
     const parsed = parsePoemMarkdownFile(raw, file.relPath);
     validatePoem(parsed, file.relPath);
     validateCustomMarkdownSyntax(parsed.poem, file.relPath);
@@ -1167,6 +1232,8 @@ export async function loadPoems() {
 
     parsed.filename = file.name;
     parsed.filepath = file.relPath;
+    parsed.sourceFullPath = file.fullPath;
+    parsed.sourceModifiedAt = sourceStats.mtime.toISOString();
     parsed.route = toRoutePath(parsed.date);
     poems.push(parsed);
   }
@@ -1321,6 +1388,47 @@ function ttsDataForPoem(poem) {
   };
 }
 
+function renderPoemStructuredData(poem, routePath) {
+  const url = absoluteRouteUrl(routePath);
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    name: poem.title,
+    author: {
+      "@type": "Person",
+      name: poem.author
+    },
+    description: poemMetaDescription(poem),
+    datePublished: poem.date,
+    dateModified: poem.sourceModifiedAt || poem.date
+  };
+
+  if (poem.translator) {
+    data.contributor = {
+      "@type": "Person",
+      name: poem.translator
+    };
+  }
+
+  if (url) {
+    data.url = url;
+    data.mainEntityOfPage = {
+      "@type": "WebPage",
+      "@id": url
+    };
+  }
+
+  if (siteUrl) {
+    data.isPartOf = {
+      "@type": "WebSite",
+      name: "A Poem Per Day",
+      url: `${siteUrl}/`
+    };
+  }
+
+  return jsonLdScript(data);
+}
+
 async function renderPoemPageData(poem) {
   if (poemPageDataCache.has(poem.date)) {
     return poemPageDataCache.get(poem.date);
@@ -1374,6 +1482,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
   const poemHtml = blocked
     ? renderBlockedPoemContent()
     : (poem.poemHtml || renderPoemContent(poem));
+  const structuredData = blocked ? "" : renderPoemStructuredData(poem, routePath);
   return withCommonPageAssets(template, routePath, {
     scriptName: "poem",
     robotsMeta: noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">',
@@ -1394,6 +1503,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replace("{{POEM_BLOCKED}}", blocked ? "1" : "0")
     .replace("{{PAGE_DATA_URL}}", pageDataUrl ? routeRelativeAssetUrl(routePath, pageDataUrl) : "")
     .replaceAll("{{AUTHOR_META}}", authorMeta)
+    .replace("{{STRUCTURED_DATA}}", structuredData)
     .replaceAll("{{POEM_TEXT}}", poemHtml);
 }
 
@@ -2259,22 +2369,63 @@ async function renderSeoFiles(poems, defaultAsOf = "") {
     return;
   }
 
-  const routePaths = [
-    "/",
-    "/archive",
-    "/about",
-    "/poets",
-    ...publishedAuthorPages.map((entry) => entry.route),
-    ...publishedPoems.map((poem) => poem.route)
+  const publicationCutoff = effectivePublicationCutoff(defaultAsOf);
+  const [
+    homeTemplateModifiedAt,
+    archiveTemplateModifiedAt,
+    aboutTemplateModifiedAt,
+    poetsTemplateModifiedAt,
+    poetTemplateModifiedAt,
+    poemTemplateModifiedAt
+  ] = await Promise.all([
+    templateModifiedAt("index.html"),
+    templateModifiedAt("archive.html"),
+    templateModifiedAt("about.html"),
+    templateModifiedAt("poets.html"),
+    templateModifiedAt("poet.html"),
+    templateModifiedAt("poem.html")
+  ]);
+  const publishedPoemsModifiedAt = poemsModifiedAt(publishedPoems);
+  const routeEntries = [
+    {
+      routePath: "/",
+      lastModifiedAt: mostRecentIsoTimestamp([homeTemplateModifiedAt, publishedPoemsModifiedAt])
+    },
+    {
+      routePath: "/archive",
+      lastModifiedAt: mostRecentIsoTimestamp([archiveTemplateModifiedAt, publishedPoemsModifiedAt])
+    },
+    {
+      routePath: "/about",
+      lastModifiedAt: aboutTemplateModifiedAt
+    },
+    {
+      routePath: "/poets",
+      lastModifiedAt: mostRecentIsoTimestamp([poetsTemplateModifiedAt, publishedPoemsModifiedAt])
+    },
+    ...publishedAuthorPages.map((entry) => ({
+      routePath: entry.route,
+      lastModifiedAt: mostRecentIsoTimestamp([
+        poetTemplateModifiedAt,
+        poemsModifiedAt(filterPoemsOnOrBefore(entry.poems, publicationCutoff))
+      ])
+    })),
+    ...publishedPoems.map((poem) => ({
+      routePath: poem.route,
+      lastModifiedAt: mostRecentIsoTimestamp([poemTemplateModifiedAt, poem.sourceModifiedAt])
+    }))
   ];
-  const uniqueRoutes = Array.from(new Set(routePaths));
+  const uniqueRoutes = Array.from(
+    routeEntries.reduce((map, entry) => map.set(entry.routePath, entry.lastModifiedAt), new Map()).entries(),
+    ([routePath, lastModifiedAt]) => ({ routePath, lastModifiedAt })
+  );
   const urls = uniqueRoutes
-    .map((routePath) => {
+    .map(({ routePath, lastModifiedAt }) => {
       const loc = absoluteRouteUrl(routePath);
       if (!loc) {
         return "";
       }
-      return `<url><loc>${htmlEscape(loc)}</loc></url>`;
+      return `<url><loc>${htmlEscape(loc)}</loc>${sitemapLastmodTag(lastModifiedAt)}</url>`;
     })
     .filter(Boolean)
     .join("");
