@@ -1,9 +1,7 @@
 ---
 title: If I must die
 author: Refaat Alareer
-publication:
 date: 2026-10-07
-source:
 ---
 
 If I must die,

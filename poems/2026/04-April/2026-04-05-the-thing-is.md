@@ -1,9 +1,7 @@
 ---
 title: The Thing Is
-author: Ellen Bass 
-publication:
+author: Ellen Bass
 date: 2026-04-05
-source:
 ---
 
 to love life, to love it even

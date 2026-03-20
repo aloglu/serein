@@ -1,9 +1,7 @@
 ---
 title: won’t you celebrate with me
 author: Lucille Clifton
-publication:
 date: 2026-03-29
-source:
 ---
 
 won’t you celebrate with me

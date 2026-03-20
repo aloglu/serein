@@ -1,9 +1,7 @@
 ---
 title: The Strangers’ Case
 author: William Shakespeare
-publication:
 date: 2026-02-28
-source:
 ---
 
 Grant them removed, and grant that this your noise

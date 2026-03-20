@@ -1,9 +1,7 @@
 ---
 title: Nobody Comes
 author: Thomas Hardy
-publication:
 date: 2026-03-28
-source:
 ---
 
 TREE-LEAVES labour up and down,

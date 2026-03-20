@@ -1,9 +1,7 @@
 ---
 title: My Country, I Will Build You Again
 author: Simin Behbahani
-publication:
 date: 2026-03-10
-source:
 ---
 
 My country, I will build you again,

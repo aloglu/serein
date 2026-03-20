@@ -1,9 +1,7 @@
 ---
 title: An Annual of the Dark Physics
 author: Norman Dubie
-publication:
 date: 2026-03-11
-source:
 ---
 
 The Baltic Sea froze in 1307. Birds flew north

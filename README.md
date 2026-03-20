@@ -40,9 +40,9 @@ Each poem is stored as a Markdown file with frontmatter.
 title: The Title
 author: The Poet
 translator:
-date: 2026-03-10
 publication:
 source:
+date: 2026-03-10
 ---
 
 First line of the poem.
@@ -64,12 +64,12 @@ Optional fields:
 
 Poem files follow the path pattern `poems/YYYY/MM-Month/YYYY-MM-DD-slug.md`. Dates are unique across the collection. Missing optional metadata is still surfaced by the editorial checks.
 
-Before running `npm run normalize:poems`, the `date` frontmatter may also use symbolic values:
+Before running `npm run poems:sync` (alias: `npm run normalize:poems`), the `date` frontmatter may also use symbolic values:
 
 - `next` picks the closest unused date on or after the current publication date. Multiple `next` values in one normalize run are resolved sequentially in alphabetical path order.
 - `random-<month>` such as `random-may` picks an unused day in that month of the current publication year.
 
-The normalizer rewrites those symbolic values to concrete `YYYY-MM-DD` dates and then renames the poem file/path to match.
+The normalizer rewrites those symbolic values to concrete `YYYY-MM-DD` dates, removes empty optional frontmatter fields, rewrites frontmatter in the canonical order (`title`, `author`, `translator`, `publication`, `source`, `date`), and then renames the poem file/path to match.
 
 The poem renderer also supports one small piece of custom markup:
 

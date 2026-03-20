@@ -3,7 +3,6 @@ title: What Remains
 author: Ruth Irwin
 publication: "People: Unfinished Poems"
 date: 2026-03-09
-source:
 ---
 
 There is strength in being loved

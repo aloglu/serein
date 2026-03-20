@@ -1,9 +1,7 @@
 ---
 title: Missed Time
 author: Ha Jin
-publication:
 date: 2026-03-23
-source:
 ---
 
 My notebook has remained blank for months

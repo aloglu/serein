@@ -1,9 +1,7 @@
 ---
 title: I have to tell you
 author: Dorothea Grossman
-publication:
 date: 2026-03-26
-source:
 ---
 
 I have to tell you,

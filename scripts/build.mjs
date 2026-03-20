@@ -455,10 +455,18 @@ function normalizeNewlines(input) {
 
 function stripWrappingQuotes(input) {
   const raw = String(input || "").trim();
+  if (raw.startsWith('"') && raw.endsWith('"')) {
+    return raw.slice(1, -1)
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, "\\");
+  }
+  if (raw.startsWith("'") && raw.endsWith("'")) {
+    return raw.slice(1, -1)
+      .replace(/\\'/g, "'")
+      .replace(/\\\\/g, "\\");
+  }
   if (
-    (raw.startsWith('"') && raw.endsWith('"'))
-    || (raw.startsWith("'") && raw.endsWith("'"))
-    || (raw.startsWith("\u201C") && raw.endsWith("\u201D"))
+    (raw.startsWith("\u201C") && raw.endsWith("\u201D"))
     || (raw.startsWith("\u2018") && raw.endsWith("\u2019"))
   ) {
     return raw.slice(1, -1);

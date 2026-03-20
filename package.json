@@ -6,6 +6,7 @@
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test",
+    "poems:sync": "node scripts/normalize-poems.mjs",
     "normalize:poems": "node scripts/normalize-poems.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",
     "tts:poem": "node scripts/tts-poem.mjs",

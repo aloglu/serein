@@ -1,9 +1,7 @@
 ---
 title: Miracle Number II
 author: Hovhannes Shiraz
-publication:
 date: 2027-04-24
-source:
 ---
 
 In my dreams this time I saw my Dad

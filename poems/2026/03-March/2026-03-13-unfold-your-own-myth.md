@@ -1,9 +1,7 @@
 ---
-title: Unfold Your Own Myth 
+title: Unfold Your Own Myth
 author: Rumi
-publication:
 date: 2026-03-13
-source:
 ---
 
 Who gets up early

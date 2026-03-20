@@ -272,3 +272,55 @@ test("normalize resolves `random-may` into unique unused dates in the current pu
     await rm(workspace, { recursive: true, force: true });
   }
 });
+
+test("normalize removes empty frontmatter fields and writes canonical frontmatter order", { concurrency: false }, async () => {
+  const today = currentPublicationDate();
+  const tomorrow = addDaysToYyyyMmDd(today, 1);
+  const slug = "frontmatter-order-fixture-test";
+  const workspace = await createNormalizeWorkspace({
+    baselinePoems: [
+      {
+        date: today,
+        slug: "occupied-today-frontmatter-fixture",
+        title: "Occupied Today Frontmatter Fixture"
+      }
+    ],
+    fixturePoems: [
+      {
+        relativePath: path.join("__normalize-fixtures__", "frontmatter-order.md"),
+        contents: `---
+source:
+date: next
+publication: "Collected Poems: Volume 1"
+translator:
+author: Test Normalize
+title: "Frontmatter Order Fixture: Test"
+---
+
+Body line.
+`
+      }
+    ]
+  });
+
+  try {
+    await runNormalize(workspace);
+
+    const expectedPath = path.join(workspace, "poems", poemRelativePath(tomorrow, slug));
+    const contents = await readFile(expectedPath, "utf8");
+
+    assert.equal(contents, `---
+title: "Frontmatter Order Fixture: Test"
+author: Test Normalize
+publication: "Collected Poems: Volume 1"
+date: ${tomorrow}
+---
+
+Body line.
+`);
+    assert.doesNotMatch(contents, /^translator:/m);
+    assert.doesNotMatch(contents, /^source:/m);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});

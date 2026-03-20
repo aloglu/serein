@@ -1,9 +1,7 @@
 ---
 title: Not Horses
 author: Natalie Shapero
-publication:
 date: 2026-03-14
-source:
 ---
 
 What I adore is not horses, with their modern

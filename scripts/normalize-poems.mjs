@@ -8,6 +8,8 @@ const root = process.cwd();
 const poemsDir = path.join(root, "poems");
 const PUBLICATION_TIME_ZONE = "Europe/Istanbul";
 const TYPOGRAPHY_FRONTMATTER_FIELDS = new Set(["title", "author", "translator", "publication"]);
+const REQUIRED_FRONTMATTER_FIELDS = new Set(["title", "author", "date"]);
+const FRONTMATTER_FIELD_ORDER = ["title", "author", "translator", "publication", "source", "date"];
 const ELISION_WORD_RE = /^(?:\d{2,4}(?:s)?\b|cause\b|cuz\b|em\b|gainst\b|neath\b|round\b|til\b|tis\b|twas\b|tween\b|twere\b|twill\b|n\b)/i;
 const LEFT_SINGLE_QUOTE = "\u2018";
 const RIGHT_SINGLE_QUOTE = "\u2019";
@@ -53,10 +55,18 @@ function detectLineEnding(input) {
 
 function stripWrappingQuotes(input) {
   const raw = String(input || "").trim();
+  if (raw.startsWith('"') && raw.endsWith('"')) {
+    return raw.slice(1, -1)
+      .replace(/\\"/g, '"')
+      .replace(/\\\\/g, "\\");
+  }
+  if (raw.startsWith("'") && raw.endsWith("'")) {
+    return raw.slice(1, -1)
+      .replace(/\\'/g, "'")
+      .replace(/\\\\/g, "\\");
+  }
   if (
-    (raw.startsWith('"') && raw.endsWith('"'))
-    || (raw.startsWith("'") && raw.endsWith("'"))
-    || (raw.startsWith(LEFT_DOUBLE_QUOTE) && raw.endsWith(RIGHT_DOUBLE_QUOTE))
+    (raw.startsWith(LEFT_DOUBLE_QUOTE) && raw.endsWith(RIGHT_DOUBLE_QUOTE))
     || (raw.startsWith(LEFT_SINGLE_QUOTE) && raw.endsWith(RIGHT_SINGLE_QUOTE))
   ) {
     return raw.slice(1, -1);
@@ -226,6 +236,58 @@ function normalizePoemTypography(rawContent, filename) {
   return normalizedLines.join(lineEnding);
 }
 
+function normalizePoemFields(poem) {
+  return {
+    ...poem,
+    title: normalizeTypography(poem.title, { transformDoubleQuotes: false }),
+    author: normalizeTypography(poem.author, { transformDoubleQuotes: false }),
+    translator: normalizeTypography(poem.translator, { transformDoubleQuotes: false }),
+    publication: normalizeTypography(poem.publication, { transformDoubleQuotes: false }),
+    poem: normalizeTypography(poem.poem)
+  };
+}
+
+function needsFrontmatterQuoting(value) {
+  return /:\s/.test(value) || /^\s|\s$/.test(value);
+}
+
+function serializeFrontmatterValue(value) {
+  const raw = String(value ?? "").trim();
+  if (!needsFrontmatterQuoting(raw)) {
+    return raw;
+  }
+  if (!raw.includes('"')) {
+    return `"${raw}"`;
+  }
+  if (!raw.includes("'")) {
+    return `'${raw}'`;
+  }
+  return `"${raw.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
+}
+
+function renderNormalizedPoemMarkdown(poem, lineEnding = "\n") {
+  const frontmatterLines = ["---"];
+
+  for (const field of FRONTMATTER_FIELD_ORDER) {
+    const value = String(poem?.[field] ?? "").trim();
+    if (!value && !REQUIRED_FRONTMATTER_FIELDS.has(field)) {
+      continue;
+    }
+    frontmatterLines.push(`${field}: ${serializeFrontmatterValue(value)}`);
+  }
+
+  frontmatterLines.push("---");
+
+  const body = normalizeNewlines(poem?.poem || "")
+    .replace(/^\n+/, "")
+    .replace(/\n+$/g, "");
+  if (!body) {
+    return `${frontmatterLines.join(lineEnding)}${lineEnding}`;
+  }
+
+  return `${frontmatterLines.join(lineEnding)}${lineEnding}${lineEnding}${body.split("\n").join(lineEnding)}${lineEnding}`;
+}
+
 function parsePoemMarkdownFile(rawContent, filename) {
   const source = normalizeNewlines(rawContent);
   const lines = source.split("\n");
@@ -393,45 +455,6 @@ function findNextAvailableDateAfter(cursorDate, reservedDates) {
   return candidate;
 }
 
-function replaceFrontmatterFieldValue(rawContent, fieldName, nextValue, filename) {
-  const source = normalizeNewlines(rawContent);
-  const lineEnding = detectLineEnding(rawContent);
-  const lines = source.split("\n");
-
-  if (lines[0]?.trim() !== "---") {
-    throw new Error(`Missing frontmatter in ${filename}. Expected file to start with '---'.`);
-  }
-
-  let endIndex = -1;
-  for (let index = 1; index < lines.length; index += 1) {
-    if (lines[index].trim() === "---") {
-      endIndex = index;
-      break;
-    }
-  }
-
-  if (endIndex < 0) {
-    throw new Error(`Unterminated frontmatter in ${filename}. Missing closing '---'.`);
-  }
-
-  let replaced = false;
-  for (let index = 1; index < endIndex; index += 1) {
-    const kv = lines[index].match(/^([A-Za-z][A-Za-z0-9_-]*)(:\s*)(.*)$/);
-    if (!kv || kv[1].toLowerCase() !== String(fieldName || "").toLowerCase()) {
-      continue;
-    }
-
-    lines[index] = `${kv[1]}${kv[2]}${nextValue}`;
-    replaced = true;
-  }
-
-  if (!replaced) {
-    throw new Error(`Missing frontmatter field '${fieldName}' in ${filename}.`);
-  }
-
-  return lines.join(lineEnding);
-}
-
 function monthFolderName(monthNumber) {
   const month = Number(monthNumber);
   if (!Number.isInteger(month) || month < 1 || month > 12) {
@@ -482,15 +505,18 @@ async function collectPoemFiles(dirPath, relDir = "") {
 
 async function parsePoemEntry(file) {
   const raw = await readFile(file.fullPath, "utf8");
+  const lineEnding = detectLineEnding(raw);
   const normalizedContent = normalizePoemTypography(raw, file.relPath);
-  const poem = parsePoemMarkdownFile(normalizedContent, file.relPath);
+  const poem = normalizePoemFields(parsePoemMarkdownFile(normalizedContent, file.relPath));
   return {
     poem,
+    lineEnding,
     currentRelPath: file.relPath,
     fullPath: file.fullPath,
     rawContent: raw,
     typographyNormalizedContent: normalizedContent,
-    normalizedContent,
+    initialNormalizedContent: renderNormalizedPoemMarkdown(poem, lineEnding),
+    normalizedContent: renderNormalizedPoemMarkdown(poem, lineEnding),
     originalDate: poem.date
   };
 }
@@ -500,8 +526,8 @@ function applyResolvedDateToEntry(entry, resolvedDate) {
     return;
   }
 
-  entry.normalizedContent = replaceFrontmatterFieldValue(entry.normalizedContent, "date", resolvedDate, entry.currentRelPath);
   entry.poem.date = resolvedDate;
+  entry.normalizedContent = renderNormalizedPoemMarkdown(entry.poem, entry.lineEnding);
 }
 
 function resolvePoemDateDirectives(entries) {
@@ -634,14 +660,16 @@ export async function normalizePoems() {
   }
 
   let renamed = 0;
+  let frontmatterUpdated = 0;
   let typographyUpdated = 0;
   let datesResolved = 0;
   for (const item of poems) {
     const expectedPath = path.join(poemsDir, item.expectedRelPath);
     const needsRename = item.currentRelPath !== item.expectedRelPath;
     const needsTypographyUpdate = item.rawContent !== item.typographyNormalizedContent;
+    const needsFrontmatterUpdate = item.typographyNormalizedContent !== item.initialNormalizedContent;
     const needsDateUpdate = item.originalDate !== item.poem.date;
-    const needsContentUpdate = needsTypographyUpdate || needsDateUpdate;
+    const needsContentUpdate = needsTypographyUpdate || needsFrontmatterUpdate || needsDateUpdate;
 
     if (!needsRename && !needsContentUpdate) {
       continue;
@@ -662,22 +690,26 @@ export async function normalizePoems() {
     if (needsTypographyUpdate) {
       typographyUpdated += 1;
     }
+    if (needsFrontmatterUpdate) {
+      frontmatterUpdated += 1;
+    }
     if (needsDateUpdate) {
       datesResolved += 1;
     }
 
-    if (needsRename && needsDateUpdate && needsTypographyUpdate) {
-      console.log(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + date + typography)`);
-      continue;
+    const updateKinds = [];
+    if (needsDateUpdate) {
+      updateKinds.push("date");
+    }
+    if (needsFrontmatterUpdate) {
+      updateKinds.push("frontmatter");
+    }
+    if (needsTypographyUpdate) {
+      updateKinds.push("typography");
     }
 
-    if (needsRename && needsDateUpdate) {
-      console.log(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + date)`);
-      continue;
-    }
-
-    if (needsRename && needsTypographyUpdate) {
-      console.log(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + typography)`);
+    if (needsRename && updateKinds.length > 0) {
+      console.log(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + ${updateKinds.join(" + ")})`);
       continue;
     }
 
@@ -686,13 +718,18 @@ export async function normalizePoems() {
       continue;
     }
 
-    if (needsDateUpdate && needsTypographyUpdate) {
-      console.log(`updated: ${item.currentRelPath} (date + typography)`);
+    if (updateKinds.length > 1) {
+      console.log(`updated: ${item.currentRelPath} (${updateKinds.join(" + ")})`);
       continue;
     }
 
     if (needsDateUpdate) {
       console.log(`date: ${item.currentRelPath} -> ${item.poem.date}`);
+      continue;
+    }
+
+    if (needsFrontmatterUpdate) {
+      console.log(`frontmatter: ${item.currentRelPath}`);
       continue;
     }
 
@@ -703,8 +740,8 @@ export async function normalizePoems() {
     await removeEmptyPoemDirs(poemsDir);
   }
 
-  if (renamed === 0 && typographyUpdated === 0 && datesResolved === 0) {
-    console.log("No poem path/filename, frontmatter date, or typography changes needed.");
+  if (renamed === 0 && frontmatterUpdated === 0 && typographyUpdated === 0 && datesResolved === 0) {
+    console.log("No poem path/filename, frontmatter, date, or typography changes needed.");
     return;
   }
 
@@ -714,6 +751,9 @@ export async function normalizePoems() {
   }
   if (datesResolved > 0) {
     summary.push(`resolved ${datesResolved} symbolic date(s)`);
+  }
+  if (frontmatterUpdated > 0) {
+    summary.push(`cleaned frontmatter in ${frontmatterUpdated} poem file(s)`);
   }
   if (typographyUpdated > 0) {
     summary.push(`updated typography in ${typographyUpdated} poem file(s)`);

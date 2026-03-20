@@ -1,9 +1,7 @@
 ---
 title: The 52-Hertz Whale
 author: Joseph Fasano
-publication:
 date: 2026-03-15
-source:
 ---
 
 They have called it

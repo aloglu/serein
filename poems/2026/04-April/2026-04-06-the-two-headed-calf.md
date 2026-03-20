@@ -1,9 +1,8 @@
 ---
 title: The Two-headed Calf
-author: Laura Gilpin 
+author: Laura Gilpin
 publication: The Hocus Pocus of the Universe
 date: 2026-04-06
-source:
 ---
 
 Tomorrow when the farm boys find this

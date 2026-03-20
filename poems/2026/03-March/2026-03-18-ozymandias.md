@@ -1,9 +1,7 @@
 ---
 title: Ozymandias
 author: Percy Bysshe Shelley
-publication:
 date: 2026-03-18
-source:
 ---
 
 I met a traveller from an antique land,

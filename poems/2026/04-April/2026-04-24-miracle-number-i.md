@@ -1,9 +1,7 @@
 ---
 title: Miracle Number I
 author: Hovhannes Shiraz
-publication:
 date: 2026-04-24
-source:
 ---
 
 In my dreams my door was knocked at,

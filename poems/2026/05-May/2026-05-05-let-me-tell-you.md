@@ -1,9 +1,7 @@
 ---
 title: let me tell you
 author: Charles Bukowski
-publication:
 date: 2026-05-05
-source:
 ---
 
 hell is built
