@@ -230,10 +230,10 @@
       "generatedAt": "2026-03-25T12:22:44.532Z"
     },
     "2026-03-11": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-11-an-annual-of-the-dark-physics.0eb399db839506d9.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-11-an-annual-of-the-dark-physics.0eb399db839506d9.json",
-      "sourceHash": "fea8f841c99b527b",
-      "assetKey": "0eb399db839506d9",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-11-an-annual-of-the-dark-physics.2499b7b3fe243fee.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-11-an-annual-of-the-dark-physics.2499b7b3fe243fee.json",
+      "sourceHash": "93d78ab809d28c03",
+      "assetKey": "2499b7b3fe243fee",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -246,7 +246,7 @@
       "visibleWordCount": 133,
       "matchedWordCount": 133,
       "coverage": 1,
-      "generatedAt": "2026-03-25T11:27:37.856Z"
+      "generatedAt": "2026-03-25T15:40:08.669Z"
     },
     "2026-03-12": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-12-untitled.4e0e17dce12d7beb.mp3",
@@ -265,7 +265,7 @@
       "visibleWordCount": 53,
       "matchedWordCount": 53,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:23:43.956Z"
+      "generatedAt": "2026-03-25T15:41:32.028Z"
     },
     "2026-03-13": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-13-unfold-your-own-myth.9e4a1d9b308af5f0.mp3",
@@ -287,10 +287,10 @@
       "generatedAt": "2026-03-25T12:24:44.217Z"
     },
     "2026-03-14": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.48d59c49413a678a.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-14-not-horses.48d59c49413a678a.json",
-      "sourceHash": "ccbd8f2a5573db9e",
-      "assetKey": "48d59c49413a678a",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.81e3740e6fa023e5.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-14-not-horses.81e3740e6fa023e5.json",
+      "sourceHash": "527c72ce9ac7bfa4",
+      "assetKey": "81e3740e6fa023e5",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -303,7 +303,7 @@
       "visibleWordCount": 153,
       "matchedWordCount": 153,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:25:43.537Z"
+      "generatedAt": "2026-03-25T15:42:45.064Z"
     },
     "2026-03-15": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-15-the-52-hertz-whale.08b93cc89635cba0.mp3",
@@ -320,9 +320,9 @@
       "speed": 0.96,
       "timingsVersion": 1,
       "visibleWordCount": 74,
-      "matchedWordCount": 74,
-      "coverage": 1,
-      "generatedAt": "2026-03-25T12:26:41.713Z"
+      "matchedWordCount": 73,
+      "coverage": 0.9865,
+      "generatedAt": "2026-03-25T15:43:44.144Z"
     },
     "2026-03-16": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-16-monopoly.ba106fca6a2e7b79.mp3",
@@ -341,7 +341,7 @@
       "visibleWordCount": 149,
       "matchedWordCount": 149,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:27:41.418Z"
+      "generatedAt": "2026-03-25T15:44:42.522Z"
     },
     "2026-03-17": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-17-crying.b39aa603e6341c9a.mp3",
@@ -420,10 +420,10 @@
       "generatedAt": "2026-03-25T12:31:42.342Z"
     },
     "2026-03-21": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-21-for-jane.8679faa5e4c0d6b7.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-21-for-jane.8679faa5e4c0d6b7.json",
-      "sourceHash": "5dd1d4072ed80055",
-      "assetKey": "8679faa5e4c0d6b7",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-21-for-jane.82f6fdde3c1baad7.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-21-for-jane.82f6fdde3c1baad7.json",
+      "sourceHash": "ba7b30f9fa9efb42",
+      "assetKey": "82f6fdde3c1baad7",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -436,7 +436,7 @@
       "visibleWordCount": 80,
       "matchedWordCount": 80,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:32:40.672Z"
+      "generatedAt": "2026-03-25T15:45:45.689Z"
     },
     "2026-03-22": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-22-finding-my-boyfriend-in-bed-with-a-stranger.4668e80e8f3d48f1.mp3",
@@ -648,10 +648,10 @@
       "generatedAt": "2026-03-25T12:42:26.584Z"
     },
     "2026-04-02": {
-      "audioUrl": "/assets/tts/audio/2026/04/2026-04-02-sonnet-30.c9582641781e70df.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-02-sonnet-30.c9582641781e70df.json",
-      "sourceHash": "e1de7712156b2880",
-      "assetKey": "c9582641781e70df",
+      "audioUrl": "/assets/tts/audio/2026/04/2026-04-02-sonnet-30.8425dadaa0c8fe98.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-02-sonnet-30.8425dadaa0c8fe98.json",
+      "sourceHash": "dfa96b8c4ed97ff8",
+      "assetKey": "8425dadaa0c8fe98",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -664,7 +664,7 @@
       "visibleWordCount": 120,
       "matchedWordCount": 120,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:43:24.682Z"
+      "generatedAt": "2026-03-25T15:46:53.444Z"
     },
     "2026-04-03": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-03-one-art.f3c486a9d4568691.mp3",

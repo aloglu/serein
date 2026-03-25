@@ -61,8 +61,13 @@ export function integerToWords(value) {
 }
 
 export function verbalizeStandaloneNumbers(input) {
-  return String(input || "").replace(/\b(\d+)([.,;:!?"]*)/g, (match, digits, suffix) => {
+  const source = String(input || "");
+  return source.replace(/\b(\d+)([.,;:!?"]*)/g, (match, digits, suffix, offset) => {
     if (!/^\d+$/.test(digits)) {
+      return match;
+    }
+    const nextChar = source[offset + match.length] || "";
+    if (nextChar && /[-\p{L}\p{N}]/u.test(nextChar)) {
       return match;
     }
     const words = integerToWords(Number(digits));

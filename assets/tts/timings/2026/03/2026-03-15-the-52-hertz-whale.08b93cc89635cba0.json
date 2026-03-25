@@ -1,22 +1,15 @@
 {
   "version": 1,
   "visibleWordCount": 74,
-  "matchedWordCount": 74,
-  "coverage": 1,
-  "intervalFingerprint": "4bfa0c5df8fc5e67",
+  "matchedWordCount": 73,
+  "coverage": 0.9865,
+  "intervalFingerprint": "7550679dcbc4cdbf",
   "words": [
     {
       "tokenIndex": 0,
       "text": "The",
       "start": 0.06,
       "end": 0.16,
-      "segment": "title"
-    },
-    {
-      "tokenIndex": 1,
-      "text": "52-Hertz",
-      "start": 0.16,
-      "end": 1.65,
       "segment": "title"
     },
     {

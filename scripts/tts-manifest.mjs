@@ -61,7 +61,7 @@ export function repairMojibakePunctuation(input) {
 }
 
 export function speakablePoemText(poemBody) {
-  const lines = normalizeNewlines(verbalizeStandaloneNumbers(repairMojibakePunctuation(poemBody)))
+  const lines = normalizeNewlines(repairMojibakePunctuation(poemBody))
     .split("\n")
     .map((line) => {
       const trimmed = line.trim();
@@ -71,7 +71,7 @@ export function speakablePoemText(poemBody) {
       if (trimmed.startsWith("::line")) {
         return speakablePoetryLineDirective(trimmed) ?? String(trimmed).replace(/^::line\s*/, "").trim();
       }
-      return line.replace(/\s+$/g, "");
+      return verbalizeStandaloneNumbers(line.replace(/\s+$/g, ""));
     });
 
   return lines
