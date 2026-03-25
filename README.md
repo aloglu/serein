@@ -29,7 +29,7 @@ The project targets Node.js 24 and uses npm scripts as the execution layer for b
 
 ## TTS support
 
-The website supports pre-generated text-to-speech audio for poem pages.
+The website supports pre-generated text-to-speech audio for poem pages, with synced word highlighting during playback. Audio is generated ahead of time with OpenAI TTS, then aligned offline with [Montreal Forced Aligner](https://github.com/MontrealCorpusTools/Montreal-Forced-Aligner) so the browser can brighten the spoken words against the static poem text.
 
 ## Content model
 

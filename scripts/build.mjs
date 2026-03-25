@@ -1521,6 +1521,7 @@ async function renderPoemPageData(poem) {
 function homePoemPayload(poem) {
   const tts = ttsDataForPoem(poem);
   return {
+    date: poem.date,
     title: poem.title,
     dateHtml: renderDateMeta(poem),
     authorMetaHtml: renderAuthorMeta(poem, tts),
@@ -1665,6 +1666,7 @@ async function renderHome(poems, defaultAsOf = "") {
   const fallbackDate = effectivePublicationCutoff(defaultAsOf);
   const fallbackPoems = filterPoemsOnOrBefore(poems, fallbackDate);
   const fallbackPoem = fallbackPoems.find((poem) => poem.date === fallbackDate) || fallbackPoems[fallbackPoems.length - 1] || null;
+  const firstPoemDate = poems[0]?.date || "";
   const fallbackDateHtml = fallbackPoem ? renderDateMeta(fallbackPoem) : "";
   const fallbackTitle = fallbackPoem ? htmlEscape(fallbackPoem.title) : "A Poem Per Day";
   const fallbackMeta = fallbackPoem ? fallbackPoem.authorMetaHtml || renderAuthorMeta(fallbackPoem) : "";
@@ -1682,6 +1684,8 @@ async function renderHome(poems, defaultAsOf = "") {
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replaceAll("{{RENDERED_AS_OF}}", htmlEscape(fallbackDate))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
+    .replace("{{FALLBACK_POEM_DATE}}", htmlEscape(fallbackPoem?.date || ""))
+    .replace("{{FIRST_POEM_DATE}}", htmlEscape(firstPoemDate))
     .replace("{{FALLBACK_DATE_HTML}}", fallbackDateHtml)
     .replace("{{FALLBACK_TITLE}}", fallbackTitle)
     .replace("{{FALLBACK_META}}", fallbackMeta)

@@ -22,6 +22,7 @@ initLinkPrefetching();
 const blockedHeading = "Not Available Yet";
 const blockedTitle = `${blockedHeading} | A Poem Per Day`;
 const blockedDescription = "This poem is not available yet.";
+const homeShortcutReturnKey = "serein-home-shortcut-return-date";
 let keyboardShortcutsBound = false;
 let pendingNavigation = false;
 
@@ -148,6 +149,15 @@ function navigateByDay(main, dayCount) {
   if (dayCount > 0 && nextDate > effectiveDate) {
     return false;
   }
+
+  const homeReturnDate = sessionStorage.getItem(homeShortcutReturnKey) || "";
+  if (dayCount > 0 && homeReturnDate && nextDate === homeReturnDate) {
+    sessionStorage.removeItem(homeShortcutReturnKey);
+    pendingNavigation = true;
+    window.location.assign(`/${window.location.search}${window.location.hash}`);
+    return true;
+  }
+
   const nextRoute = poemRouteForDate(nextDate);
   if (!nextRoute) {
     return false;

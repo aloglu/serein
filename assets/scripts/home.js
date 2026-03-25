@@ -4,11 +4,132 @@ import {
   selectPoemForDate
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
-import { bindTtsPlayers, resetTtsPlayback } from "./shared/tts.js";
+import { bindTtsPlayers, resetTtsPlayback, stepTtsPlaybackSpeed, toggleTtsPlayback } from "./shared/tts.js";
 
 initLinkPrefetching();
+let keyboardShortcutsBound = false;
+let pendingNavigation = false;
+const homeShortcutReturnKey = "serein-home-shortcut-return-date";
+
+function addDaysToDateString(dateStr, dayCount) {
+  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return "";
+  }
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  date.setUTCDate(date.getUTCDate() + dayCount);
+  return date.toISOString().slice(0, 10);
+}
+
+function poemRouteForDate(dateStr) {
+  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return "";
+  }
+  return `/${match[1]}/${match[2]}/${match[3]}/`;
+}
+
+function shouldIgnoreShortcutTarget(target) {
+  if (!(target instanceof Element)) {
+    return false;
+  }
+  if (target.closest("[data-tts-root]")) {
+    return true;
+  }
+  return Boolean(
+    target.closest("input, textarea, select, button, [contenteditable='true'], [contenteditable=''], audio, video")
+  );
+}
+
+function navigateByDay(main, dayCount) {
+  if (pendingNavigation) {
+    return false;
+  }
+
+  const currentDate = main?.dataset?.poemDate || "";
+  const firstPoemDate = main?.dataset?.firstPoemDate || "";
+  const nextDate = addDaysToDateString(currentDate, dayCount);
+  const effectiveDate = effectiveDateFromQueryOrNow({
+    defaultAsOf: main?.dataset?.defaultAsOf || ""
+  });
+  if (dayCount < 0 && firstPoemDate && nextDate < firstPoemDate) {
+    return false;
+  }
+  if (dayCount > 0 && nextDate > effectiveDate) {
+    return false;
+  }
+  const nextRoute = poemRouteForDate(nextDate);
+  if (!nextRoute) {
+    return false;
+  }
+
+  if (dayCount < 0 && currentDate) {
+    sessionStorage.setItem(homeShortcutReturnKey, currentDate);
+  }
+  pendingNavigation = true;
+  window.location.assign(`${nextRoute}${window.location.search}${window.location.hash}`);
+  return true;
+}
+
+function bindHomeKeyboardShortcuts(main) {
+  if (keyboardShortcutsBound || !main) {
+    return;
+  }
+
+  keyboardShortcutsBound = true;
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.defaultPrevented
+      || event.altKey
+      || event.ctrlKey
+      || event.metaKey
+      || event.shiftKey
+      || shouldIgnoreShortcutTarget(event.target)
+    ) {
+      return;
+    }
+
+    if (event.key === " " || event.key.toLowerCase() === "p") {
+      const handled = toggleTtsPlayback(main);
+      if (handled) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      const handled = stepTtsPlaybackSpeed(1, main);
+      if (handled) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      const handled = stepTtsPlaybackSpeed(-1, main);
+      if (handled) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      if (navigateByDay(main, -1)) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      if (navigateByDay(main, 1)) {
+        event.preventDefault();
+      }
+    }
+  });
+}
 
 function renderHomePoem(poem) {
+  const main = document.querySelector('main[data-dynamic-page="1"]');
   const dateEl = document.getElementById("home-date");
   const titleEl = document.getElementById("home-title");
   const metaEl = document.getElementById("home-meta");
@@ -18,6 +139,9 @@ function renderHomePoem(poem) {
   }
 
   if (!poem) {
+    if (main) {
+      main.dataset.poemDate = "";
+    }
     if (dateEl) {
       dateEl.innerHTML = "";
     }
@@ -28,6 +152,9 @@ function renderHomePoem(poem) {
   }
 
   resetTtsPlayback();
+  if (main) {
+    main.dataset.poemDate = poem.date || "";
+  }
   if (dateEl) {
     dateEl.innerHTML = poem.dateHtml || "";
   }
@@ -78,6 +205,8 @@ async function init() {
   if (!main) {
     return;
   }
+
+  bindHomeKeyboardShortcuts(main);
 
   const markReady = () => {
     main.setAttribute("data-ready", "1");
