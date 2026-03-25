@@ -62,6 +62,11 @@ async function init() {
 
   const markReady = () => {
     main.setAttribute("data-ready", "1");
+    main.setAttribute("aria-busy", "false");
+  };
+
+  const markBusy = () => {
+    main.setAttribute("aria-busy", "true");
   };
 
   const defaultAsOf = main.dataset.defaultAsOf || "";
@@ -72,6 +77,7 @@ async function init() {
     return;
   }
 
+  markBusy();
   try {
     const poems = await loadJsonData(main.dataset.pageDataUrl || "");
     renderArchive(poems, effectiveDate);

@@ -6,7 +6,19 @@ import { pathToFileURL } from "node:url";
 import { marked } from "marked";
 import { expectedPoemFilename } from "./poem-filenames.mjs";
 import { parsePoetryLineDirective } from "./poetry-line.mjs";
-import { audioUrlToRepoPath, loadTtsManifest } from "./tts-manifest.mjs";
+import { assetKeyForPoem } from "./tts-pipeline.mjs";
+import { resolveTtsProfile } from "./tts-config.mjs";
+import {
+  audioUrlToRepoPath,
+  buildManagedAudioUrl,
+  loadTtsManifest,
+  poemSourceHash
+} from "./tts-manifest.mjs";
+import {
+  buildManagedTimingsUrl,
+  timingsUrlToRepoPath,
+  TTS_TIMINGS_VERSION
+} from "./tts-timings.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
@@ -366,7 +378,17 @@ async function loadValidatedTtsManifest() {
     if (!audioPath || !(await fileExists(audioPath))) {
       continue;
     }
-    poems[date] = entry;
+    let timingsUrl = String(entry.timingsUrl || "").trim();
+    if (timingsUrl) {
+      const timingsPath = path.join(root, ...timingsUrl.slice(1).split("/"));
+      if (!(await fileExists(timingsPath))) {
+        timingsUrl = "";
+      }
+    }
+    poems[date] = {
+      ...entry,
+      timingsUrl
+    };
   }
 
   return {
@@ -513,6 +535,8 @@ function parsePoemMarkdownFile(rawContent, filename) {
     publication: "",
     date: "",
     source: "",
+    tts: "",
+    tty: "",
     poem: ""
   };
 
@@ -536,6 +560,11 @@ function parsePoemMarkdownFile(rawContent, filename) {
       poem[key] = stripWrappingQuotes(value);
     }
   }
+
+  if (!poem.tts && poem.tty) {
+    poem.tts = poem.tty;
+  }
+  poem.tty = "";
 
   poem.poem = lines.slice(endIndex + 1).join("\n").replace(/^\n+/, "");
   return poem;
@@ -1333,7 +1362,8 @@ function renderInlineTtsControl(tts) {
     return "";
   }
 
-  return `<span class="poem-meta-tts" data-tts-root data-tts-audio-url="${htmlEscape(tts.audioUrl)}"><button class="tts-toggle" type="button" data-tts-toggle aria-label="Play poem audio" title="Play poem audio"><span class="tts-toggle-icon" aria-hidden="true"><svg class="tts-icon tts-icon-play" viewBox="0 0 24 24" focusable="false"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.94v1.83a2.75 2.75 0 0 1 0 4.46v1.83A4.5 4.5 0 0 0 16.5 12zm0-9.5v1.77a8.5 8.5 0 0 1 0 15.46v1.77a10.25 10.25 0 0 0 0-19z"/></svg><svg class="tts-icon tts-icon-pause" viewBox="0 0 24 24" focusable="false"><path d="M7 5h4v14H7V5zm6 0h4v14h-4V5z"/></svg></span></button><span class="tts-speed-wrap"><button class="tts-speed" type="button" data-tts-speed hidden aria-hidden="true" tabindex="-1" aria-haspopup="true" aria-expanded="false" aria-label="Playback speed 1x. Choose playback speed." title="Playback speed 1x">1x</button><span class="tts-speed-menu" data-tts-speed-menu hidden role="group" aria-label="Playback speed options"><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="0.5" aria-pressed="false">0.5x</button><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="1" aria-pressed="true">1x</button><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="1.5" aria-pressed="false">1.5x</button><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="2" aria-pressed="false">2x</button></span></span><span class="visually-hidden" data-tts-status aria-live="polite" aria-atomic="true" role="status"></span></span>`;
+  const timingsAttr = tts.timingsUrl ? ` data-tts-timings-url="${htmlEscape(tts.timingsUrl)}"` : "";
+  return `<span class="poem-meta-tts" data-tts-root data-tts-audio-url="${htmlEscape(tts.audioUrl)}"${timingsAttr}><button class="tts-toggle" type="button" data-tts-toggle aria-label="Play poem audio" title="Play poem audio"><span class="tts-toggle-icon" aria-hidden="true"><svg class="tts-icon tts-icon-play" viewBox="0 0 24 24" focusable="false"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0 0 14 7.94v1.83a2.75 2.75 0 0 1 0 4.46v1.83A4.5 4.5 0 0 0 16.5 12zm0-9.5v1.77a8.5 8.5 0 0 1 0 15.46v1.77a10.25 10.25 0 0 0 0-19z"/></svg><svg class="tts-icon tts-icon-resume" viewBox="0 0 24 24" focusable="false"><path d="M8 5v14l11-7z"/></svg><svg class="tts-icon tts-icon-pause" viewBox="0 0 24 24" focusable="false"><path d="M7 5h4v14H7V5zm6 0h4v14h-4V5z"/></svg></span></button><span class="tts-speed-wrap"><button class="tts-speed" type="button" data-tts-speed hidden aria-hidden="true" tabindex="-1" aria-haspopup="true" aria-expanded="false" aria-label="Playback speed 1x. Choose playback speed." title="Playback speed 1x">1x</button><span class="tts-speed-menu" data-tts-speed-menu hidden role="group" aria-label="Playback speed options"><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="0.5" aria-pressed="false">0.5x</button><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="1" aria-pressed="true">1x</button><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="1.5" aria-pressed="false">1.5x</button><button class="tts-speed-option" type="button" data-tts-speed-option data-tts-speed-value="2" aria-pressed="false">2x</button></span></span><span class="visually-hidden" data-tts-status aria-live="polite" aria-atomic="true" role="status"></span></span>`;
 }
 
 function renderAuthorMeta(poem, tts = null) {
@@ -1408,6 +1438,10 @@ function renderBlockedPoemContent() {
 }
 
 function ttsDataForPoem(poem) {
+  if (String(poem?.tts || poem?.tty || "").trim().toLowerCase() === "no") {
+    return null;
+  }
+
   const entry = ttsManifest?.poems?.[poem.date];
   if (!entry?.audioUrl) {
     return null;
@@ -1415,6 +1449,7 @@ function ttsDataForPoem(poem) {
 
   return {
     audioUrl: entry.audioUrl,
+    timingsUrl: entry.timingsUrl || "",
     mimeType: entry.mimeType || "audio/mpeg",
     renderProfile: entry.renderProfile || ""
   };
@@ -1508,7 +1543,7 @@ async function renderHomePoemData(poem) {
   return assetPath;
 }
 
-function renderPoemShell(template, poem, { noindex = true, routePath = "/", defaultAsOf = "", blocked = false, pageDataUrl = "" } = {}) {
+function renderPoemShell(template, poem, { noindex = true, routePath = "/", defaultAsOf = "", blocked = false, pageDataUrl = "", firstPoemDate = "" } = {}) {
   const description = blocked ? blockedPoemDescription : poemMetaDescription(poem);
   const authorMeta = blocked ? "" : renderAuthorMeta(poem, ttsDataForPoem(poem));
   const poemHtml = blocked
@@ -1529,6 +1564,7 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replaceAll("{{AUTHOR}}", htmlEscape(blocked ? "" : poem.author))
     .replaceAll("{{DESCRIPTION}}", htmlEscape(description))
     .replaceAll("{{DATE}}", htmlEscape(poem.date))
+    .replaceAll("{{FIRST_POEM_DATE}}", htmlEscape(firstPoemDate))
     .replaceAll("{{DATE_META}}", renderDateMeta(poem))
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
@@ -1566,6 +1602,7 @@ async function renderPoemPages(publishedPoems, defaultAsOf = "") {
   const template = await readTemplate("poem.html");
   const publicationCutoff = effectivePublicationCutoff(defaultAsOf);
   const clientDataCutoff = runtimeDataCutoff(defaultAsOf);
+  const firstPoemDate = publishedPoems[0]?.date || "";
 
   for (const poem of publishedPoems) {
     const blocked = poem.date > publicationCutoff;
@@ -1577,7 +1614,8 @@ async function renderPoemPages(publishedPoems, defaultAsOf = "") {
       routePath: poem.route,
       defaultAsOf,
       blocked,
-      pageDataUrl
+      pageDataUrl,
+      firstPoemDate
     });
     await writeRoutedPage(poem.route, html);
   }
@@ -2171,13 +2209,14 @@ async function buildBundledAssetManifest() {
 }
 
 async function buildAssetManifest(poems, defaultAsOf = "") {
-  const [bundledAssets, homeData, archiveData, poetsData, poetPageData, _copiedTtsAudio, circle32, circle192, circle512, ios180] = await Promise.all([
+  const [bundledAssets, homeData, archiveData, poetsData, poetPageData, _copiedTtsAudio, _copiedTtsTimings, circle32, circle192, circle512, ios180] = await Promise.all([
     buildBundledAssetManifest(),
     renderHomeData(poems, defaultAsOf),
     renderArchiveData(poems, defaultAsOf),
     renderPoetsData(poems, defaultAsOf),
     renderPoetPageDataAssets(authorPages, defaultAsOf),
     copyDirectoryContents(path.join(assetsDir, "tts", "audio"), path.join(distDir, "assets", "tts", "audio")),
+    copyDirectoryContents(path.join(assetsDir, "tts", "timings"), path.join(distDir, "assets", "tts", "timings")),
     copyFingerprintedAsset(iconSourceEntries.circle32, { subdir: "assets/branding" }),
     copyFingerprintedAsset(iconSourceEntries.circle192, { subdir: "assets/branding" }),
     copyFingerprintedAsset(iconSourceEntries.circle512, { subdir: "assets/branding" }),
@@ -2240,14 +2279,62 @@ async function renderHeadersFile() {
   await writeFile(path.join(distDir, "_headers"), headers, "utf8");
 }
 
-export function createEditorialReport(poems, { asOfDate = "", authorPagesList = authorPages } = {}) {
+function poemTtyDisabled(poem) {
+  return String(poem?.tts || poem?.tty || "").trim().toLowerCase() === "no";
+}
+
+function expectedTtsEntryForPoem(poem, profile) {
+  const sourceHash = poemSourceHash(poem);
+  const assetKey = assetKeyForPoem({ poem, profile, sourceHash });
+  return {
+    audioUrl: buildManagedAudioUrl({
+      poem,
+      assetKey,
+      extension: profile.extension
+    }),
+    timingsUrl: buildManagedTimingsUrl({
+      poem,
+      assetKey
+    }),
+    sourceHash,
+    assetKey,
+    renderProfile: profile.renderProfile,
+    provider: profile.provider,
+    modelId: profile.modelId,
+    voice: profile.voice,
+    outputFormat: profile.outputFormat,
+    mimeType: profile.mimeType,
+    instructions: profile.instructions,
+    speed: profile.speed,
+    timingsVersion: TTS_TIMINGS_VERSION
+  };
+}
+
+function ttsSummary(poem, extra = {}) {
+  return {
+    date: poem.date,
+    title: poem.title,
+    author: poem.author,
+    filepath: poem.filepath,
+    ...extra
+  };
+}
+
+export async function createEditorialReport(poems, { asOfDate = "", authorPagesList = authorPages } = {}) {
   const effectiveAsOf = asOfDate || yyyyMmDdInTimeZone("Europe/Istanbul");
   const publishedPoems = [];
   const upcomingPoems = [];
   const missingPublication = [];
   const missingSource = [];
   const customMarkup = [];
+  const ttsDisabled = [];
+  const missingTtsAudio = [];
+  const missingTtsTimings = [];
+  const staleTtsEntries = [];
+  const lowTtsCoverage = [];
   const publishedAuthorNames = new Set();
+  const ttsManifestForReport = await loadTtsManifest(root);
+  const ttsProfile = resolveTtsProfile(process.env);
 
   for (const poem of poems) {
     const summary = { date: poem.date, title: poem.title, author: poem.author, filepath: poem.filepath };
@@ -2266,6 +2353,70 @@ export function createEditorialReport(poems, { asOfDate = "", authorPagesList = 
     }
     if (poemUsesCustomMarkup(poem.poem)) {
       customMarkup.push(summary);
+    }
+
+    if (poemTtyDisabled(poem)) {
+      ttsDisabled.push(ttsSummary(poem));
+      continue;
+    }
+
+    const expected = expectedTtsEntryForPoem(poem, ttsProfile);
+    const entry = ttsManifestForReport.poems?.[poem.date];
+    if (!entry) {
+      missingTtsAudio.push(ttsSummary(poem, { reason: "Missing manifest entry." }));
+      missingTtsTimings.push(ttsSummary(poem, { reason: "Missing manifest entry." }));
+      continue;
+    }
+
+    const mismatches = [];
+    const compareFields = [
+      ["audioUrl", entry.audioUrl, expected.audioUrl],
+      ["timingsUrl", entry.timingsUrl, expected.timingsUrl],
+      ["sourceHash", entry.sourceHash, expected.sourceHash],
+      ["assetKey", entry.assetKey, expected.assetKey],
+      ["renderProfile", entry.renderProfile, expected.renderProfile],
+      ["provider", entry.provider, expected.provider],
+      ["modelId", entry.modelId, expected.modelId],
+      ["voice", entry.voice, expected.voice],
+      ["outputFormat", entry.outputFormat, expected.outputFormat],
+      ["mimeType", entry.mimeType, expected.mimeType],
+      ["instructions", entry.instructions, expected.instructions],
+      ["speed", entry.speed, expected.speed],
+      ["timingsVersion", entry.timingsVersion, expected.timingsVersion]
+    ];
+
+    for (const [field, actual, wanted] of compareFields) {
+      if (actual !== wanted) {
+        mismatches.push(field);
+      }
+    }
+
+    if (mismatches.length > 0) {
+      staleTtsEntries.push(ttsSummary(poem, {
+        staleFields: mismatches
+      }));
+    }
+
+    const audioPath = audioUrlToRepoPath(entry.audioUrl, root);
+    if (!audioPath || !(await fileExists(audioPath))) {
+      missingTtsAudio.push(ttsSummary(poem, {
+        reason: entry.audioUrl ? `Missing audio file ${entry.audioUrl}.` : "Missing audio URL."
+      }));
+    }
+
+    const timingsPath = timingsUrlToRepoPath(entry.timingsUrl, root);
+    if (!timingsPath || !(await fileExists(timingsPath))) {
+      missingTtsTimings.push(ttsSummary(poem, {
+        reason: entry.timingsUrl ? `Missing timings file ${entry.timingsUrl}.` : "Missing timings URL."
+      }));
+      continue;
+    }
+
+    const coverage = Number(entry.coverage);
+    if (Number.isFinite(coverage) && coverage < 0.98) {
+      lowTtsCoverage.push(ttsSummary(poem, {
+        coverage
+      }));
     }
   }
 
@@ -2296,7 +2447,12 @@ export function createEditorialReport(poems, { asOfDate = "", authorPagesList = 
       publishedAuthors: publishedAuthorCount,
       missingPublication: missingPublication.length,
       missingSource: missingSource.length,
-      customMarkup: customMarkup.length
+      customMarkup: customMarkup.length,
+      ttsDisabled: ttsDisabled.length,
+      missingTtsAudio: missingTtsAudio.length,
+      missingTtsTimings: missingTtsTimings.length,
+      staleTtsEntries: staleTtsEntries.length,
+      lowTtsCoverage: lowTtsCoverage.length
     },
     upcomingPoems: upcomingPoems.map((poem) => ({
       date: poem.date,
@@ -2307,7 +2463,12 @@ export function createEditorialReport(poems, { asOfDate = "", authorPagesList = 
     scheduleGaps,
     missingPublication,
     missingSource,
-    customMarkup
+    customMarkup,
+    ttsDisabled,
+    missingTtsAudio,
+    missingTtsTimings,
+    staleTtsEntries,
+    lowTtsCoverage
   };
 }
 
@@ -2326,6 +2487,11 @@ export function formatEditorialReportText(report) {
     `- Missing publication fields: ${report.totals.missingPublication}`,
     `- Missing source fields: ${report.totals.missingSource}`,
     `- Poems using custom markup: ${report.totals.customMarkup}`,
+    `- TTS disabled poems: ${report.totals.ttsDisabled}`,
+    `- Missing TTS audio: ${report.totals.missingTtsAudio}`,
+    `- Missing TTS timings: ${report.totals.missingTtsTimings}`,
+    `- Stale TTS entries: ${report.totals.staleTtsEntries}`,
+    `- Low TTS sync coverage: ${report.totals.lowTtsCoverage}`,
     "",
     "Schedule gaps"
   ];
@@ -2347,26 +2513,31 @@ export function formatEditorialReportText(report) {
     }
   }
 
-  const appendSection = (heading, items) => {
+  const appendSection = (heading, items, formatItem = (item) => `- ${item.date}: ${item.title} by ${item.author} (${item.filepath})`) => {
     lines.push("", heading);
     if (items.length === 0) {
       lines.push("- None");
       return;
     }
     for (const item of items) {
-      lines.push(`- ${item.date}: ${item.title} by ${item.author} (${item.filepath})`);
+      lines.push(formatItem(item));
     }
   };
 
   appendSection("Missing publication", report.missingPublication);
   appendSection("Missing source", report.missingSource);
   appendSection("Custom markup", report.customMarkup);
+  appendSection("TTS disabled", report.ttsDisabled);
+  appendSection("Missing TTS audio", report.missingTtsAudio, (item) => `- ${item.date}: ${item.title} by ${item.author} (${item.filepath})${item.reason ? ` - ${item.reason}` : ""}`);
+  appendSection("Missing TTS timings", report.missingTtsTimings, (item) => `- ${item.date}: ${item.title} by ${item.author} (${item.filepath})${item.reason ? ` - ${item.reason}` : ""}`);
+  appendSection("Stale TTS entries", report.staleTtsEntries, (item) => `- ${item.date}: ${item.title} by ${item.author} (${item.filepath})${Array.isArray(item.staleFields) && item.staleFields.length > 0 ? ` - stale fields: ${item.staleFields.join(", ")}` : ""}`);
+  appendSection("Low TTS sync coverage", report.lowTtsCoverage, (item) => `- ${item.date}: ${item.title} by ${item.author} (${item.filepath})${typeof item.coverage === "number" ? ` - coverage ${item.coverage}` : ""}`);
 
   return `${lines.join("\n")}\n`;
 }
 
 async function renderEditorialReport(poems, defaultAsOf = "") {
-  const report = createEditorialReport(poems, {
+  const report = await createEditorialReport(poems, {
     asOfDate: defaultAsOf,
     authorPagesList: authorPages
   });

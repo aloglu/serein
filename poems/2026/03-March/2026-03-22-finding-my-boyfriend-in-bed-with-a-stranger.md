@@ -2,6 +2,7 @@
 title: Finding My Boyfriend in Bed with a Stranger
 author: Mickie Kennedy
 date: 2026-03-22
+tts: yes
 ---
 
 A safety pin through the guy’s ear

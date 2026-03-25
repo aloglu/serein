@@ -2,6 +2,7 @@
 title: The Strangers’ Case
 author: William Shakespeare
 date: 2026-02-28
+tts: yes
 ---
 
 Grant them removed, and grant that this your noise

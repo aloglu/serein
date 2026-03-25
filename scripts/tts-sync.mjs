@@ -1,9 +1,12 @@
-import { mkdir, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import process from "node:process";
+import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { loadPoems } from "./build.mjs";
 import { assertTtsProfileIsReady, resolveTtsProfile } from "./tts-config.mjs";
-import { assetKeyForPoem, listManagedAudioFiles, selectedDates } from "./tts-pipeline.mjs";
+import { assetKeyForPoem, listManagedFiles, selectedDates } from "./tts-pipeline.mjs";
 import {
   audioUrlToRepoPath,
   buildManagedAudioUrl,
@@ -12,12 +15,159 @@ import {
   poemSourceHash,
   speakablePoemScript,
   ttsAudioDir,
+  ttsTimingsDir,
   writeTtsManifest
 } from "./tts-manifest.mjs";
+import {
+  alignVisibleWordTimings,
+  buildManagedTimingsUrl,
+  parseTextGridWordIntervals,
+  timingsUrlToRepoPath,
+  TTS_TIMINGS_VERSION
+} from "./tts-timings.mjs";
 
 const root = process.cwd();
 const dryRun = process.argv.includes("--dry-run");
 const force = process.argv.includes("--force");
+const alignOnly = process.argv.includes("--align-only");
+
+function poemTtsDisabled(poem) {
+  return String(poem?.tts || poem?.tty || "").trim().toLowerCase() === "no";
+}
+
+function resolveMfaCommand() {
+  const explicit = String(process.env.SEREIN_MFA_EXE || "").trim();
+  if (explicit) {
+    return {
+      command: explicit,
+      pathPrefix: []
+    };
+  }
+
+  const envPrefix = String(process.env.SEREIN_MFA_PREFIX || "").trim();
+  const candidatePrefixes = [
+    envPrefix,
+    path.join(root, ".mamba", "envs", "mfa-env")
+  ].filter(Boolean);
+
+  for (const prefix of candidatePrefixes) {
+    const windowsExe = path.join(prefix, "Scripts", "mfa.exe");
+    const unixExe = path.join(prefix, "bin", "mfa");
+    if (process.platform === "win32" && existsSync(windowsExe)) {
+      return {
+        command: windowsExe,
+        pathPrefix: [prefix, path.join(prefix, "Library", "bin"), path.join(prefix, "Scripts")]
+      };
+    }
+    if (process.platform !== "win32" && existsSync(unixExe)) {
+      return {
+        command: unixExe,
+        pathPrefix: [path.join(prefix, "bin")]
+      };
+    }
+  }
+
+  return {
+    command: "mfa",
+    pathPrefix: []
+  };
+}
+
+function runCommand(command, args, { cwd = root, extraPath = [] } = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      cwd,
+      env: {
+        ...process.env,
+        PATH: [...extraPath.filter(Boolean), process.env.PATH || ""].join(path.delimiter)
+      },
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout.on("data", (chunk) => {
+      stdout += String(chunk);
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += String(chunk);
+    });
+    child.on("error", (error) => {
+      reject(new Error(`${command} failed to start. ${error?.message || error}`));
+    });
+    child.on("close", (code) => {
+      if (code !== 0) {
+        reject(new Error(`${command} ${args.join(" ")} failed (${code}).\n${stdout}\n${stderr}`.trim()));
+        return;
+      }
+      resolve({ stdout, stderr });
+    });
+  });
+}
+
+async function alignWithMfa({ poem, mp3Path }) {
+  const mfa = resolveMfaCommand();
+  const workDir = await mkdtemp(path.join(tmpdir(), "serein-mfa-"));
+  const corpusDir = path.join(workDir, "corpus");
+  const outputDir = path.join(workDir, "aligned");
+  const caseId = String(poem?.date || "poem");
+  const wavPath = path.join(corpusDir, `${caseId}.wav`);
+  const textPath = path.join(corpusDir, `${caseId}.txt`);
+  const textGridPath = path.join(outputDir, `${caseId}.TextGrid`);
+
+  try {
+    await mkdir(corpusDir, { recursive: true });
+    await mkdir(outputDir, { recursive: true });
+    await writeFile(textPath, `${speakablePoemScript(poem)}\n`, "utf8");
+    await runCommand("ffmpeg", ["-y", "-i", mp3Path, "-ar", "16000", "-ac", "1", wavPath]);
+
+    const alignmentAttempts = [
+      [],
+      ["--beam", "100", "--retry_beam", "400"]
+    ];
+
+    let lastError = null;
+    for (const extraArgs of alignmentAttempts) {
+      try {
+        await runCommand(mfa.command, [
+          "align",
+          corpusDir,
+          "english_us_arpa",
+          "english_us_arpa",
+          outputDir,
+          "--clean",
+          "--single_speaker",
+          ...extraArgs
+        ], { extraPath: mfa.pathPrefix });
+        lastError = null;
+        break;
+      } catch (error) {
+        lastError = error;
+        if (!/NoAlignmentsError/.test(String(error?.message || ""))) {
+          throw error;
+        }
+        if (extraArgs.length > 0) {
+          throw error;
+        }
+        console.warn(`Retrying MFA alignment for ${poem?.date || ""} ${poem?.title || ""} with wider beam settings.`);
+      }
+    }
+
+    if (lastError) {
+      throw lastError;
+    }
+
+    const textGrid = await readFile(textGridPath, "utf8");
+    return alignVisibleWordTimings(poem, parseTextGridWordIntervals(textGrid));
+  } catch (error) {
+    throw new Error(
+      `MFA alignment failed for ${poem?.date || ""} ${poem?.title || ""}. `
+      + `Ensure Montreal Forced Aligner, its English models, and ffmpeg are available. `
+      + `${error?.message || error}`.trim()
+    );
+  } finally {
+    await rm(workDir, { recursive: true, force: true }).catch(() => {});
+  }
+}
 
 async function fetchOpenAiAudio({ profile, text }) {
   const endpoint = "https://api.openai.com/v1/audio/speech";
@@ -62,7 +212,7 @@ async function pruneUnusedAudioFiles(activeAudioUrls) {
       .filter(Boolean)
       .map((audioPath) => path.normalize(audioPath))
   );
-  const existingFiles = await listManagedAudioFiles(managedRoot);
+  const existingFiles = await listManagedFiles(managedRoot);
   let deletedCount = 0;
 
   for (const filePath of existingFiles) {
@@ -78,6 +228,35 @@ async function pruneUnusedAudioFiles(activeAudioUrls) {
 
     await rm(filePath, { force: true });
     console.log(`Deleted stale TTS asset: ${path.relative(root, filePath)}`);
+  }
+
+  return deletedCount;
+}
+
+async function pruneUnusedTimingFiles(activeTimingUrls) {
+  const managedRoot = ttsTimingsDir(root);
+  const activePaths = new Set(
+    Array.from(activeTimingUrls)
+      .map((timingsUrl) => timingsUrlToRepoPath(timingsUrl, root))
+      .filter(Boolean)
+      .map((timingsPath) => path.normalize(timingsPath))
+  );
+  const existingFiles = await listManagedFiles(managedRoot);
+  let deletedCount = 0;
+
+  for (const filePath of existingFiles) {
+    if (activePaths.has(path.normalize(filePath))) {
+      continue;
+    }
+
+    deletedCount += 1;
+    if (dryRun) {
+      console.log(`Would delete stale TTS timings: ${path.relative(root, filePath)}`);
+      continue;
+    }
+
+    await rm(filePath, { force: true });
+    console.log(`Deleted stale TTS timings: ${path.relative(root, filePath)}`);
   }
 
   return deletedCount;
@@ -99,6 +278,22 @@ async function removeSupersededAudioFile(audioUrl) {
   return true;
 }
 
+async function removeSupersededTimingFile(timingsUrl) {
+  const targetPath = timingsUrlToRepoPath(timingsUrl, root);
+  if (!targetPath || !(await fileExists(targetPath))) {
+    return false;
+  }
+
+  if (dryRun) {
+    console.log(`Would delete stale TTS timings: ${path.relative(root, targetPath)}`);
+    return true;
+  }
+
+  await rm(targetPath, { force: true });
+  console.log(`Deleted stale TTS timings: ${path.relative(root, targetPath)}`);
+  return true;
+}
+
 async function main() {
   const profile = resolveTtsProfile(process.env);
   const dateFilter = selectedDates();
@@ -106,8 +301,9 @@ async function main() {
   const manifest = await loadTtsManifest(root);
   const nextManifest = { version: manifest.version, poems: {} };
   const activeAudioUrls = new Set();
+  const activeTimingUrls = new Set();
 
-  if (!dryRun) {
+  if (!dryRun && !alignOnly) {
     assertTtsProfileIsReady(profile);
   }
 
@@ -121,7 +317,29 @@ async function main() {
       if (existingEntry?.audioUrl) {
         nextManifest.poems[poem.date] = existingEntry;
         activeAudioUrls.add(existingEntry.audioUrl);
+        if (existingEntry.timingsUrl) {
+          activeTimingUrls.add(existingEntry.timingsUrl);
+        }
       }
+      continue;
+    }
+
+    if (poemTtsDisabled(poem)) {
+      const existingEntry = manifest.poems[poem.date];
+      if (existingEntry?.audioUrl) {
+        const removed = await removeSupersededAudioFile(existingEntry.audioUrl);
+        if (removed) {
+          deleted += 1;
+        }
+      }
+      if (existingEntry?.timingsUrl) {
+        const removed = await removeSupersededTimingFile(existingEntry.timingsUrl);
+        if (removed) {
+          deleted += 1;
+        }
+      }
+      console.log(`Skipped ${poem.date} ${poem.title} (tts: no)`);
+      skipped += 1;
       continue;
     }
 
@@ -133,22 +351,35 @@ async function main() {
       assetKey,
       extension: profile.extension
     });
+    const timingsUrl = buildManagedTimingsUrl({ poem, assetKey });
     const existingEntry = manifest.poems[poem.date];
     const existingPath = existingEntry?.audioUrl ? audioUrlToRepoPath(existingEntry.audioUrl, root) : "";
+    const existingTimingsPath = existingEntry?.timingsUrl ? timingsUrlToRepoPath(existingEntry.timingsUrl, root) : "";
     const previousAudioUrl = existingEntry?.audioUrl || "";
-    const existingMatches = (
-      !force
-      && existingEntry?.sourceHash === sourceHash
+    const previousTimingsUrl = existingEntry?.timingsUrl || "";
+    const matchingAudioExists = (
+      existingEntry?.sourceHash === sourceHash
       && existingEntry?.assetKey === assetKey
       && existingEntry?.renderProfile === profile.renderProfile
       && existingEntry?.provider === profile.provider
       && await fileExists(existingPath)
     );
+    const audioMatches = (
+      !force
+      && matchingAudioExists
+    );
+    const timingsMatch = (
+      !force
+      && existingEntry?.timingsUrl === timingsUrl
+      && existingEntry?.timingsVersion === TTS_TIMINGS_VERSION
+      && await fileExists(existingTimingsPath)
+    );
 
-    if (existingMatches) {
+    if (audioMatches && timingsMatch) {
       skipped += 1;
       nextManifest.poems[poem.date] = existingEntry;
       activeAudioUrls.add(existingEntry.audioUrl);
+      activeTimingUrls.add(existingEntry.timingsUrl);
       console.log(`Skipped ${poem.date} ${poem.title}`);
       continue;
     }
@@ -157,6 +388,7 @@ async function main() {
       generated += 1;
       nextManifest.poems[poem.date] = {
         audioUrl,
+        timingsUrl,
         sourceHash,
         assetKey,
         renderProfile: profile.renderProfile,
@@ -167,22 +399,44 @@ async function main() {
         mimeType: profile.mimeType,
         instructions: profile.instructions,
         speed: profile.speed,
+        timingsVersion: TTS_TIMINGS_VERSION,
         generatedAt: new Date().toISOString()
       };
       activeAudioUrls.add(audioUrl);
-      console.log(`Would generate ${poem.date} ${poem.title}`);
+      activeTimingUrls.add(timingsUrl);
+      console.log(alignOnly ? `Would align ${poem.date} ${poem.title}` : `Would generate ${poem.date} ${poem.title}`);
       continue;
     }
 
-    console.log(`Generating ${poem.date} ${poem.title}`);
-    const audioBuffer = await fetchOpenAiAudio({ profile, text: speakableText });
-    const outputPath = audioUrlToRepoPath(audioUrl, root);
-    await mkdir(path.dirname(outputPath), { recursive: true });
-    await writeFile(outputPath, audioBuffer);
+    let outputPath = audioUrlToRepoPath(audioUrl, root);
+    if (matchingAudioExists) {
+      console.log(`Reusing audio ${poem.date} ${poem.title}`);
+    } else {
+      if (alignOnly) {
+        throw new Error(
+          `Cannot align ${poem.date} ${poem.title} without an existing matching audio file. `
+          + "Run the regular TTS sync or tts:poem first."
+        );
+      }
+      console.log(`Generating ${poem.date} ${poem.title}`);
+      const audioBuffer = await fetchOpenAiAudio({ profile, text: speakableText });
+      await mkdir(path.dirname(outputPath), { recursive: true });
+      await writeFile(outputPath, audioBuffer);
+    }
 
-    generated += 1;
+    console.log(`Aligning ${poem.date} ${poem.title}`);
+    const timings = await alignWithMfa({ poem, mp3Path: outputPath });
+    const timingsPath = timingsUrlToRepoPath(timingsUrl, root);
+    await mkdir(path.dirname(timingsPath), { recursive: true });
+    await writeFile(timingsPath, `${JSON.stringify(timings, null, 2)}\n`, "utf8");
+
+    if (!audioMatches) {
+      generated += 1;
+    }
+
     nextManifest.poems[poem.date] = {
       audioUrl,
+      timingsUrl,
       sourceHash,
       assetKey,
       renderProfile: profile.renderProfile,
@@ -193,12 +447,23 @@ async function main() {
       mimeType: profile.mimeType,
       instructions: profile.instructions,
       speed: profile.speed,
+      timingsVersion: timings.version,
+      visibleWordCount: timings.visibleWordCount,
+      matchedWordCount: timings.matchedWordCount,
+      coverage: timings.coverage,
       generatedAt: new Date().toISOString()
     };
     activeAudioUrls.add(audioUrl);
+    activeTimingUrls.add(timingsUrl);
 
     if (previousAudioUrl && previousAudioUrl !== audioUrl) {
       const removed = await removeSupersededAudioFile(previousAudioUrl);
+      if (removed) {
+        deleted += 1;
+      }
+    }
+    if (previousTimingsUrl && previousTimingsUrl !== timingsUrl) {
+      const removed = await removeSupersededTimingFile(previousTimingsUrl);
       if (removed) {
         deleted += 1;
       }
@@ -207,6 +472,7 @@ async function main() {
 
   if (dateFilter.size === 0) {
     deleted += await pruneUnusedAudioFiles(activeAudioUrls);
+    deleted += await pruneUnusedTimingFiles(activeTimingUrls);
   } else {
     console.log("Skipped global stale asset pruning because sync was filtered by date.");
   }
@@ -220,6 +486,9 @@ async function main() {
   console.log(`Generated: ${generated}`);
   console.log(`Skipped: ${skipped}`);
   console.log(`Deleted stale assets: ${deleted}`);
+  if (alignOnly) {
+    console.log("Mode: alignment only.");
+  }
   if (dryRun) {
     console.log("Dry run only; no files were written.");
   }

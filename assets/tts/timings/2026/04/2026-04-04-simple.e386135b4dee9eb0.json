@@ -1,0 +1,527 @@
+{
+  "version": 1,
+  "visibleWordCount": 74,
+  "matchedWordCount": 74,
+  "coverage": 1,
+  "intervalFingerprint": "50dc9e6174212b1a",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Simple",
+      "start": 0.05,
+      "end": 0.71,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Rae",
+      "start": 1.36,
+      "end": 1.86,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Armantrout",
+      "start": 1.93,
+      "end": 2.71,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Complex",
+      "start": 3.35,
+      "end": 4.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "systems",
+      "start": 4.01,
+      "end": 4.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "can",
+      "start": 4.71,
+      "end": 4.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "arise",
+      "start": 4.91,
+      "end": 5.46,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "from",
+      "start": 5.46,
+      "end": 5.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "simple",
+      "start": 5.64,
+      "end": 6.22,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "rules.",
+      "start": 6.22,
+      "end": 6.78,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "It’s",
+      "start": 7.44,
+      "end": 7.72,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "not",
+      "start": 7.72,
+      "end": 7.99,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "that",
+      "start": 7.99,
+      "end": 8.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "we",
+      "start": 8.15,
+      "end": 8.31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "want",
+      "start": 8.31,
+      "end": 8.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "to",
+      "start": 8.64,
+      "end": 8.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "survive,",
+      "start": 8.75,
+      "end": 9.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "it’s",
+      "start": 9.84,
+      "end": 10.04,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "that",
+      "start": 10.04,
+      "end": 10.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "we’ve",
+      "start": 10.23,
+      "end": 10.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "been",
+      "start": 10.52,
+      "end": 10.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "drugged",
+      "start": 10.74,
+      "end": 11.26,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "and",
+      "start": 11.3,
+      "end": 11.51,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "made",
+      "start": 11.51,
+      "end": 11.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "to",
+      "start": 11.73,
+      "end": 11.86,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "act",
+      "start": 11.94,
+      "end": 12.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "as",
+      "start": 12.38,
+      "end": 12.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "if",
+      "start": 12.56,
+      "end": 12.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "we",
+      "start": 12.75,
+      "end": 12.89,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "do",
+      "start": 12.89,
+      "end": 13.28,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "while",
+      "start": 13.83,
+      "end": 14.12,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "all",
+      "start": 14.23,
+      "end": 14.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "the",
+      "start": 14.58,
+      "end": 14.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "while",
+      "start": 14.68,
+      "end": 15.11,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "the",
+      "start": 15.11,
+      "end": 15.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "sea",
+      "start": 15.23,
+      "end": 15.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "breaks",
+      "start": 15.65,
+      "end": 16.219999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "and",
+      "start": 16.219999,
+      "end": 16.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "rolls,",
+      "start": 16.49,
+      "end": 17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "painlessly,",
+      "start": 17.26,
+      "end": 18.08,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "under.",
+      "start": 18.34,
+      "end": 18.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "If",
+      "start": 19.34,
+      "end": 19.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "we’re",
+      "start": 19.549999,
+      "end": 19.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "not",
+      "start": 19.639999,
+      "end": 19.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "copying",
+      "start": 19.889999,
+      "end": 20.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "it,",
+      "start": 20.42,
+      "end": 20.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "we’re",
+      "start": 20.889999,
+      "end": 21.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "lonely.",
+      "start": 21.07,
+      "end": 21.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "Is",
+      "start": 22.25,
+      "end": 22.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "this",
+      "start": 22.48,
+      "end": 22.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "the",
+      "start": 22.780001,
+      "end": 22.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "knowledge",
+      "start": 22.91,
+      "end": 23.4,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "that",
+      "start": 23.4,
+      "end": 23.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "demands",
+      "start": 23.58,
+      "end": 24.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "to",
+      "start": 24.16,
+      "end": 24.26,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "be",
+      "start": 24.26,
+      "end": 24.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "passed",
+      "start": 24.389999,
+      "end": 24.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "down?",
+      "start": 24.83,
+      "end": 25.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "Time",
+      "start": 25.91,
+      "end": 26.379999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "is",
+      "start": 26.379999,
+      "end": 26.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "made",
+      "start": 26.6,
+      "end": 26.870001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "from",
+      "start": 26.870001,
+      "end": 27.08,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "swatches",
+      "start": 27.08,
+      "end": 27.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "of",
+      "start": 27.76,
+      "end": 27.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "heaven",
+      "start": 27.860001,
+      "end": 28.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "and",
+      "start": 28.309999,
+      "end": 28.540001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "hell.",
+      "start": 28.540001,
+      "end": 28.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "If",
+      "start": 29.540001,
+      "end": 29.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "we’re",
+      "start": 29.74,
+      "end": 29.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "not",
+      "start": 29.84,
+      "end": 30.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "killing",
+      "start": 30.09,
+      "end": 30.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "it,",
+      "start": 30.459999,
+      "end": 30.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "we’re",
+      "start": 31.040001,
+      "end": 31.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "hungry.",
+      "start": 31.25,
+      "end": 31.92,
+      "segment": "body"
+    }
+  ]
+}

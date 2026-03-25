@@ -31,7 +31,7 @@ Usage:
   serein preview watch [YYYY-MM-DD]
   serein editorial [YYYY-MM-DD]
   serein tts [YYYY-MM-DD] [--force]
-  serein tts align [YYYY-MM-DD]
+  serein tts align [YYYY-MM-DD] [--force]
   serein tts preview YYYY-MM-DD [--force]
 
 Examples:
@@ -41,6 +41,7 @@ Examples:
   serein tts
   serein tts 2026-03-07
   serein tts align 2026-03-07
+  serein tts align --force
   serein tts preview 2026-03-07 --force
 `);
 }
@@ -169,7 +170,10 @@ function commandForTts(tokens) {
     }
     return {
       script: "scripts/tts-align.mjs",
-      args: date ? ["--date", date] : []
+      args: [
+        ...(date ? ["--date", date] : []),
+        ...(forced.force ? ["--force"] : [])
+      ]
     };
   }
 

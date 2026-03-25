@@ -1,0 +1,807 @@
+{
+  "version": 1,
+  "visibleWordCount": 114,
+  "matchedWordCount": 114,
+  "coverage": 1,
+  "intervalFingerprint": "681c2d7c71670b99",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Spring",
+      "start": 0.04,
+      "end": 1,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Edna",
+      "start": 2.04,
+      "end": 2.45,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "St.",
+      "start": 2.45,
+      "end": 2.89,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Vincent",
+      "start": 2.89,
+      "end": 3.41,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "Millay",
+      "start": 3.41,
+      "end": 4.03,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "To",
+      "start": 4.93,
+      "end": 5.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "what",
+      "start": 5.07,
+      "end": 5.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "purpose,",
+      "start": 5.43,
+      "end": 6.03,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "April,",
+      "start": 6.09,
+      "end": 6.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "do",
+      "start": 6.96,
+      "end": 7.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "you",
+      "start": 7.07,
+      "end": 7.28,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "return",
+      "start": 7.28,
+      "end": 7.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "again?",
+      "start": 8,
+      "end": 8.62,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "Beauty",
+      "start": 9.24,
+      "end": 9.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "is",
+      "start": 9.77,
+      "end": 9.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "not",
+      "start": 9.92,
+      "end": 10.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "enough.",
+      "start": 10.17,
+      "end": 10.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "You",
+      "start": 11.22,
+      "end": 11.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "can",
+      "start": 11.41,
+      "end": 11.71,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "no",
+      "start": 11.71,
+      "end": 11.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "longer",
+      "start": 11.92,
+      "end": 12.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "quiet",
+      "start": 12.39,
+      "end": 12.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "me",
+      "start": 12.92,
+      "end": 13.11,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "with",
+      "start": 13.11,
+      "end": 13.29,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "the",
+      "start": 13.29,
+      "end": 13.4,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "redness",
+      "start": 13.4,
+      "end": 14.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "Of",
+      "start": 14.41,
+      "end": 14.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "little",
+      "start": 14.57,
+      "end": 14.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "leaves",
+      "start": 14.9,
+      "end": 15.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "opening",
+      "start": 15.52,
+      "end": 15.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "stickily.",
+      "start": 15.98,
+      "end": 16.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "I",
+      "start": 17.68,
+      "end": 17.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "know",
+      "start": 17.84,
+      "end": 18.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "what",
+      "start": 18.290001,
+      "end": 18.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "I",
+      "start": 18.49,
+      "end": 18.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "know.",
+      "start": 18.65,
+      "end": 19.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "The",
+      "start": 19.75,
+      "end": 19.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "sun",
+      "start": 19.860001,
+      "end": 20.4,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "is",
+      "start": 20.4,
+      "end": 20.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "hot",
+      "start": 20.65,
+      "end": 21.030001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "on",
+      "start": 21.030001,
+      "end": 21.200001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "my",
+      "start": 21.200001,
+      "end": 21.379999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "neck",
+      "start": 21.379999,
+      "end": 21.870001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "as",
+      "start": 22.18,
+      "end": 22.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "I",
+      "start": 22.35,
+      "end": 22.450001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "observe",
+      "start": 22.450001,
+      "end": 23.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "The",
+      "start": 23.07,
+      "end": 23.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "spikes",
+      "start": 23.17,
+      "end": 23.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "of",
+      "start": 23.790001,
+      "end": 23.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "the",
+      "start": 23.9,
+      "end": 23.969999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "crocus.",
+      "start": 23.969999,
+      "end": 24.719999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "The",
+      "start": 25.209999,
+      "end": 25.299999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "smell",
+      "start": 25.299999,
+      "end": 25.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "of",
+      "start": 25.77,
+      "end": 25.879999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "the",
+      "start": 25.879999,
+      "end": 26.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "earth",
+      "start": 26.040001,
+      "end": 26.280001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "is",
+      "start": 26.280001,
+      "end": 26.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "good.",
+      "start": 26.43,
+      "end": 26.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "It",
+      "start": 27.450001,
+      "end": 27.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "is",
+      "start": 27.57,
+      "end": 27.690001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "apparent",
+      "start": 27.690001,
+      "end": 28.33,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "that",
+      "start": 28.360001,
+      "end": 28.530001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "there",
+      "start": 28.530001,
+      "end": 28.719999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "is",
+      "start": 28.719999,
+      "end": 28.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "no",
+      "start": 28.9,
+      "end": 29.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "death.",
+      "start": 29.24,
+      "end": 29.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "But",
+      "start": 30.290001,
+      "end": 30.469999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "what",
+      "start": 30.469999,
+      "end": 30.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "does",
+      "start": 30.799999,
+      "end": 31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "that",
+      "start": 31,
+      "end": 31.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "signify?",
+      "start": 31.25,
+      "end": 31.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "Not",
+      "start": 32.509998,
+      "end": 32.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "only",
+      "start": 32.82,
+      "end": 33.220001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "under",
+      "start": 33.220001,
+      "end": 33.490002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "ground",
+      "start": 33.490002,
+      "end": 34.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "are",
+      "start": 34.16,
+      "end": 34.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "the",
+      "start": 34.27,
+      "end": 34.369999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "brains",
+      "start": 34.369999,
+      "end": 34.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "of",
+      "start": 34.849998,
+      "end": 34.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "men",
+      "start": 34.98,
+      "end": 35.380001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 80,
+      "text": "Eaten",
+      "start": 35.459999,
+      "end": 35.759998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 81,
+      "text": "by",
+      "start": 35.759998,
+      "end": 35.950001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 82,
+      "text": "maggots.",
+      "start": 35.950001,
+      "end": 36.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 83,
+      "text": "Life",
+      "start": 37.049999,
+      "end": 37.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 84,
+      "text": "in",
+      "start": 37.459999,
+      "end": 37.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 85,
+      "text": "itself",
+      "start": 37.549999,
+      "end": 38.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 86,
+      "text": "Is",
+      "start": 38.16,
+      "end": 38.369999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 87,
+      "text": "nothing,",
+      "start": 38.369999,
+      "end": 39.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 88,
+      "text": "An",
+      "start": 39.43,
+      "end": 39.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 89,
+      "text": "empty",
+      "start": 39.650002,
+      "end": 40.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 90,
+      "text": "cup,",
+      "start": 40.029999,
+      "end": 40.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 91,
+      "text": "a",
+      "start": 40.77,
+      "end": 40.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 92,
+      "text": "flight",
+      "start": 40.82,
+      "end": 41.310001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 93,
+      "text": "of",
+      "start": 41.34,
+      "end": 41.470001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 94,
+      "text": "uncarpeted",
+      "start": 41.540001,
+      "end": 42.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 95,
+      "text": "stairs.",
+      "start": 42.27,
+      "end": 42.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 96,
+      "text": "It",
+      "start": 43.66,
+      "end": 43.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 97,
+      "text": "is",
+      "start": 43.779999,
+      "end": 43.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 98,
+      "text": "not",
+      "start": 43.959999,
+      "end": 44.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 99,
+      "text": "enough",
+      "start": 44.290001,
+      "end": 44.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 100,
+      "text": "that",
+      "start": 45.080002,
+      "end": 45.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 101,
+      "text": "yearly,",
+      "start": 45.27,
+      "end": 45.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 102,
+      "text": "down",
+      "start": 46.169998,
+      "end": 46.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 103,
+      "text": "this",
+      "start": 46.549999,
+      "end": 46.740002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 104,
+      "text": "hill,",
+      "start": 46.740002,
+      "end": 47.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 105,
+      "text": "April",
+      "start": 47.639999,
+      "end": 48.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 106,
+      "text": "Comes",
+      "start": 48.110001,
+      "end": 48.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 107,
+      "text": "like",
+      "start": 48.610001,
+      "end": 48.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 108,
+      "text": "an",
+      "start": 48.82,
+      "end": 48.939999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 109,
+      "text": "idiot,",
+      "start": 48.990002,
+      "end": 49.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 110,
+      "text": "babbling",
+      "start": 49.779999,
+      "end": 50.439999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 111,
+      "text": "and",
+      "start": 50.439999,
+      "end": 50.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 112,
+      "text": "strewing",
+      "start": 50.639999,
+      "end": 51.259998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 113,
+      "text": "flowers.",
+      "start": 51.259998,
+      "end": 52.040001,
+      "segment": "body"
+    }
+  ]
+}

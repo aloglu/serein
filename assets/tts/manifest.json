@@ -1,8 +1,9 @@
 {
-  "version": 1,
+  "version": 2,
   "poems": {
     "2026-02-26": {
       "audioUrl": "/assets/tts/audio/2026/02/2026-02-26-vegetarians.96ab6b05ad1d927a.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/02/2026-02-26-vegetarians.96ab6b05ad1d927a.json",
       "sourceHash": "22306a34ab2a0281",
       "assetKey": "96ab6b05ad1d927a",
       "renderProfile": "house-default-v1",
@@ -13,24 +14,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:34:58.809Z"
-    },
-    "2026-02-27": {
-      "audioUrl": "/assets/tts/audio/2026/02/2026-02-27-mirror.2da0184d0d42db1c.mp3",
-      "sourceHash": "a9f7557e7123a029",
-      "assetKey": "2da0184d0d42db1c",
-      "renderProfile": "house-default-v1",
-      "provider": "openai",
-      "modelId": "gpt-4o-mini-tts",
-      "voice": "sage",
-      "outputFormat": "mp3",
-      "mimeType": "audio/mpeg",
-      "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
-      "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:07.926Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 88,
+      "matchedWordCount": 88,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:12:02.110Z"
     },
     "2026-02-28": {
       "audioUrl": "/assets/tts/audio/2026/02/2026-02-28-the-strangers-case.77c81adc62f27046.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/02/2026-02-28-the-strangers-case.77c81adc62f27046.json",
       "sourceHash": "137a3e3234c26723",
       "assetKey": "77c81adc62f27046",
       "renderProfile": "house-default-v1",
@@ -41,10 +33,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:24.596Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 285,
+      "matchedWordCount": 134,
+      "coverage": 0.4702,
+      "generatedAt": "2026-03-25T12:13:03.854Z"
     },
     "2026-03-01": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-01-masks.c33e0eb3253d041c.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-01-masks.c33e0eb3253d041c.json",
       "sourceHash": "ff9771b0aa7e29bf",
       "assetKey": "c33e0eb3253d041c",
       "renderProfile": "house-default-v1",
@@ -55,10 +52,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:27.288Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 34,
+      "matchedWordCount": 34,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:14:01.626Z"
     },
     "2026-03-02": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-02-war.b36000b5be0af23f.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-02-war.b36000b5be0af23f.json",
       "sourceHash": "3c49795ef0a38518",
       "assetKey": "b36000b5be0af23f",
       "renderProfile": "house-default-v1",
@@ -69,10 +71,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:30.041Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 36,
+      "matchedWordCount": 36,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:15:00.908Z"
     },
     "2026-03-03": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-03-in-this-short-life-that-only-lasts-an-hour.3d028c931c821f00.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-03-in-this-short-life-that-only-lasts-an-hour.3d028c931c821f00.json",
       "sourceHash": "d5a60a38bcc68c6b",
       "assetKey": "3d028c931c821f00",
       "renderProfile": "house-default-v1",
@@ -83,10 +90,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:33.256Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 28,
+      "matchedWordCount": 28,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:15:57.713Z"
     },
     "2026-03-04": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-04-good-morning-i-am-not-going-to-commit-suicide-today.72a656ba7ebd7f86.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-04-good-morning-i-am-not-going-to-commit-suicide-today.72a656ba7ebd7f86.json",
       "sourceHash": "5a0dd13de64887af",
       "assetKey": "72a656ba7ebd7f86",
       "renderProfile": "house-default-v1",
@@ -97,10 +109,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:39.315Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 95,
+      "matchedWordCount": 95,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:16:55.298Z"
     },
     "2026-03-05": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-05-a-dream-dreamt-by-fernando-pessoa-in-which-i-play-the-role-of-fernando-pessoa.baec19cffd31eb2d.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-05-a-dream-dreamt-by-fernando-pessoa-in-which-i-play-the-role-of-fernando-pessoa.baec19cffd31eb2d.json",
       "sourceHash": "97e07a22f19846f2",
       "assetKey": "baec19cffd31eb2d",
       "renderProfile": "house-default-v1",
@@ -111,10 +128,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:53.071Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 226,
+      "matchedWordCount": 226,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:17:53.437Z"
     },
     "2026-03-06": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-06-tired.b243a2c711f6b533.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-06-tired.b243a2c711f6b533.json",
       "sourceHash": "1211f2be23eac33a",
       "assetKey": "b243a2c711f6b533",
       "renderProfile": "house-default-v1",
@@ -125,10 +147,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:56.361Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 41,
+      "matchedWordCount": 41,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:18:50.096Z"
     },
     "2026-03-07": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-07-untitled.1758b6e1084710dc.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-07-untitled.1758b6e1084710dc.json",
       "sourceHash": "488e04bc198cdc72",
       "assetKey": "1758b6e1084710dc",
       "renderProfile": "house-default-v1",
@@ -139,10 +166,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:35:59.175Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 25,
+      "matchedWordCount": 25,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:19:48.640Z"
     },
     "2026-03-08": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-08-on-the-birth-of-a-son.22ffb0f85340c713.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-08-on-the-birth-of-a-son.22ffb0f85340c713.json",
       "sourceHash": "819175d0ee4e6930",
       "assetKey": "22ffb0f85340c713",
       "renderProfile": "house-default-v1",
@@ -153,10 +185,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:36:02.943Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 51,
+      "matchedWordCount": 51,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:20:46.939Z"
     },
     "2026-03-09": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-09-what-remains.c8f05ae0a44834f7.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-09-what-remains.c8f05ae0a44834f7.json",
       "sourceHash": "fafd6a2590110b02",
       "assetKey": "c8f05ae0a44834f7",
       "renderProfile": "house-default-v1",
@@ -167,10 +204,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:36:08.500Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 90,
+      "matchedWordCount": 90,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:21:45.240Z"
     },
     "2026-03-10": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-10-my-country-i-will-build-you-again.670174bdebf4d57c.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-10-my-country-i-will-build-you-again.670174bdebf4d57c.json",
       "sourceHash": "4c6b6fe3bc18a617",
       "assetKey": "670174bdebf4d57c",
       "renderProfile": "house-default-v1",
@@ -181,10 +223,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:36:19.856Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 191,
+      "matchedWordCount": 191,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:22:44.532Z"
     },
     "2026-03-11": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-11-an-annual-of-the-dark-physics.0eb399db839506d9.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-11-an-annual-of-the-dark-physics.0eb399db839506d9.json",
       "sourceHash": "fea8f841c99b527b",
       "assetKey": "0eb399db839506d9",
       "renderProfile": "house-default-v1",
@@ -195,10 +242,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:36:28.879Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 133,
+      "matchedWordCount": 133,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T11:27:37.856Z"
     },
     "2026-03-12": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-12-untitled.4e0e17dce12d7beb.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-12-untitled.4e0e17dce12d7beb.json",
       "sourceHash": "48a3e3cd3a15e307",
       "assetKey": "4e0e17dce12d7beb",
       "renderProfile": "house-default-v1",
@@ -209,10 +261,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:36:32.832Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 53,
+      "matchedWordCount": 53,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:23:43.956Z"
     },
     "2026-03-13": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-13-unfold-your-own-myth.9e4a1d9b308af5f0.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-13-unfold-your-own-myth.9e4a1d9b308af5f0.json",
       "sourceHash": "c47afb766441421b",
       "assetKey": "9e4a1d9b308af5f0",
       "renderProfile": "house-default-v1",
@@ -223,10 +280,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:36:46.379Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 195,
+      "matchedWordCount": 195,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:24:44.217Z"
     },
     "2026-03-14": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.48d59c49413a678a.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-14-not-horses.48d59c49413a678a.json",
       "sourceHash": "ccbd8f2a5573db9e",
       "assetKey": "48d59c49413a678a",
       "renderProfile": "house-default-v1",
@@ -237,10 +299,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:36:56.320Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 153,
+      "matchedWordCount": 153,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:25:43.537Z"
     },
     "2026-03-15": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-15-the-52-hertz-whale.08b93cc89635cba0.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-15-the-52-hertz-whale.08b93cc89635cba0.json",
       "sourceHash": "c35ac7e6272544cd",
       "assetKey": "08b93cc89635cba0",
       "renderProfile": "house-default-v1",
@@ -251,10 +318,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:01.188Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 74,
+      "matchedWordCount": 74,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:26:41.713Z"
     },
     "2026-03-16": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-16-monopoly.ba106fca6a2e7b79.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-16-monopoly.ba106fca6a2e7b79.json",
       "sourceHash": "89b080c6f839e9f2",
       "assetKey": "ba106fca6a2e7b79",
       "renderProfile": "house-default-v1",
@@ -265,10 +337,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:10.981Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 149,
+      "matchedWordCount": 149,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:27:41.418Z"
     },
     "2026-03-17": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-17-crying.b39aa603e6341c9a.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-17-crying.b39aa603e6341c9a.json",
       "sourceHash": "b37645ba7e6ae590",
       "assetKey": "b39aa603e6341c9a",
       "renderProfile": "house-default-v1",
@@ -279,10 +356,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:15.413Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 73,
+      "matchedWordCount": 73,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:28:39.736Z"
     },
     "2026-03-18": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-18-ozymandias.c567cd6aa8ea2170.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-18-ozymandias.c567cd6aa8ea2170.json",
       "sourceHash": "f1aeaa893010f7d2",
       "assetKey": "c567cd6aa8ea2170",
       "renderProfile": "house-default-v1",
@@ -293,10 +375,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:23.000Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 115,
+      "matchedWordCount": 115,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:29:40.818Z"
     },
     "2026-03-19": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-19-fifteen.96a8cc05b6464799.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-19-fifteen.96a8cc05b6464799.json",
       "sourceHash": "8d66539c1b147ee6",
       "assetKey": "96a8cc05b6464799",
       "renderProfile": "house-default-v1",
@@ -307,10 +394,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:26.742Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 55,
+      "matchedWordCount": 0,
+      "coverage": 0,
+      "generatedAt": "2026-03-25T12:30:40.054Z"
     },
     "2026-03-20": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-20-men-and-their-boring-arguments.4d255fea54ffbf57.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-20-men-and-their-boring-arguments.4d255fea54ffbf57.json",
       "sourceHash": "a5176d3a84544393",
       "assetKey": "4d255fea54ffbf57",
       "renderProfile": "house-default-v1",
@@ -321,10 +413,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:36.909Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 165,
+      "matchedWordCount": 165,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:31:42.342Z"
     },
     "2026-03-21": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-21-for-jane.8679faa5e4c0d6b7.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-21-for-jane.8679faa5e4c0d6b7.json",
       "sourceHash": "5dd1d4072ed80055",
       "assetKey": "8679faa5e4c0d6b7",
       "renderProfile": "house-default-v1",
@@ -335,10 +432,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:42.143Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 80,
+      "matchedWordCount": 80,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:32:40.672Z"
     },
     "2026-03-22": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-22-finding-my-boyfriend-in-bed-with-a-stranger.4668e80e8f3d48f1.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-22-finding-my-boyfriend-in-bed-with-a-stranger.4668e80e8f3d48f1.json",
       "sourceHash": "a9c6e4923c615ab4",
       "assetKey": "4668e80e8f3d48f1",
       "renderProfile": "house-default-v1",
@@ -349,10 +451,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:49.351Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 97,
+      "matchedWordCount": 97,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:33:39.717Z"
     },
     "2026-03-23": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-23-missed-time.a368628599f9dbe0.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-23-missed-time.a368628599f9dbe0.json",
       "sourceHash": "2a57e61b77a99258",
       "assetKey": "a368628599f9dbe0",
       "renderProfile": "house-default-v1",
@@ -363,10 +470,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:54.243Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 67,
+      "matchedWordCount": 67,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:34:37.862Z"
     },
     "2026-03-24": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-24-this-room.730f5b0270305957.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-24-this-room.730f5b0270305957.json",
       "sourceHash": "20fbe822b46deebc",
       "assetKey": "730f5b0270305957",
       "renderProfile": "house-default-v1",
@@ -377,10 +489,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:37:58.813Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 73,
+      "matchedWordCount": 73,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:07:38.419Z"
     },
     "2026-03-25": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-25-what-kind-of-times-are-these.1c01ef619283cc13.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-25-what-kind-of-times-are-these.1c01ef619283cc13.json",
       "sourceHash": "ad8e86d718a87568",
       "assetKey": "1c01ef619283cc13",
       "renderProfile": "house-default-v1",
@@ -391,10 +508,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:08.142Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 158,
+      "matchedWordCount": 158,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:35:37.411Z"
     },
     "2026-03-26": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-26-i-have-to-tell-you.69e29bc93c76d866.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-26-i-have-to-tell-you.69e29bc93c76d866.json",
       "sourceHash": "1d60f213173a5843",
       "assetKey": "69e29bc93c76d866",
       "renderProfile": "house-default-v1",
@@ -405,10 +527,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:09.757Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 30,
+      "matchedWordCount": 30,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:36:35.976Z"
     },
     "2026-03-27": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-27-i-am-panting.564a692635f3bbed.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-27-i-am-panting.564a692635f3bbed.json",
       "sourceHash": "5c8eef6081ff2be5",
       "assetKey": "564a692635f3bbed",
       "renderProfile": "house-default-v1",
@@ -419,10 +546,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:13.874Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 58,
+      "matchedWordCount": 58,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:37:34.331Z"
     },
     "2026-03-28": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-28-nobody-comes.c5c55f747067a748.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-28-nobody-comes.c5c55f747067a748.json",
       "sourceHash": "7f0bb5a05b0fd6b6",
       "assetKey": "c5c55f747067a748",
       "renderProfile": "house-default-v1",
@@ -433,10 +565,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:20.663Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 93,
+      "matchedWordCount": 93,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:38:32.628Z"
     },
     "2026-03-29": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-29-wont-you-celebrate-with-me.41b64cfc0808f7af.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-29-wont-you-celebrate-with-me.41b64cfc0808f7af.json",
       "sourceHash": "7ba47b6fc9b9240a",
       "assetKey": "41b64cfc0808f7af",
       "renderProfile": "house-default-v1",
@@ -447,10 +584,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:25.477Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 75,
+      "matchedWordCount": 75,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:39:31.767Z"
     },
     "2026-03-30": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-30-an-affair.f47e7f9a0b82f337.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-30-an-affair.f47e7f9a0b82f337.json",
       "sourceHash": "072335c208e13ff7",
       "assetKey": "f47e7f9a0b82f337",
       "renderProfile": "house-default-v1",
@@ -461,10 +603,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:27.361Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 15,
+      "matchedWordCount": 15,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:40:28.896Z"
     },
     "2026-03-31": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-31-ghosting.7a3342d4ee4a554d.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-31-ghosting.7a3342d4ee4a554d.json",
       "sourceHash": "1198ef645d242a39",
       "assetKey": "7a3342d4ee4a554d",
       "renderProfile": "house-default-v1",
@@ -475,10 +622,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:29.535Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 27,
+      "matchedWordCount": 0,
+      "coverage": 0,
+      "generatedAt": "2026-03-25T12:41:27.358Z"
     },
     "2026-04-01": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-01-spring.d28e6f259cb62791.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-01-spring.d28e6f259cb62791.json",
       "sourceHash": "decd355b0b681415",
       "assetKey": "d28e6f259cb62791",
       "renderProfile": "house-default-v1",
@@ -489,10 +641,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:37.056Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 114,
+      "matchedWordCount": 114,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:42:26.584Z"
     },
     "2026-04-02": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-02-sonnet-30.c9582641781e70df.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-02-sonnet-30.c9582641781e70df.json",
       "sourceHash": "e1de7712156b2880",
       "assetKey": "c9582641781e70df",
       "renderProfile": "house-default-v1",
@@ -503,10 +660,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:40:18.956Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 120,
+      "matchedWordCount": 120,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:43:24.682Z"
     },
     "2026-04-03": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-03-one-art.f3c486a9d4568691.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-03-one-art.f3c486a9d4568691.json",
       "sourceHash": "8ab17347a7ea90f4",
       "assetKey": "f3c486a9d4568691",
       "renderProfile": "house-default-v1",
@@ -517,10 +679,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:40:29.824Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 157,
+      "matchedWordCount": 153,
+      "coverage": 0.9745,
+      "generatedAt": "2026-03-25T12:44:22.452Z"
     },
     "2026-04-04": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-04-simple.e386135b4dee9eb0.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-04-simple.e386135b4dee9eb0.json",
       "sourceHash": "4b1987fa6a3299c2",
       "assetKey": "e386135b4dee9eb0",
       "renderProfile": "house-default-v1",
@@ -531,10 +698,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:40:35.662Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 74,
+      "matchedWordCount": 74,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:45:19.864Z"
     },
     "2026-04-05": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-05-the-thing-is.beaff3e6886c848e.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-05-the-thing-is.beaff3e6886c848e.json",
       "sourceHash": "72227f7dc126d8b5",
       "assetKey": "beaff3e6886c848e",
       "renderProfile": "house-default-v1",
@@ -545,10 +717,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:40:43.552Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 116,
+      "matchedWordCount": 116,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:46:18.266Z"
     },
     "2026-04-06": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-06-the-two-headed-calf.fd3230ad2b310299.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-06-the-two-headed-calf.fd3230ad2b310299.json",
       "sourceHash": "f23ddb2ef2af806f",
       "assetKey": "fd3230ad2b310299",
       "renderProfile": "house-default-v1",
@@ -559,10 +736,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:40:48.722Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 73,
+      "matchedWordCount": 73,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:47:16.992Z"
     },
     "2026-04-07": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-07-what-resembles-the-grave-but-isnt.1b2f2a88b9cfbdb7.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-07-what-resembles-the-grave-but-isnt.1b2f2a88b9cfbdb7.json",
       "sourceHash": "dc1dbad0ae2abd79",
       "assetKey": "1b2f2a88b9cfbdb7",
       "renderProfile": "house-default-v1",
@@ -573,10 +755,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:41:08.328Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 365,
+      "matchedWordCount": 365,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:48:17.431Z"
     },
     "2026-04-08": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-08-let-this-darkness-be-a-bell-tower.45dc7059bd6d4749.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-08-let-this-darkness-be-a-bell-tower.45dc7059bd6d4749.json",
       "sourceHash": "03491b078bb50dad",
       "assetKey": "45dc7059bd6d4749",
       "renderProfile": "house-default-v1",
@@ -587,10 +774,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:41:16.059Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 112,
+      "matchedWordCount": 112,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:49:15.514Z"
     },
     "2026-04-09": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-09-the-uses-of-sorrow.457a5cdd3ebbecdf.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-09-the-uses-of-sorrow.457a5cdd3ebbecdf.json",
       "sourceHash": "87fe301ad36fe60f",
       "assetKey": "457a5cdd3ebbecdf",
       "renderProfile": "house-default-v1",
@@ -601,10 +793,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:56:19.897Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 36,
+      "matchedWordCount": 6,
+      "coverage": 0.1667,
+      "generatedAt": "2026-03-25T12:50:15.644Z"
     },
     "2026-04-10": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-10-do-not-love-half-lovers.e0e3d70e1f98ed4d.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-10-do-not-love-half-lovers.e0e3d70e1f98ed4d.json",
       "sourceHash": "735c4da57e094a60",
       "assetKey": "e0e3d70e1f98ed4d",
       "renderProfile": "house-default-v1",
@@ -615,10 +812,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:56:37.225Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 273,
+      "matchedWordCount": 273,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:52:12.052Z"
     },
     "2026-04-24": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-24-miracle-number-i.f3bf0e175c1a76fe.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-24-miracle-number-i.f3bf0e175c1a76fe.json",
       "sourceHash": "cf35fbb87b9b5d47",
       "assetKey": "f3bf0e175c1a76fe",
       "renderProfile": "house-default-v1",
@@ -629,10 +831,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:46.030Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 144,
+      "matchedWordCount": 144,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:53:12.383Z"
     },
     "2026-05-05": {
       "audioUrl": "/assets/tts/audio/2026/05/2026-05-05-let-me-tell-you.2cbbab1cfdd03d98.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/05/2026-05-05-let-me-tell-you.2cbbab1cfdd03d98.json",
       "sourceHash": "8de464ff5ed07f78",
       "assetKey": "2cbbab1cfdd03d98",
       "renderProfile": "house-default-v1",
@@ -643,10 +850,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:50.376Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 61,
+      "matchedWordCount": 61,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:54:12.488Z"
     },
     "2026-06-13": {
       "audioUrl": "/assets/tts/audio/2026/06/2026-06-13-fear.4db99f061b469679.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/06/2026-06-13-fear.4db99f061b469679.json",
       "sourceHash": "04dea24606726b63",
       "assetKey": "4db99f061b469679",
       "renderProfile": "house-default-v1",
@@ -657,10 +869,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:53.358Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 34,
+      "matchedWordCount": 34,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:55:12.443Z"
     },
     "2026-07-14": {
       "audioUrl": "/assets/tts/audio/2026/07/2026-07-14-angels-of-the-get-through.a21185f5acbfc3d8.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/07/2026-07-14-angels-of-the-get-through.a21185f5acbfc3d8.json",
       "sourceHash": "4853b926d9e3c918",
       "assetKey": "a21185f5acbfc3d8",
       "renderProfile": "house-default-v1",
@@ -671,10 +888,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-20T00:44:50.788Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 495,
+      "matchedWordCount": 495,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:56:14.093Z"
     },
     "2026-10-07": {
       "audioUrl": "/assets/tts/audio/2026/10/2026-10-07-if-i-must-die.7b3636b9ab5d4b77.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/10/2026-10-07-if-i-must-die.7b3636b9ab5d4b77.json",
       "sourceHash": "2e830798b0430574",
       "assetKey": "7b3636b9ab5d4b77",
       "renderProfile": "house-default-v1",
@@ -685,10 +907,15 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:38:59.252Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 107,
+      "matchedWordCount": 30,
+      "coverage": 0.2804,
+      "generatedAt": "2026-03-25T12:57:13.034Z"
     },
     "2027-04-24": {
       "audioUrl": "/assets/tts/audio/2027/04/2027-04-24-miracle-number-ii.915a24ad048bc6cc.mp3",
+      "timingsUrl": "/assets/tts/timings/2027/04/2027-04-24-miracle-number-ii.915a24ad048bc6cc.json",
       "sourceHash": "1e8769cda67d6927",
       "assetKey": "915a24ad048bc6cc",
       "renderProfile": "house-default-v1",
@@ -699,7 +926,11 @@
       "mimeType": "audio/mpeg",
       "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
       "speed": 0.96,
-      "generatedAt": "2026-03-15T16:39:07.418Z"
+      "timingsVersion": 1,
+      "visibleWordCount": 139,
+      "matchedWordCount": 139,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T12:58:11.401Z"
     }
   }
 }

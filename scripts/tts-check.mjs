@@ -2,17 +2,23 @@ import path from "node:path";
 import process from "node:process";
 import { loadPoems } from "./build.mjs";
 import { resolveTtsProfile } from "./tts-config.mjs";
-import { assetKeyForPoem, listManagedAudioFiles, selectedDates } from "./tts-pipeline.mjs";
+import { assetKeyForPoem, listManagedFiles, selectedDates } from "./tts-pipeline.mjs";
 import {
   audioUrlToRepoPath,
   buildManagedAudioUrl,
   fileExists,
   loadTtsManifest,
   poemSourceHash,
-  ttsAudioDir
+  ttsAudioDir,
+  ttsTimingsDir
 } from "./tts-manifest.mjs";
+import { buildManagedTimingsUrl, timingsUrlToRepoPath, TTS_TIMINGS_VERSION } from "./tts-timings.mjs";
 
 const root = process.cwd();
+
+function poemTtsDisabled(poem) {
+  return String(poem?.tts || poem?.tty || "").trim().toLowerCase() === "no";
+}
 
 function expectedEntryForPoem(poem, profile) {
   const sourceHash = poemSourceHash(poem);
@@ -22,9 +28,14 @@ function expectedEntryForPoem(poem, profile) {
     assetKey,
     extension: profile.extension
   });
+  const timingsUrl = buildManagedTimingsUrl({
+    poem,
+    assetKey
+  });
 
   return {
     audioUrl,
+    timingsUrl,
     sourceHash,
     assetKey,
     renderProfile: profile.renderProfile,
@@ -34,7 +45,8 @@ function expectedEntryForPoem(poem, profile) {
     outputFormat: profile.outputFormat,
     mimeType: profile.mimeType,
     instructions: profile.instructions,
-    speed: profile.speed
+    speed: profile.speed,
+    timingsVersion: TTS_TIMINGS_VERSION
   };
 }
 
@@ -42,6 +54,7 @@ function compareEntry(entry, expected, label) {
   const issues = [];
   const fields = [
     ["audioUrl", entry?.audioUrl, expected.audioUrl],
+    ["timingsUrl", entry?.timingsUrl, expected.timingsUrl],
     ["sourceHash", entry?.sourceHash, expected.sourceHash],
     ["assetKey", entry?.assetKey, expected.assetKey],
     ["renderProfile", entry?.renderProfile, expected.renderProfile],
@@ -51,7 +64,8 @@ function compareEntry(entry, expected, label) {
     ["outputFormat", entry?.outputFormat, expected.outputFormat],
     ["mimeType", entry?.mimeType, expected.mimeType],
     ["instructions", entry?.instructions, expected.instructions],
-    ["speed", entry?.speed, expected.speed]
+    ["speed", entry?.speed, expected.speed],
+    ["timingsVersion", entry?.timingsVersion, expected.timingsVersion]
   ];
 
   for (const [field, actual, wanted] of fields) {
@@ -71,9 +85,14 @@ async function main() {
   const issues = [];
   const expectedDates = new Set();
   const activeAudioUrls = new Set();
+  const activeTimingUrls = new Set();
 
   for (const poem of poems) {
     if (dateFilter.size > 0 && !dateFilter.has(poem.date)) {
+      continue;
+    }
+
+    if (poemTtsDisabled(poem)) {
       continue;
     }
 
@@ -82,6 +101,7 @@ async function main() {
     const expected = expectedEntryForPoem(poem, profile);
     const entry = manifest.poems[poem.date];
     activeAudioUrls.add(expected.audioUrl);
+    activeTimingUrls.add(expected.timingsUrl);
 
     if (!entry) {
       issues.push(`${label}: missing manifest entry.`);
@@ -93,6 +113,11 @@ async function main() {
     const audioPath = audioUrlToRepoPath(entry.audioUrl, root);
     if (!audioPath || !(await fileExists(audioPath))) {
       issues.push(`${label}: missing committed audio file '${entry.audioUrl}'.`);
+    }
+
+    const timingsPath = timingsUrlToRepoPath(entry.timingsUrl, root);
+    if (!timingsPath || !(await fileExists(timingsPath))) {
+      issues.push(`${label}: missing committed timings file '${entry.timingsUrl}'.`);
     }
   }
 
@@ -109,11 +134,25 @@ async function main() {
         .filter(Boolean)
         .map((audioPath) => path.normalize(audioPath))
     );
-    const existingFiles = await listManagedAudioFiles(ttsAudioDir(root));
+    const existingFiles = await listManagedFiles(ttsAudioDir(root));
 
     for (const filePath of existingFiles) {
       if (!activeAudioPaths.has(path.normalize(filePath))) {
         issues.push(`Stale committed audio file '${path.relative(root, filePath)}'.`);
+      }
+    }
+
+    const activeTimingPaths = new Set(
+      Array.from(activeTimingUrls)
+        .map((timingsUrl) => timingsUrlToRepoPath(timingsUrl, root))
+        .filter(Boolean)
+        .map((timingsPath) => path.normalize(timingsPath))
+    );
+    const timingFiles = await listManagedFiles(ttsTimingsDir(root));
+
+    for (const filePath of timingFiles) {
+      if (!activeTimingPaths.has(path.normalize(filePath))) {
+        issues.push(`Stale committed timings file '${path.relative(root, filePath)}'.`);
       }
     }
   }

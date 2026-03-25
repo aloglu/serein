@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "visibleWordCount": 34,
+  "matchedWordCount": 34,
+  "coverage": 1,
+  "intervalFingerprint": "8a0ba474d933065b",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Masks",
+      "start": 0.06,
+      "end": 0.95,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Shel",
+      "start": 1.57,
+      "end": 2.11,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Silverstein",
+      "start": 2.11,
+      "end": 3.07,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "She",
+      "start": 3.74,
+      "end": 4.14,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "had",
+      "start": 4.14,
+      "end": 4.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "blue",
+      "start": 4.49,
+      "end": 4.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "skin,",
+      "start": 4.74,
+      "end": 5.3,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "And",
+      "start": 5.85,
+      "end": 6.04,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "so",
+      "start": 6.04,
+      "end": 6.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "did",
+      "start": 6.41,
+      "end": 6.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "he.",
+      "start": 6.59,
+      "end": 7,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "He",
+      "start": 7.75,
+      "end": 8.03,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "kept",
+      "start": 8.03,
+      "end": 8.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "it",
+      "start": 8.39,
+      "end": 8.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "hid",
+      "start": 8.49,
+      "end": 8.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "And",
+      "start": 9.29,
+      "end": 9.47,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "so",
+      "start": 9.47,
+      "end": 9.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "did",
+      "start": 9.83,
+      "end": 10.05,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "she.",
+      "start": 10.05,
+      "end": 10.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "They",
+      "start": 11.23,
+      "end": 11.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "searched",
+      "start": 11.42,
+      "end": 11.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "for",
+      "start": 11.98,
+      "end": 12.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "blue",
+      "start": 12.15,
+      "end": 12.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "Their",
+      "start": 12.56,
+      "end": 12.78,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "whole",
+      "start": 12.78,
+      "end": 13.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "life",
+      "start": 13.18,
+      "end": 13.55,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "through,",
+      "start": 13.55,
+      "end": 13.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "Then",
+      "start": 14.48,
+      "end": 14.79,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "passed",
+      "start": 14.79,
+      "end": 15.38,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "right",
+      "start": 15.38,
+      "end": 15.79,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "by-",
+      "start": 15.79,
+      "end": 16.219999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "And",
+      "start": 16.67,
+      "end": 16.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "never",
+      "start": 16.959999,
+      "end": 17.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "knew.",
+      "start": 17.42,
+      "end": 17.860001,
+      "segment": "body"
+    }
+  ]
+}

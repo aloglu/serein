@@ -1,0 +1,478 @@
+{
+  "version": 1,
+  "visibleWordCount": 67,
+  "matchedWordCount": 67,
+  "coverage": 1,
+  "intervalFingerprint": "35224ae205443ab6",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Missed",
+      "start": 0.06,
+      "end": 0.76,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Time",
+      "start": 0.92,
+      "end": 1.5,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Ha",
+      "start": 2.25,
+      "end": 2.7,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Jin",
+      "start": 2.7,
+      "end": 3.24,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "My",
+      "start": 3.86,
+      "end": 4.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "notebook",
+      "start": 4.25,
+      "end": 4.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "has",
+      "start": 4.87,
+      "end": 5.21,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "remained",
+      "start": 5.21,
+      "end": 5.7,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "blank",
+      "start": 5.79,
+      "end": 6.21,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "for",
+      "start": 6.21,
+      "end": 6.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "months",
+      "start": 6.43,
+      "end": 7.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "thanks",
+      "start": 7.35,
+      "end": 7.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "to",
+      "start": 7.84,
+      "end": 7.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "the",
+      "start": 7.96,
+      "end": 8.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "light",
+      "start": 8.1,
+      "end": 8.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "you",
+      "start": 8.52,
+      "end": 8.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "shower",
+      "start": 8.82,
+      "end": 9.47,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "around",
+      "start": 9.47,
+      "end": 9.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "me.",
+      "start": 9.85,
+      "end": 10.12,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "I",
+      "start": 11.08,
+      "end": 11.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "have",
+      "start": 11.19,
+      "end": 11.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "no",
+      "start": 11.48,
+      "end": 11.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "use",
+      "start": 11.83,
+      "end": 12.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "for",
+      "start": 12.19,
+      "end": 12.33,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "my",
+      "start": 12.33,
+      "end": 12.54,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "pen,",
+      "start": 12.54,
+      "end": 12.99,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "which",
+      "start": 13.26,
+      "end": 13.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "lies",
+      "start": 13.52,
+      "end": 13.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "languorously",
+      "start": 13.9,
+      "end": 14.86,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "without",
+      "start": 14.89,
+      "end": 15.37,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "grief.",
+      "start": 15.37,
+      "end": 15.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "Nothing",
+      "start": 16.76,
+      "end": 17.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "is",
+      "start": 17.41,
+      "end": 17.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "better",
+      "start": 17.57,
+      "end": 18.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "than",
+      "start": 18.01,
+      "end": 18.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "to",
+      "start": 18.209999,
+      "end": 18.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "live",
+      "start": 18.360001,
+      "end": 18.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "a",
+      "start": 18.82,
+      "end": 18.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "storyless",
+      "start": 18.860001,
+      "end": 19.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "life",
+      "start": 19.700001,
+      "end": 20.120001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "that",
+      "start": 20.41,
+      "end": 20.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "needs",
+      "start": 20.57,
+      "end": 20.969999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "no",
+      "start": 20.969999,
+      "end": 21.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "writing",
+      "start": 21.32,
+      "end": 21.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "for",
+      "start": 21.700001,
+      "end": 21.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "meaning—",
+      "start": 21.889999,
+      "end": 22.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "when",
+      "start": 22.68,
+      "end": 22.870001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "I",
+      "start": 22.870001,
+      "end": 23.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "am",
+      "start": 23.02,
+      "end": 23.219999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "gone,",
+      "start": 23.219999,
+      "end": 23.67,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "let",
+      "start": 23.99,
+      "end": 24.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "others",
+      "start": 24.379999,
+      "end": 24.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "say",
+      "start": 24.74,
+      "end": 25.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "they",
+      "start": 25.1,
+      "end": 25.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "lost",
+      "start": 25.27,
+      "end": 25.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "a",
+      "start": 25.73,
+      "end": 25.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "happy",
+      "start": 25.780001,
+      "end": 26.26,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "man,",
+      "start": 26.26,
+      "end": 26.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "though",
+      "start": 27.059999,
+      "end": 27.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "no",
+      "start": 27.209999,
+      "end": 27.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "one",
+      "start": 27.6,
+      "end": 27.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "can",
+      "start": 27.84,
+      "end": 28.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "tell",
+      "start": 28.049999,
+      "end": 28.4,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "how",
+      "start": 28.4,
+      "end": 28.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "happy",
+      "start": 28.709999,
+      "end": 29.190001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "I",
+      "start": 29.190001,
+      "end": 29.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "was.",
+      "start": 29.32,
+      "end": 29.83,
+      "segment": "body"
+    }
+  ]
+}

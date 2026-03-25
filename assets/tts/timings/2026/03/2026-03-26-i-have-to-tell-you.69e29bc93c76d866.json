@@ -1,0 +1,219 @@
+{
+  "version": 1,
+  "visibleWordCount": 30,
+  "matchedWordCount": 30,
+  "coverage": 1,
+  "intervalFingerprint": "db1e4be33e13101f",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "I",
+      "start": 0.04,
+      "end": 0.33,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "have",
+      "start": 0.33,
+      "end": 0.73,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "to",
+      "start": 0.73,
+      "end": 0.84,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "tell",
+      "start": 0.84,
+      "end": 1.2,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "you",
+      "start": 1.2,
+      "end": 1.54,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "Dorothea",
+      "start": 2.14,
+      "end": 2.72,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "Grossman",
+      "start": 2.72,
+      "end": 3.31,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "I",
+      "start": 3.31,
+      "end": 3.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "have",
+      "start": 3.32,
+      "end": 3.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "to",
+      "start": 3.5,
+      "end": 3.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "tell",
+      "start": 3.56,
+      "end": 3.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "you,",
+      "start": 3.74,
+      "end": 3.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "there",
+      "start": 3.81,
+      "end": 3.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "are",
+      "start": 3.98,
+      "end": 4.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "times",
+      "start": 4.02,
+      "end": 4.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "when",
+      "start": 4.48,
+      "end": 4.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "the",
+      "start": 4.68,
+      "end": 4.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "sun",
+      "start": 5.06,
+      "end": 5.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "strikes",
+      "start": 6.13,
+      "end": 6.31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "me",
+      "start": 6.31,
+      "end": 6.37,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "like",
+      "start": 6.41,
+      "end": 6.54,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "a",
+      "start": 6.54,
+      "end": 6.63,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "gong,",
+      "start": 6.63,
+      "end": 6.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "and",
+      "start": 6.73,
+      "end": 6.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "I",
+      "start": 6.87,
+      "end": 6.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "remember",
+      "start": 6.9,
+      "end": 7.2,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "everything,",
+      "start": 7.26,
+      "end": 7.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "even",
+      "start": 8.51,
+      "end": 8.89,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "your",
+      "start": 8.89,
+      "end": 9.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "ears.",
+      "start": 9.19,
+      "end": 9.78,
+      "segment": "body"
+    }
+  ]
+}

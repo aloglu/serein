@@ -1,0 +1,261 @@
+{
+  "version": 1,
+  "visibleWordCount": 36,
+  "matchedWordCount": 36,
+  "coverage": 1,
+  "intervalFingerprint": "081b40d82162d712",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "War",
+      "start": 0.06,
+      "end": 0.65,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Charles",
+      "start": 1.2,
+      "end": 1.76,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Simic",
+      "start": 1.76,
+      "end": 2.17,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "The",
+      "start": 2.84,
+      "end": 2.94,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "trembling",
+      "start": 2.94,
+      "end": 3.63,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "finger",
+      "start": 3.63,
+      "end": 4.13,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "of",
+      "start": 4.13,
+      "end": 4.28,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "a",
+      "start": 4.28,
+      "end": 4.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "woman",
+      "start": 4.35,
+      "end": 4.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "Goes",
+      "start": 5.13,
+      "end": 5.45,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "down",
+      "start": 5.45,
+      "end": 5.94,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "the",
+      "start": 5.94,
+      "end": 6.04,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "list",
+      "start": 6.04,
+      "end": 6.46,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "of",
+      "start": 6.46,
+      "end": 6.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "casualties",
+      "start": 6.57,
+      "end": 7.46,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "On",
+      "start": 7.87,
+      "end": 8.03,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "the",
+      "start": 8.03,
+      "end": 8.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "evening",
+      "start": 8.24,
+      "end": 8.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "of",
+      "start": 8.77,
+      "end": 8.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "the",
+      "start": 8.96,
+      "end": 9.05,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "first",
+      "start": 9.05,
+      "end": 9.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "snow.",
+      "start": 9.59,
+      "end": 10.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "The",
+      "start": 10.86,
+      "end": 10.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "house",
+      "start": 10.93,
+      "end": 11.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "is",
+      "start": 11.41,
+      "end": 11.54,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "cold",
+      "start": 11.54,
+      "end": 12.12,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "and",
+      "start": 12.57,
+      "end": 12.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "the",
+      "start": 12.75,
+      "end": 12.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "list",
+      "start": 12.82,
+      "end": 13.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "is",
+      "start": 13.25,
+      "end": 13.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "long.",
+      "start": 13.39,
+      "end": 13.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "All",
+      "start": 14.41,
+      "end": 14.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "our",
+      "start": 14.77,
+      "end": 14.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "names",
+      "start": 14.93,
+      "end": 15.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "are",
+      "start": 15.93,
+      "end": 16.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "included.",
+      "start": 16.1,
+      "end": 16.77,
+      "segment": "body"
+    }
+  ]
+}

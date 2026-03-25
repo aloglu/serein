@@ -1,0 +1,2564 @@
+{
+  "version": 1,
+  "visibleWordCount": 365,
+  "matchedWordCount": 365,
+  "coverage": 1,
+  "intervalFingerprint": "9333011ca004ed44",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "What",
+      "start": 0.04,
+      "end": 0.32,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Resembles",
+      "start": 0.4,
+      "end": 1.11,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "The",
+      "start": 1.11,
+      "end": 1.21,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Grave",
+      "start": 1.21,
+      "end": 1.85,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "But",
+      "start": 2.01,
+      "end": 2.21,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "Isn’t",
+      "start": 2.25,
+      "end": 2.74,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "Anne",
+      "start": 3.42,
+      "end": 3.72,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "Boyer",
+      "start": 3.72,
+      "end": 4.24,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "Always",
+      "start": 4.67,
+      "end": 5.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "falling",
+      "start": 5.25,
+      "end": 5.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "into",
+      "start": 5.65,
+      "end": 5.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "a",
+      "start": 5.97,
+      "end": 6.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "hole,",
+      "start": 6.02,
+      "end": 6.55,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "then",
+      "start": 6.66,
+      "end": 6.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "saying",
+      "start": 6.92,
+      "end": 7.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "“ok,",
+      "start": 7.68,
+      "end": 8.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "this",
+      "start": 8.57,
+      "end": 8.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "is",
+      "start": 8.82,
+      "end": 8.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "not",
+      "start": 8.97,
+      "end": 9.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "your",
+      "start": 9.27,
+      "end": 9.45,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "grave,",
+      "start": 9.45,
+      "end": 9.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "get",
+      "start": 10.2,
+      "end": 10.37,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "out",
+      "start": 10.37,
+      "end": 10.55,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "of",
+      "start": 10.55,
+      "end": 10.67,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "this",
+      "start": 10.67,
+      "end": 10.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "hole,”",
+      "start": 10.87,
+      "end": 11.26,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "getting",
+      "start": 11.78,
+      "end": 12.06,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "out",
+      "start": 12.06,
+      "end": 12.2,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "of",
+      "start": 12.2,
+      "end": 12.31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "the",
+      "start": 12.31,
+      "end": 12.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "hole",
+      "start": 12.39,
+      "end": 12.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "which",
+      "start": 12.83,
+      "end": 13.04,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "is",
+      "start": 13.04,
+      "end": 13.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "not",
+      "start": 13.19,
+      "end": 13.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "the",
+      "start": 13.5,
+      "end": 13.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "grave,",
+      "start": 13.59,
+      "end": 14.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "falling",
+      "start": 14.49,
+      "end": 15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "into",
+      "start": 15,
+      "end": 15.29,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "a",
+      "start": 15.29,
+      "end": 15.36,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "hole",
+      "start": 15.36,
+      "end": 15.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "again,",
+      "start": 15.74,
+      "end": 16.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "saying",
+      "start": 16.549999,
+      "end": 17.08,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "“ok,",
+      "start": 17.469999,
+      "end": 17.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "this",
+      "start": 18.09,
+      "end": 18.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "is",
+      "start": 18.32,
+      "end": 18.440001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "also",
+      "start": 18.440001,
+      "end": 18.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "not",
+      "start": 18.76,
+      "end": 19.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "your",
+      "start": 19.01,
+      "end": 19.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "grave,",
+      "start": 19.16,
+      "end": 19.620001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "get",
+      "start": 19.959999,
+      "end": 20.129999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "out",
+      "start": 20.129999,
+      "end": 20.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "of",
+      "start": 20.290001,
+      "end": 20.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "this",
+      "start": 20.41,
+      "end": 20.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "hole,”",
+      "start": 20.610001,
+      "end": 20.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "getting",
+      "start": 21.530001,
+      "end": 21.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "out",
+      "start": 21.85,
+      "end": 22.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "of",
+      "start": 22.01,
+      "end": 22.129999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "that",
+      "start": 22.129999,
+      "end": 22.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "hole,",
+      "start": 22.32,
+      "end": 22.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "falling",
+      "start": 22.959999,
+      "end": 23.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "into",
+      "start": 23.459999,
+      "end": 23.719999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "another",
+      "start": 23.719999,
+      "end": 24.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "one;",
+      "start": 24.049999,
+      "end": 24.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "sometimes",
+      "start": 24.85,
+      "end": 25.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "falling",
+      "start": 25.57,
+      "end": 25.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "into",
+      "start": 25.959999,
+      "end": 26.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "a",
+      "start": 26.23,
+      "end": 26.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "hole",
+      "start": 26.290001,
+      "end": 26.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "within",
+      "start": 26.700001,
+      "end": 27.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "a",
+      "start": 27.01,
+      "end": 27.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "hole,",
+      "start": 27.07,
+      "end": 27.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "or",
+      "start": 27.85,
+      "end": 28.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "many",
+      "start": 28.01,
+      "end": 28.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "holes",
+      "start": 28.389999,
+      "end": 28.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "within",
+      "start": 28.799999,
+      "end": 29.059999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "holes,",
+      "start": 29.059999,
+      "end": 29.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "getting",
+      "start": 30.02,
+      "end": 30.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "out",
+      "start": 30.32,
+      "end": 30.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "of",
+      "start": 30.49,
+      "end": 30.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "them",
+      "start": 30.610001,
+      "end": 30.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 80,
+      "text": "one",
+      "start": 30.92,
+      "end": 31.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 81,
+      "text": "after",
+      "start": 31.139999,
+      "end": 31.440001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 82,
+      "text": "the",
+      "start": 31.440001,
+      "end": 31.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 83,
+      "text": "other,",
+      "start": 31.610001,
+      "end": 31.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 84,
+      "text": "then",
+      "start": 32.130001,
+      "end": 32.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 85,
+      "text": "falling",
+      "start": 32.349998,
+      "end": 32.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 86,
+      "text": "again,",
+      "start": 32.849998,
+      "end": 33.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 87,
+      "text": "saying",
+      "start": 33.549999,
+      "end": 34.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 88,
+      "text": "“this",
+      "start": 34.049999,
+      "end": 34.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 89,
+      "text": "is",
+      "start": 34.279999,
+      "end": 34.450001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 90,
+      "text": "not",
+      "start": 34.450001,
+      "end": 34.740002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 91,
+      "text": "your",
+      "start": 34.740002,
+      "end": 34.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 92,
+      "text": "grave,",
+      "start": 34.889999,
+      "end": 35.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 93,
+      "text": "get",
+      "start": 35.580002,
+      "end": 35.759998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 94,
+      "text": "out",
+      "start": 35.759998,
+      "end": 35.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 95,
+      "text": "of",
+      "start": 35.919998,
+      "end": 36.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 96,
+      "text": "the",
+      "start": 36.040001,
+      "end": 36.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 97,
+      "text": "hole”;",
+      "start": 36.139999,
+      "end": 36.560001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 98,
+      "text": "sometimes",
+      "start": 37.040001,
+      "end": 37.759998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 99,
+      "text": "being",
+      "start": 37.759998,
+      "end": 38.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 100,
+      "text": "pushed,",
+      "start": 38.049999,
+      "end": 38.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 101,
+      "text": "saying",
+      "start": 38.759998,
+      "end": 39.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 102,
+      "text": "“you",
+      "start": 39.57,
+      "end": 39.830002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 103,
+      "text": "can",
+      "start": 39.830002,
+      "end": 40.119999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 104,
+      "text": "not",
+      "start": 40.119999,
+      "end": 40.400002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 105,
+      "text": "push",
+      "start": 40.400002,
+      "end": 40.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 106,
+      "text": "me",
+      "start": 40.709999,
+      "end": 40.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 107,
+      "text": "into",
+      "start": 40.849998,
+      "end": 41.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 108,
+      "text": "this",
+      "start": 41.049999,
+      "end": 41.259998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 109,
+      "text": "hole,",
+      "start": 41.259998,
+      "end": 41.669998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 110,
+      "text": "it",
+      "start": 41.91,
+      "end": 42.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 111,
+      "text": "is",
+      "start": 42.02,
+      "end": 42.189999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 112,
+      "text": "not",
+      "start": 42.189999,
+      "end": 42.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 113,
+      "text": "my",
+      "start": 42.48,
+      "end": 42.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 114,
+      "text": "grave,”",
+      "start": 42.650002,
+      "end": 43.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 115,
+      "text": "and",
+      "start": 43.400002,
+      "end": 43.580002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 116,
+      "text": "getting",
+      "start": 43.580002,
+      "end": 43.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 117,
+      "text": "out",
+      "start": 43.860001,
+      "end": 44.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 118,
+      "text": "defiantly,",
+      "start": 44.07,
+      "end": 44.869999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 119,
+      "text": "then",
+      "start": 45.259998,
+      "end": 45.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 120,
+      "text": "falling",
+      "start": 45.5,
+      "end": 45.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 121,
+      "text": "into",
+      "start": 45.970001,
+      "end": 46.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 122,
+      "text": "a",
+      "start": 46.23,
+      "end": 46.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 123,
+      "text": "hole",
+      "start": 46.279999,
+      "end": 46.580002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 124,
+      "text": "again",
+      "start": 46.580002,
+      "end": 46.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 125,
+      "text": "without",
+      "start": 46.970001,
+      "end": 47.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 126,
+      "text": "any",
+      "start": 47.419998,
+      "end": 47.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 127,
+      "text": "pushing;",
+      "start": 47.639999,
+      "end": 48.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 128,
+      "text": "sometimes",
+      "start": 48.650002,
+      "end": 49.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 129,
+      "text": "falling",
+      "start": 49.360001,
+      "end": 49.740002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 130,
+      "text": "into",
+      "start": 49.740002,
+      "end": 49.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 131,
+      "text": "a",
+      "start": 49.98,
+      "end": 50.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 132,
+      "text": "set",
+      "start": 50.040001,
+      "end": 50.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 133,
+      "text": "of",
+      "start": 50.32,
+      "end": 50.419998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 134,
+      "text": "holes",
+      "start": 50.419998,
+      "end": 50.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 135,
+      "text": "whose",
+      "start": 50.889999,
+      "end": 51.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 136,
+      "text": "structures",
+      "start": 51.07,
+      "end": 51.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 137,
+      "text": "are",
+      "start": 51.709999,
+      "end": 51.810001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 138,
+      "text": "predictable,",
+      "start": 51.810001,
+      "end": 52.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 139,
+      "text": "ideological,",
+      "start": 52.869999,
+      "end": 53.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 140,
+      "text": "and",
+      "start": 53.91,
+      "end": 54.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 141,
+      "text": "long",
+      "start": 54.080002,
+      "end": 54.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 142,
+      "text": "dug,",
+      "start": 54.48,
+      "end": 54.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 143,
+      "text": "often",
+      "start": 55.380001,
+      "end": 55.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 144,
+      "text": "falling",
+      "start": 55.790001,
+      "end": 56.259998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 145,
+      "text": "into",
+      "start": 56.259998,
+      "end": 56.470001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 146,
+      "text": "this",
+      "start": 56.470001,
+      "end": 56.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 147,
+      "text": "set",
+      "start": 56.639999,
+      "end": 56.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 148,
+      "text": "of",
+      "start": 56.93,
+      "end": 57.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 149,
+      "text": "structural",
+      "start": 57.040001,
+      "end": 57.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 150,
+      "text": "and",
+      "start": 57.82,
+      "end": 57.939999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 151,
+      "text": "impersonal",
+      "start": 57.939999,
+      "end": 58.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 152,
+      "text": "holes;",
+      "start": 58.57,
+      "end": 59.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 153,
+      "text": "sometimes",
+      "start": 59.599998,
+      "end": 60.259998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 154,
+      "text": "falling",
+      "start": 60.259998,
+      "end": 60.630001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 155,
+      "text": "into",
+      "start": 60.630001,
+      "end": 60.830002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 156,
+      "text": "holes",
+      "start": 60.830002,
+      "end": 61.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 157,
+      "text": "with",
+      "start": 61.290001,
+      "end": 61.450001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 158,
+      "text": "other",
+      "start": 61.490002,
+      "end": 61.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 159,
+      "text": "people,",
+      "start": 61.709999,
+      "end": 62.189999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 160,
+      "text": "with",
+      "start": 62.549999,
+      "end": 62.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 161,
+      "text": "other",
+      "start": 62.779999,
+      "end": 63.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 162,
+      "text": "people,",
+      "start": 63.029999,
+      "end": 63.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 163,
+      "text": "saying",
+      "start": 63.720001,
+      "end": 64.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 164,
+      "text": "“this",
+      "start": 64.480003,
+      "end": 64.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 165,
+      "text": "is",
+      "start": 64.75,
+      "end": 64.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 166,
+      "text": "not",
+      "start": 64.900002,
+      "end": 65.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 167,
+      "text": "our",
+      "start": 65.18,
+      "end": 65.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 168,
+      "text": "mass",
+      "start": 65.309998,
+      "end": 65.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 169,
+      "text": "grave,",
+      "start": 65.650002,
+      "end": 66.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 170,
+      "text": "get",
+      "start": 66.419998,
+      "end": 66.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 171,
+      "text": "out",
+      "start": 66.599998,
+      "end": 66.769997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 172,
+      "text": "of",
+      "start": 66.769997,
+      "end": 66.879997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 173,
+      "text": "this",
+      "start": 66.879997,
+      "end": 67.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 174,
+      "text": "hole,”",
+      "start": 67.07,
+      "end": 67.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 175,
+      "text": "all",
+      "start": 67.879997,
+      "end": 68.120003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 176,
+      "text": "together",
+      "start": 68.120003,
+      "end": 68.589996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 177,
+      "text": "getting",
+      "start": 68.589996,
+      "end": 68.940002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 178,
+      "text": "out",
+      "start": 68.940002,
+      "end": 69.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 179,
+      "text": "of",
+      "start": 69.099998,
+      "end": 69.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 180,
+      "text": "the",
+      "start": 69.209999,
+      "end": 69.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 181,
+      "text": "hole",
+      "start": 69.290001,
+      "end": 69.580002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 182,
+      "text": "together,",
+      "start": 69.580002,
+      "end": 70.129997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 183,
+      "text": "hands",
+      "start": 70.529999,
+      "end": 71.019997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 184,
+      "text": "and",
+      "start": 71.019997,
+      "end": 71.220001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 185,
+      "text": "legs",
+      "start": 71.220001,
+      "end": 71.550003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 186,
+      "text": "and",
+      "start": 71.550003,
+      "end": 71.699997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 187,
+      "text": "arms",
+      "start": 71.739998,
+      "end": 72.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 188,
+      "text": "and",
+      "start": 72.150002,
+      "end": 72.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 189,
+      "text": "human",
+      "start": 72.279999,
+      "end": 72.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 190,
+      "text": "ladders",
+      "start": 72.709999,
+      "end": 73.089996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 191,
+      "text": "of",
+      "start": 73.089996,
+      "end": 73.190002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 192,
+      "text": "each",
+      "start": 73.190002,
+      "end": 73.379997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 193,
+      "text": "other",
+      "start": 73.379997,
+      "end": 73.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 194,
+      "text": "to",
+      "start": 74,
+      "end": 74.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 195,
+      "text": "get",
+      "start": 74.110001,
+      "end": 74.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 196,
+      "text": "out",
+      "start": 74.349998,
+      "end": 74.540001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 197,
+      "text": "of",
+      "start": 74.540001,
+      "end": 74.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 198,
+      "text": "the",
+      "start": 74.650002,
+      "end": 74.730003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 199,
+      "text": "hole",
+      "start": 74.730003,
+      "end": 75.129997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 200,
+      "text": "that",
+      "start": 75.129997,
+      "end": 75.300003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 201,
+      "text": "is",
+      "start": 75.300003,
+      "end": 75.470001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 202,
+      "text": "not",
+      "start": 75.470001,
+      "end": 75.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 203,
+      "text": "the",
+      "start": 75.82,
+      "end": 75.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 204,
+      "text": "mass",
+      "start": 75.93,
+      "end": 76.269997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 205,
+      "text": "grave",
+      "start": 76.269997,
+      "end": 76.730003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 206,
+      "text": "but",
+      "start": 77.07,
+      "end": 77.230003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 207,
+      "text": "that",
+      "start": 77.230003,
+      "end": 77.400002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 208,
+      "text": "will",
+      "start": 77.400002,
+      "end": 77.580002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 209,
+      "text": "only",
+      "start": 77.660004,
+      "end": 77.989998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 210,
+      "text": "be",
+      "start": 77.989998,
+      "end": 78.129997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 211,
+      "text": "gotten",
+      "start": 78.129997,
+      "end": 78.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 212,
+      "text": "out",
+      "start": 78.459999,
+      "end": 78.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 213,
+      "text": "of",
+      "start": 78.639999,
+      "end": 78.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 214,
+      "text": "together;",
+      "start": 78.809998,
+      "end": 79.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 215,
+      "text": "sometimes",
+      "start": 79.959999,
+      "end": 80.690002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 216,
+      "text": "the",
+      "start": 80.690002,
+      "end": 80.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 217,
+      "text": "willful-falling",
+      "start": 80.82,
+      "end": 81.699997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 218,
+      "text": "into",
+      "start": 81.699997,
+      "end": 81.949997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 219,
+      "text": "a",
+      "start": 81.949997,
+      "end": 82.010002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 220,
+      "text": "hole",
+      "start": 82.010002,
+      "end": 82.419998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 221,
+      "text": "which",
+      "start": 82.419998,
+      "end": 82.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 222,
+      "text": "is",
+      "start": 82.610001,
+      "end": 82.760002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 223,
+      "text": "not",
+      "start": 82.760002,
+      "end": 83.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 224,
+      "text": "the",
+      "start": 83.080002,
+      "end": 83.160004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 225,
+      "text": "grave",
+      "start": 83.160004,
+      "end": 83.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 226,
+      "text": "because",
+      "start": 83.599998,
+      "end": 83.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 227,
+      "text": "it",
+      "start": 83.919998,
+      "end": 83.989998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 228,
+      "text": "is",
+      "start": 83.989998,
+      "end": 84.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 229,
+      "text": "easier",
+      "start": 84.18,
+      "end": 84.620003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 230,
+      "text": "than",
+      "start": 84.620003,
+      "end": 84.870003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 231,
+      "text": "not",
+      "start": 84.870003,
+      "end": 85.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 232,
+      "text": "falling",
+      "start": 85.110001,
+      "end": 85.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 233,
+      "text": "into",
+      "start": 85.529999,
+      "end": 85.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 234,
+      "text": "a",
+      "start": 85.790001,
+      "end": 85.839996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 235,
+      "text": "hole",
+      "start": 85.839996,
+      "end": 86.160004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 236,
+      "text": "really,",
+      "start": 86.160004,
+      "end": 86.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 237,
+      "text": "but",
+      "start": 86.959999,
+      "end": 87.120003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 238,
+      "text": "then",
+      "start": 87.120003,
+      "end": 87.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 239,
+      "text": "once",
+      "start": 87.360001,
+      "end": 87.699997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 240,
+      "text": "in",
+      "start": 87.699997,
+      "end": 87.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 241,
+      "text": "it,",
+      "start": 87.809998,
+      "end": 88.010002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 242,
+      "text": "realizing",
+      "start": 88.300003,
+      "end": 88.940002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 243,
+      "text": "it",
+      "start": 88.940002,
+      "end": 89.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 244,
+      "text": "is",
+      "start": 89.040001,
+      "end": 89.199997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 245,
+      "text": "not",
+      "start": 89.199997,
+      "end": 89.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 246,
+      "text": "the",
+      "start": 89.5,
+      "end": 89.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 247,
+      "text": "grave,",
+      "start": 89.57,
+      "end": 90.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 248,
+      "text": "getting",
+      "start": 90.459999,
+      "end": 90.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 249,
+      "text": "out",
+      "start": 90.75,
+      "end": 90.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 250,
+      "text": "of",
+      "start": 90.900002,
+      "end": 91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 251,
+      "text": "the",
+      "start": 91,
+      "end": 91.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 252,
+      "text": "hole",
+      "start": 91.099998,
+      "end": 91.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 253,
+      "text": "eventually;",
+      "start": 91.510002,
+      "end": 92.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 254,
+      "text": "sometimes",
+      "start": 92.830002,
+      "end": 93.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 255,
+      "text": "falling",
+      "start": 93.5,
+      "end": 93.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 256,
+      "text": "into",
+      "start": 93.860001,
+      "end": 94.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 257,
+      "text": "a",
+      "start": 94.099998,
+      "end": 94.169998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 258,
+      "text": "hole",
+      "start": 94.169998,
+      "end": 94.580002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 259,
+      "text": "and",
+      "start": 94.830002,
+      "end": 95.050003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 260,
+      "text": "languishing",
+      "start": 95.050003,
+      "end": 95.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 261,
+      "text": "there",
+      "start": 95.599998,
+      "end": 95.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 262,
+      "text": "for",
+      "start": 95.790001,
+      "end": 95.980003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 263,
+      "text": "days,",
+      "start": 95.980003,
+      "end": 96.559998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 264,
+      "text": "weeks,",
+      "start": 96.830002,
+      "end": 97.330002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 265,
+      "text": "months,",
+      "start": 97.550003,
+      "end": 98.050003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 266,
+      "text": "years,",
+      "start": 98.209999,
+      "end": 98.769997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 267,
+      "text": "because",
+      "start": 99.360001,
+      "end": 99.699997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 268,
+      "text": "while",
+      "start": 99.699997,
+      "end": 99.879997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 269,
+      "text": "not",
+      "start": 99.879997,
+      "end": 100.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 270,
+      "text": "the",
+      "start": 100.18,
+      "end": 100.269997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 271,
+      "text": "grave",
+      "start": 100.269997,
+      "end": 100.620003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 272,
+      "text": "very",
+      "start": 100.620003,
+      "end": 100.940002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 273,
+      "text": "difficult,",
+      "start": 100.940002,
+      "end": 101.470001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 274,
+      "text": "still,",
+      "start": 101.68,
+      "end": 102.239998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 275,
+      "text": "to",
+      "start": 102.410004,
+      "end": 102.519997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 276,
+      "text": "climb",
+      "start": 102.519997,
+      "end": 102.879997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 277,
+      "text": "out",
+      "start": 102.879997,
+      "end": 103.059998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 278,
+      "text": "of",
+      "start": 103.059998,
+      "end": 103.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 279,
+      "text": "and",
+      "start": 103.389999,
+      "end": 103.540001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 280,
+      "text": "you",
+      "start": 103.540001,
+      "end": 103.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 281,
+      "text": "know",
+      "start": 103.75,
+      "end": 104.019997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 282,
+      "text": "after",
+      "start": 104.089996,
+      "end": 104.410004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 283,
+      "text": "this",
+      "start": 104.410004,
+      "end": 104.620003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 284,
+      "text": "hole",
+      "start": 104.620003,
+      "end": 104.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 285,
+      "text": "there’s",
+      "start": 104.889999,
+      "end": 105.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 286,
+      "text": "just",
+      "start": 105.139999,
+      "end": 105.410004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 287,
+      "text": "another",
+      "start": 105.410004,
+      "end": 105.910004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 288,
+      "text": "and",
+      "start": 106.220001,
+      "end": 106.370003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 289,
+      "text": "another;",
+      "start": 106.370003,
+      "end": 106.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 290,
+      "text": "sometimes",
+      "start": 107.419998,
+      "end": 108.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 291,
+      "text": "surveying",
+      "start": 108.029999,
+      "end": 108.540001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 292,
+      "text": "the",
+      "start": 108.540001,
+      "end": 108.629997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 293,
+      "text": "landscape",
+      "start": 108.629997,
+      "end": 109.230003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 294,
+      "text": "of",
+      "start": 109.230003,
+      "end": 109.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 295,
+      "text": "holes",
+      "start": 109.309998,
+      "end": 109.769997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 296,
+      "text": "and",
+      "start": 109.769997,
+      "end": 110,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 297,
+      "text": "wishing",
+      "start": 110,
+      "end": 110.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 298,
+      "text": "for",
+      "start": 110.309998,
+      "end": 110.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 299,
+      "text": "a",
+      "start": 110.459999,
+      "end": 110.519997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 300,
+      "text": "high",
+      "start": 110.519997,
+      "end": 110.800003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 301,
+      "text": "quality",
+      "start": 110.800003,
+      "end": 111.269997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 302,
+      "text": "final",
+      "start": 111.269997,
+      "end": 111.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 303,
+      "text": "hole;",
+      "start": 111.650002,
+      "end": 112.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 304,
+      "text": "sometimes",
+      "start": 112.669998,
+      "end": 113.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 305,
+      "text": "thinking",
+      "start": 113.309998,
+      "end": 113.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 306,
+      "text": "of",
+      "start": 113.68,
+      "end": 113.769997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 307,
+      "text": "who",
+      "start": 113.769997,
+      "end": 113.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 308,
+      "text": "has",
+      "start": 113.93,
+      "end": 114.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 309,
+      "text": "fallen",
+      "start": 114.150002,
+      "end": 114.510002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 310,
+      "text": "into",
+      "start": 114.510002,
+      "end": 114.699997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 311,
+      "text": "holes",
+      "start": 114.699997,
+      "end": 115.129997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 312,
+      "text": "which",
+      "start": 115.129997,
+      "end": 115.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 313,
+      "text": "are",
+      "start": 115.309998,
+      "end": 115.400002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 314,
+      "text": "not",
+      "start": 115.400002,
+      "end": 115.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 315,
+      "text": "graves",
+      "start": 115.709999,
+      "end": 116.230003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 316,
+      "text": "but",
+      "start": 116.459999,
+      "end": 116.620003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 317,
+      "text": "might",
+      "start": 116.620003,
+      "end": 116.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 318,
+      "text": "be",
+      "start": 116.919998,
+      "end": 117.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 319,
+      "text": "better",
+      "start": 117.040001,
+      "end": 117.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 320,
+      "text": "if",
+      "start": 117.360001,
+      "end": 117.510002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 321,
+      "text": "they",
+      "start": 117.510002,
+      "end": 117.660004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 322,
+      "text": "were;",
+      "start": 117.660004,
+      "end": 117.980003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 323,
+      "text": "sometimes",
+      "start": 118.620003,
+      "end": 119.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 324,
+      "text": "too",
+      "start": 119.279999,
+      "end": 119.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 325,
+      "text": "ardently",
+      "start": 119.610001,
+      "end": 120.010002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 326,
+      "text": "contemplating",
+      "start": 120.010002,
+      "end": 120.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 327,
+      "text": "the",
+      "start": 120.75,
+      "end": 120.830002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 328,
+      "text": "final",
+      "start": 120.830002,
+      "end": 121.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 329,
+      "text": "hole",
+      "start": 121.279999,
+      "end": 121.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 330,
+      "text": "while",
+      "start": 121.639999,
+      "end": 121.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 331,
+      "text": "trying",
+      "start": 121.809998,
+      "end": 122.160004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 332,
+      "text": "to",
+      "start": 122.160004,
+      "end": 122.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 333,
+      "text": "avoid",
+      "start": 122.32,
+      "end": 122.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 334,
+      "text": "the",
+      "start": 122.75,
+      "end": 122.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 335,
+      "text": "provisional",
+      "start": 122.82,
+      "end": 123.379997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 336,
+      "text": "ones;",
+      "start": 123.379997,
+      "end": 123.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 337,
+      "text": "sometimes",
+      "start": 124.610001,
+      "end": 125.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 338,
+      "text": "dutifully",
+      "start": 125.279999,
+      "end": 125.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 339,
+      "text": "falling",
+      "start": 125.779999,
+      "end": 126.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 340,
+      "text": "and",
+      "start": 126.309998,
+      "end": 126.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 341,
+      "text": "getting",
+      "start": 126.529999,
+      "end": 126.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 342,
+      "text": "out,",
+      "start": 126.82,
+      "end": 127.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 343,
+      "text": "with",
+      "start": 127.269997,
+      "end": 127.489998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 344,
+      "text": "perfect",
+      "start": 127.489998,
+      "end": 127.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 345,
+      "text": "fortitude,",
+      "start": 127.900002,
+      "end": 128.539993,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 346,
+      "text": "saying",
+      "start": 128.850006,
+      "end": 129.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 347,
+      "text": "“look",
+      "start": 129.589996,
+      "end": 129.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 348,
+      "text": "at",
+      "start": 129.860001,
+      "end": 129.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 349,
+      "text": "the",
+      "start": 129.970001,
+      "end": 130.039993,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 350,
+      "text": "skill",
+      "start": 130.039993,
+      "end": 130.490005,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 351,
+      "text": "and",
+      "start": 130.490005,
+      "end": 130.619995,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 352,
+      "text": "spirit",
+      "start": 130.619995,
+      "end": 131.089996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 353,
+      "text": "with",
+      "start": 131.089996,
+      "end": 131.259995,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 354,
+      "text": "which",
+      "start": 131.259995,
+      "end": 131.449997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 355,
+      "text": "I",
+      "start": 131.449997,
+      "end": 131.559998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 356,
+      "text": "rise",
+      "start": 131.559998,
+      "end": 132.009995,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 357,
+      "text": "from",
+      "start": 132.009995,
+      "end": 132.229996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 358,
+      "text": "that",
+      "start": 132.229996,
+      "end": 132.490005,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 359,
+      "text": "which",
+      "start": 132.490005,
+      "end": 132.690002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 360,
+      "text": "resembles",
+      "start": 132.690002,
+      "end": 133.240005,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 361,
+      "text": "the",
+      "start": 133.240005,
+      "end": 133.339996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 362,
+      "text": "grave",
+      "start": 133.339996,
+      "end": 133.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 363,
+      "text": "but",
+      "start": 133.779999,
+      "end": 133.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 364,
+      "text": "isn’t!”",
+      "start": 133.919998,
+      "end": 134.369995,
+      "segment": "body"
+    }
+  ]
+}

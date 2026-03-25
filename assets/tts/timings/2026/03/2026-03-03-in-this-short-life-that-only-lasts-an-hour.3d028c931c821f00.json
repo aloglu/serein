@@ -1,0 +1,205 @@
+{
+  "version": 1,
+  "visibleWordCount": 28,
+  "matchedWordCount": 28,
+  "coverage": 1,
+  "intervalFingerprint": "00557f5a1cc40ba7",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "In",
+      "start": 0.03,
+      "end": 0.35,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "this",
+      "start": 0.35,
+      "end": 0.61,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "short",
+      "start": 0.61,
+      "end": 1.14,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Life",
+      "start": 1.14,
+      "end": 1.58,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "that",
+      "start": 1.58,
+      "end": 1.71,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "only",
+      "start": 1.71,
+      "end": 2.02,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "lasts",
+      "start": 2.02,
+      "end": 2.57,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "an",
+      "start": 2.57,
+      "end": 2.67,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "hour",
+      "start": 2.67,
+      "end": 3.13,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "Emily",
+      "start": 4.01,
+      "end": 4.42,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "Dickinson",
+      "start": 4.42,
+      "end": 5.19,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "In",
+      "start": 5.96,
+      "end": 6.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "this",
+      "start": 6.23,
+      "end": 6.53,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "short",
+      "start": 6.53,
+      "end": 7,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "Life",
+      "start": 7,
+      "end": 7.53,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "that",
+      "start": 7.99,
+      "end": 8.13,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "only",
+      "start": 8.13,
+      "end": 8.46,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "lasts",
+      "start": 8.46,
+      "end": 8.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "an",
+      "start": 8.96,
+      "end": 9.05,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "hour",
+      "start": 9.05,
+      "end": 9.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "How",
+      "start": 9.96,
+      "end": 10.26,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "much",
+      "start": 10.26,
+      "end": 10.8,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "how",
+      "start": 11.09,
+      "end": 11.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "little",
+      "start": 11.43,
+      "end": 11.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "is",
+      "start": 12.32,
+      "end": 12.53,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "within",
+      "start": 12.53,
+      "end": 12.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "our",
+      "start": 12.87,
+      "end": 13.03,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "power",
+      "start": 13.03,
+      "end": 13.56,
+      "segment": "body"
+    }
+  ]
+}

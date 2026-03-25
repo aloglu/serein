@@ -314,12 +314,80 @@ title: "Frontmatter Order Fixture: Test"
 author: Test Normalize
 publication: "Collected Poems: Volume 1"
 date: ${tomorrow}
+tts: yes
 ---
 
 Body line.
 `);
     assert.doesNotMatch(contents, /^translator:/m);
     assert.doesNotMatch(contents, /^source:/m);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("normalize preserves legacy tty: no as tts: no and keeps tts as the last frontmatter field", { concurrency: false }, async () => {
+  const today = currentPublicationDate();
+  const slug = "tty-disabled-fixture";
+  const workspace = await createNormalizeWorkspace({
+    fixturePoems: [
+      {
+        relativePath: path.join("__normalize-fixtures__", "tty-disabled.md"),
+        contents: `---
+tty: no
+date: ${today}
+author: Test Normalize
+title: TTY Disabled Fixture
+---
+
+Body line.
+`
+      }
+    ]
+  });
+
+  try {
+    await runNormalize(workspace);
+
+    const expectedPath = path.join(workspace, "poems", poemRelativePath(today, slug));
+    const contents = await readFile(expectedPath, "utf8");
+
+    assert.equal(contents, `---
+title: TTY Disabled Fixture
+author: Test Normalize
+date: ${today}
+tts: no
+---
+
+Body line.
+`);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("normalize repairs common mojibake punctuation in poem text", { concurrency: false }, async () => {
+  const date = "2026-03-11";
+  const slug = "synthetic-mojibake-fixture";
+  const workspace = await createNormalizeWorkspace({
+    fixturePoems: [
+      {
+        relativePath: path.join("__normalize-fixtures__", "mojibake.md"),
+        contents: buildPoemMarkdown({
+          title: "Synthetic Mojibake Fixture",
+          date,
+          body: "The hangmanâ€™s horse laughedâ€¦ Then winter returnedâ€”slowly."
+        })
+      }
+    ]
+  });
+
+  try {
+    await runNormalize(workspace);
+    const expectedPath = path.join(workspace, "poems", poemRelativePath(date, slug));
+    const contents = await readFile(expectedPath, "utf8");
+    assert.match(contents, /hangman’s horse laughed… Then winter returned—slowly\./);
+    assert.doesNotMatch(contents, /â€™|â€¦|â€”/);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }

@@ -4,6 +4,7 @@ author: Rainer Maria Rilke
 translator: Joanna Macy
 publication: Sonnets to Orpheus II, 29
 date: 2026-04-08
+tts: yes
 ---
 
 Quiet friend who has come so far,

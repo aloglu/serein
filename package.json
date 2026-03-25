@@ -3,12 +3,16 @@
   "version": "0.1.0",
   "private": true,
   "description": "Markdown-first static daily poem publisher",
+  "bin": {
+    "serein": "./scripts/serein.mjs"
+  },
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "node --test",
     "poems:sync": "node scripts/normalize-poems.mjs",
     "normalize:poems": "node scripts/normalize-poems.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",
+    "tts:align": "node scripts/tts-align.mjs",
     "tts:poem": "node scripts/tts-poem.mjs",
     "tts:sync": "node scripts/tts-sync.mjs",
     "tts:preview": "node scripts/tts-preview.mjs",
@@ -19,10 +23,10 @@
     "node": ">=24"
   },
   "dependencies": {
-    "marked": "^17.0.4"
+    "marked": "^17.0.5"
   },
   "devDependencies": {
-    "esbuild": "^0.27.3",
+    "esbuild": "^0.27.4",
     "html-minifier-terser": "^7.2.0",
     "serve": "^14.2.5",
     "sharp": "^0.34.5",

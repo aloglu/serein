@@ -9,7 +9,7 @@ const poemsDir = path.join(root, "poems");
 const PUBLICATION_TIME_ZONE = "Europe/Istanbul";
 const TYPOGRAPHY_FRONTMATTER_FIELDS = new Set(["title", "author", "translator", "publication"]);
 const REQUIRED_FRONTMATTER_FIELDS = new Set(["title", "author", "date"]);
-const FRONTMATTER_FIELD_ORDER = ["title", "author", "translator", "publication", "source", "date"];
+const FRONTMATTER_FIELD_ORDER = ["title", "author", "translator", "publication", "source", "date", "tts"];
 const ELISION_WORD_RE = /^(?:\d{2,4}(?:s)?\b|cause\b|cuz\b|em\b|gainst\b|neath\b|round\b|til\b|tis\b|twas\b|tween\b|twere\b|twill\b|n\b)/i;
 const LEFT_SINGLE_QUOTE = "\u2018";
 const RIGHT_SINGLE_QUOTE = "\u2019";
@@ -47,6 +47,18 @@ const MONTH_NAME_TO_NUMBER = new Map([
 
 function normalizeNewlines(input) {
   return String(input || "").replace(/\r\n/g, "\n");
+}
+
+function repairMojibakePunctuation(input) {
+  return String(input || "")
+    .replaceAll("â€™", RIGHT_SINGLE_QUOTE)
+    .replaceAll("â€˜", LEFT_SINGLE_QUOTE)
+    .replaceAll("â€œ", LEFT_DOUBLE_QUOTE)
+    .replaceAll("â€\u009d", RIGHT_DOUBLE_QUOTE)
+    .replaceAll("â€¦", ELLIPSIS)
+    .replaceAll("â€”", EM_DASH)
+    .replaceAll("â€“", EN_DASH)
+    .replaceAll("\u00c2\u00a0", "\u00a0");
 }
 
 function detectLineEnding(input) {
@@ -175,7 +187,7 @@ function normalizeDoubleQuotes(source) {
 
 function normalizeTypography(input, { transformDoubleQuotes = true } = {}) {
   const withBasicPunctuation = normalizeSingleQuotes(
-    String(input || "")
+    repairMojibakePunctuation(input)
       .replace(/\.\.\./g, ELLIPSIS)
       .replace(/(?<!-)--(?!-)/g, EM_DASH)
   );
@@ -243,8 +255,14 @@ function normalizePoemFields(poem) {
     author: normalizeTypography(poem.author, { transformDoubleQuotes: false }),
     translator: normalizeTypography(poem.translator, { transformDoubleQuotes: false }),
     publication: normalizeTypography(poem.publication, { transformDoubleQuotes: false }),
+    tts: normalizeTtsValue(poem.tts || poem.tty),
     poem: normalizeTypography(poem.poem)
   };
+}
+
+function normalizeTtsValue(value) {
+  const normalized = String(value ?? "").trim().toLowerCase();
+  return normalized === "no" ? "no" : "yes";
 }
 
 function needsFrontmatterQuoting(value) {
@@ -313,6 +331,8 @@ function parsePoemMarkdownFile(rawContent, filename) {
     publication: "",
     date: "",
     source: "",
+    tts: "",
+    tty: "",
     poem: ""
   };
 
@@ -336,6 +356,11 @@ function parsePoemMarkdownFile(rawContent, filename) {
       poem[key] = stripWrappingQuotes(value);
     }
   }
+
+  if (!poem.tts && poem.tty) {
+    poem.tts = poem.tty;
+  }
+  poem.tty = "";
 
   poem.poem = lines.slice(endIndex + 1).join("\n").replace(/^\n+/, "");
   return poem;

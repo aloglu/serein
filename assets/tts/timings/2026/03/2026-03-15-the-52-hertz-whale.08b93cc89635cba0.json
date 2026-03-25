@@ -1,0 +1,527 @@
+{
+  "version": 1,
+  "visibleWordCount": 74,
+  "matchedWordCount": 74,
+  "coverage": 1,
+  "intervalFingerprint": "4bfa0c5df8fc5e67",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "The",
+      "start": 0.06,
+      "end": 0.16,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "52-Hertz",
+      "start": 0.16,
+      "end": 1.65,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Whale",
+      "start": 1.65,
+      "end": 2.08,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Joseph",
+      "start": 2.55,
+      "end": 3.19,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "Fasano",
+      "start": 3.19,
+      "end": 3.78,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "They",
+      "start": 4.28,
+      "end": 4.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "have",
+      "start": 4.42,
+      "end": 4.61,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "called",
+      "start": 4.61,
+      "end": 4.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "it",
+      "start": 4.96,
+      "end": 5.12,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "the",
+      "start": 5.12,
+      "end": 5.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "loneliest",
+      "start": 5.23,
+      "end": 5.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "of",
+      "start": 5.98,
+      "end": 6.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "things,",
+      "start": 6.07,
+      "end": 6.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "a",
+      "start": 6.85,
+      "end": 6.94,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "voice",
+      "start": 6.94,
+      "end": 7.44,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "in",
+      "start": 7.44,
+      "end": 7.54,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "the",
+      "start": 7.54,
+      "end": 7.63,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "wilderness,",
+      "start": 7.63,
+      "end": 8.36,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "singing",
+      "start": 8.57,
+      "end": 9.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "what",
+      "start": 9.18,
+      "end": 9.38,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "nothing",
+      "start": 9.38,
+      "end": 9.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "else",
+      "start": 9.96,
+      "end": 10.31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "will",
+      "start": 10.31,
+      "end": 10.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "sing.",
+      "start": 10.41,
+      "end": 10.88,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "Is",
+      "start": 11.48,
+      "end": 11.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "it",
+      "start": 11.64,
+      "end": 11.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "motherless,",
+      "start": 11.76,
+      "end": 12.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "all",
+      "start": 12.79,
+      "end": 12.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "that",
+      "start": 12.98,
+      "end": 13.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "hunger?",
+      "start": 13.17,
+      "end": 13.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "Some",
+      "start": 14.15,
+      "end": 14.53,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "last",
+      "start": 14.53,
+      "end": 14.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "calf?",
+      "start": 14.93,
+      "end": 15.45,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "The",
+      "start": 15.77,
+      "end": 15.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "past",
+      "start": 15.87,
+      "end": 16.379999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "as",
+      "start": 16.379999,
+      "end": 16.51,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "it",
+      "start": 16.51,
+      "end": 16.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "sounds?",
+      "start": 16.639999,
+      "end": 17.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "Maybe.",
+      "start": 17.610001,
+      "end": 18.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "Maybe.",
+      "start": 18.52,
+      "end": 19.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "Maybe.",
+      "start": 19.25,
+      "end": 19.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "But",
+      "start": 20.33,
+      "end": 20.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "aren’t",
+      "start": 20.459999,
+      "end": 20.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "we",
+      "start": 20.66,
+      "end": 20.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "all",
+      "start": 20.85,
+      "end": 21.059999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "like",
+      "start": 21.059999,
+      "end": 21.299999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "that,",
+      "start": 21.299999,
+      "end": 21.629999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "roaming",
+      "start": 21.889999,
+      "end": 22.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "the",
+      "start": 22.360001,
+      "end": 22.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "coldness",
+      "start": 22.459999,
+      "end": 23.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "of",
+      "start": 23.07,
+      "end": 23.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "the",
+      "start": 23.18,
+      "end": 23.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "oceans",
+      "start": 23.35,
+      "end": 23.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "and",
+      "start": 24.129999,
+      "end": 24.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "you,",
+      "start": 24.389999,
+      "end": 24.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "too,",
+      "start": 24.58,
+      "end": 25.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "half",
+      "start": 25.26,
+      "end": 25.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "in",
+      "start": 25.610001,
+      "end": 25.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "madness,",
+      "start": 25.75,
+      "end": 26.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "half",
+      "start": 26.690001,
+      "end": 27.030001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "of",
+      "start": 27.030001,
+      "end": 27.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "you",
+      "start": 27.16,
+      "end": 27.370001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "that",
+      "start": 27.370001,
+      "end": 27.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "fathoms",
+      "start": 27.549999,
+      "end": 28.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "you",
+      "start": 28.139999,
+      "end": 28.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "have",
+      "start": 28.24,
+      "end": 28.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "to",
+      "start": 28.52,
+      "end": 28.620001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "be",
+      "start": 28.620001,
+      "end": 28.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "your",
+      "start": 28.73,
+      "end": 28.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "own",
+      "start": 29.049999,
+      "end": 29.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "song",
+      "start": 29.35,
+      "end": 29.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "to",
+      "start": 29.860001,
+      "end": 30,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "be",
+      "start": 30,
+      "end": 30.120001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "found.",
+      "start": 30.120001,
+      "end": 30.690001,
+      "segment": "body"
+    }
+  ]
+}

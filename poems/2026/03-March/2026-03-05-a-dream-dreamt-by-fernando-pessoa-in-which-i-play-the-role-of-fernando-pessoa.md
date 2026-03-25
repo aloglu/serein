@@ -3,6 +3,7 @@ title: A Dream Dreamt by Fernando Pessoa in Which I Play the Role of Fernando Pe
 author: Momina Mela
 publication: The New Yorker (October 14, 2024)
 date: 2026-03-05
+tts: yes
 ---
 
 Even here I can’t stop arguing with myself

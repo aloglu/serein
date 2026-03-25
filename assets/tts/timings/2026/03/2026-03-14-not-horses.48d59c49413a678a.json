@@ -1,0 +1,1080 @@
+{
+  "version": 1,
+  "visibleWordCount": 153,
+  "matchedWordCount": 153,
+  "coverage": 1,
+  "intervalFingerprint": "ee1a27c8847b56e4",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Not",
+      "start": 0.13,
+      "end": 0.73,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Horses",
+      "start": 0.84,
+      "end": 1.68,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Natalie",
+      "start": 2.2,
+      "end": 2.86,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Shapero",
+      "start": 2.86,
+      "end": 3.61,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "What",
+      "start": 4.63,
+      "end": 5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "I",
+      "start": 5.07,
+      "end": 5.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "adore",
+      "start": 5.23,
+      "end": 5.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "is",
+      "start": 5.95,
+      "end": 6.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "not",
+      "start": 6.16,
+      "end": 6.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "horses,",
+      "start": 6.48,
+      "end": 7.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "with",
+      "start": 7.58,
+      "end": 7.79,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "their",
+      "start": 7.79,
+      "end": 7.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "modern",
+      "start": 7.96,
+      "end": 8.51,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "domestic",
+      "start": 8.51,
+      "end": 9.12,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "life",
+      "start": 9.12,
+      "end": 9.38,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "span",
+      "start": 9.38,
+      "end": 9.89,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "of",
+      "start": 9.98,
+      "end": 10.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "25",
+      "start": 10.19,
+      "end": 11.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "years.",
+      "start": 11.17,
+      "end": 11.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "What",
+      "start": 12.47,
+      "end": 12.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "I",
+      "start": 12.69,
+      "end": 12.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "adore",
+      "start": 12.85,
+      "end": 13.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "is",
+      "start": 13.47,
+      "end": 13.63,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "a",
+      "start": 13.63,
+      "end": 13.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "bug",
+      "start": 13.69,
+      "end": 14.08,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "that",
+      "start": 14.08,
+      "end": 14.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "lives",
+      "start": 14.34,
+      "end": 14.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "only",
+      "start": 14.82,
+      "end": 15.2,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "one",
+      "start": 15.2,
+      "end": 15.62,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "day,",
+      "start": 15.62,
+      "end": 16.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "especially",
+      "start": 16.57,
+      "end": 17.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "if",
+      "start": 17.309999,
+      "end": 17.450001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "it’s",
+      "start": 17.450001,
+      "end": 17.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "a",
+      "start": 17.6,
+      "end": 17.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "terrible",
+      "start": 17.65,
+      "end": 18.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "day,",
+      "start": 18.209999,
+      "end": 18.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "a",
+      "start": 19.15,
+      "end": 19.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "day",
+      "start": 19.23,
+      "end": 19.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "of",
+      "start": 19.58,
+      "end": 19.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "train",
+      "start": 19.75,
+      "end": 20.219999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "derailment",
+      "start": 20.219999,
+      "end": 20.969999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "or",
+      "start": 21.08,
+      "end": 21.219999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "chemical",
+      "start": 21.219999,
+      "end": 21.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "lake",
+      "start": 21.780001,
+      "end": 22.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "or",
+      "start": 22.530001,
+      "end": 22.67,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "cop",
+      "start": 22.67,
+      "end": 23.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "admits",
+      "start": 23.24,
+      "end": 23.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "to",
+      "start": 23.709999,
+      "end": 23.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "cover-up,",
+      "start": 23.82,
+      "end": 24.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "a",
+      "start": 25.139999,
+      "end": 25.219999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "day",
+      "start": 25.219999,
+      "end": 25.629999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "when",
+      "start": 25.629999,
+      "end": 25.940001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "no",
+      "start": 25.940001,
+      "end": 26.120001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "one",
+      "start": 26.120001,
+      "end": 26.370001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "thinks",
+      "start": 26.370001,
+      "end": 26.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "of",
+      "start": 26.77,
+      "end": 26.879999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "anything",
+      "start": 26.98,
+      "end": 27.450001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "else,",
+      "start": 27.450001,
+      "end": 27.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "least",
+      "start": 28.299999,
+      "end": 28.67,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "of",
+      "start": 28.67,
+      "end": 28.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "all",
+      "start": 28.780001,
+      "end": 29.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "that",
+      "start": 29.17,
+      "end": 29.530001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "bug.",
+      "start": 29.530001,
+      "end": 29.870001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "I",
+      "start": 30.709999,
+      "end": 30.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "know",
+      "start": 30.860001,
+      "end": 31.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "how",
+      "start": 31.209999,
+      "end": 31.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "it",
+      "start": 31.459999,
+      "end": 31.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "feels,",
+      "start": 31.57,
+      "end": 32.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "born",
+      "start": 32.450001,
+      "end": 32.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "as",
+      "start": 32.849998,
+      "end": 32.990002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "I’ve",
+      "start": 32.990002,
+      "end": 33.259998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "been",
+      "start": 33.259998,
+      "end": 33.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "into",
+      "start": 33.549999,
+      "end": 33.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "these",
+      "start": 33.900002,
+      "end": 34.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "rotting",
+      "start": 34.16,
+      "end": 34.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "times,",
+      "start": 34.650002,
+      "end": 35.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "as",
+      "start": 35.689999,
+      "end": 35.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "into",
+      "start": 35.900002,
+      "end": 36.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "sin.",
+      "start": 36.25,
+      "end": 36.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "Everybody’s",
+      "start": 37.5,
+      "end": 38.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 80,
+      "text": "busy,",
+      "start": 38.09,
+      "end": 38.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 81,
+      "text": "so",
+      "start": 38.889999,
+      "end": 39.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 82,
+      "text": "distraught",
+      "start": 39.279999,
+      "end": 39.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 83,
+      "text": "they",
+      "start": 39.889999,
+      "end": 40,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 84,
+      "text": "forget",
+      "start": 40,
+      "end": 40.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 85,
+      "text": "to",
+      "start": 40.43,
+      "end": 40.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 86,
+      "text": "kill",
+      "start": 40.52,
+      "end": 40.830002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 87,
+      "text": "me,",
+      "start": 40.830002,
+      "end": 41.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 88,
+      "text": "and",
+      "start": 41.650002,
+      "end": 41.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 89,
+      "text": "even",
+      "start": 41.880001,
+      "end": 42.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 90,
+      "text": "that",
+      "start": 42.23,
+      "end": 42.560001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 91,
+      "text": "won’t",
+      "start": 42.560001,
+      "end": 42.939999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 92,
+      "text": "keep",
+      "start": 42.939999,
+      "end": 43.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 93,
+      "text": "me",
+      "start": 43.209999,
+      "end": 43.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 94,
+      "text": "alive.",
+      "start": 43.349998,
+      "end": 43.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 95,
+      "text": "I",
+      "start": 44.689999,
+      "end": 44.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 96,
+      "text": "share",
+      "start": 44.790001,
+      "end": 45.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 97,
+      "text": "my",
+      "start": 45.150002,
+      "end": 45.330002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 98,
+      "text": "home",
+      "start": 45.330002,
+      "end": 45.830002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 99,
+      "text": "not",
+      "start": 45.91,
+      "end": 46.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 100,
+      "text": "with",
+      "start": 46.18,
+      "end": 46.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 101,
+      "text": "horses,",
+      "start": 46.32,
+      "end": 46.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 102,
+      "text": "but",
+      "start": 47.43,
+      "end": 47.580002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 103,
+      "text": "with",
+      "start": 47.580002,
+      "end": 47.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 104,
+      "text": "a",
+      "start": 47.75,
+      "end": 47.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 105,
+      "text": "little",
+      "start": 47.82,
+      "end": 48.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 106,
+      "text": "dog",
+      "start": 48.18,
+      "end": 48.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 107,
+      "text": "who",
+      "start": 48.950001,
+      "end": 49.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 108,
+      "text": "sees",
+      "start": 49.09,
+      "end": 49.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 109,
+      "text": "poorly",
+      "start": 49.5,
+      "end": 50.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 110,
+      "text": "at",
+      "start": 50.029999,
+      "end": 50.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 111,
+      "text": "dusk",
+      "start": 50.18,
+      "end": 50.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 112,
+      "text": "and",
+      "start": 50.950001,
+      "end": 51.189999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 113,
+      "text": "menaces",
+      "start": 51.189999,
+      "end": 51.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 114,
+      "text": "stumps,",
+      "start": 51.650002,
+      "end": 52.299999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 115,
+      "text": "makes",
+      "start": 52.68,
+      "end": 53,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 116,
+      "text": "her",
+      "start": 53,
+      "end": 53.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 117,
+      "text": "muscle",
+      "start": 53.150002,
+      "end": 53.560001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 118,
+      "text": "known",
+      "start": 53.560001,
+      "end": 53.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 119,
+      "text": "to",
+      "start": 53.98,
+      "end": 54.240002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 120,
+      "text": "every",
+      "start": 54.240002,
+      "end": 54.509998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 121,
+      "text": "statue.",
+      "start": 54.509998,
+      "end": 55.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 122,
+      "text": "I",
+      "start": 55.970001,
+      "end": 56.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 123,
+      "text": "wish",
+      "start": 56.130001,
+      "end": 56.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 124,
+      "text": "she",
+      "start": 56.43,
+      "end": 56.630001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 125,
+      "text": "could",
+      "start": 56.630001,
+      "end": 56.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 126,
+      "text": "have",
+      "start": 56.799999,
+      "end": 57.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 127,
+      "text": "a",
+      "start": 57.029999,
+      "end": 57.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 128,
+      "text": "single",
+      "start": 57.09,
+      "end": 57.630001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 129,
+      "text": "day",
+      "start": 57.630001,
+      "end": 57.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 130,
+      "text": "of",
+      "start": 57.889999,
+      "end": 58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 131,
+      "text": "language,",
+      "start": 58,
+      "end": 58.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 132,
+      "text": "so",
+      "start": 58.91,
+      "end": 59.119999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 133,
+      "text": "that",
+      "start": 59.119999,
+      "end": 59.259998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 134,
+      "text": "I",
+      "start": 59.259998,
+      "end": 59.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 135,
+      "text": "might",
+      "start": 59.389999,
+      "end": 59.689999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 136,
+      "text": "reassure",
+      "start": 59.720001,
+      "end": 60.259998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 137,
+      "text": "her",
+      "start": 60.259998,
+      "end": 60.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 138,
+      "text": "_don’t",
+      "start": 60.959999,
+      "end": 61.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 139,
+      "text": "be",
+      "start": 61.23,
+      "end": 61.310001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 140,
+      "text": "afraid_",
+      "start": 61.310001,
+      "end": 61.950001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 141,
+      "text": "_our",
+      "start": 62.41,
+      "end": 62.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 142,
+      "text": "whole",
+      "start": 62.639999,
+      "end": 63.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 143,
+      "text": "world",
+      "start": 63.09,
+      "end": 63.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 144,
+      "text": "is",
+      "start": 63.549999,
+      "end": 63.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 145,
+      "text": "dead",
+      "start": 63.73,
+      "end": 64.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 146,
+      "text": "and",
+      "start": 64.5,
+      "end": 64.669998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 147,
+      "text": "so",
+      "start": 64.669998,
+      "end": 65.019997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 148,
+      "text": "can",
+      "start": 65.019997,
+      "end": 65.260002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 149,
+      "text": "do",
+      "start": 65.260002,
+      "end": 65.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 150,
+      "text": "you",
+      "start": 65.389999,
+      "end": 65.690002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 151,
+      "text": "no",
+      "start": 65.690002,
+      "end": 65.949997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 152,
+      "text": "harm_.",
+      "start": 65.949997,
+      "end": 66.419998,
+      "segment": "body"
+    }
+  ]
+}

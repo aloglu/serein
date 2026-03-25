@@ -3,7 +3,7 @@ import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { speakablePoetryLineDirective } from "./poetry-line.mjs";
 
-export const TTS_MANIFEST_VERSION = 1;
+export const TTS_MANIFEST_VERSION = 2;
 
 export function ttsRootDir(root = process.cwd()) {
   return path.join(root, "assets", "tts");
@@ -11,6 +11,10 @@ export function ttsRootDir(root = process.cwd()) {
 
 export function ttsAudioDir(root = process.cwd()) {
   return path.join(ttsRootDir(root), "audio");
+}
+
+export function ttsTimingsDir(root = process.cwd()) {
+  return path.join(ttsRootDir(root), "timings");
 }
 
 export function ttsManifestPath(root = process.cwd()) {
@@ -36,8 +40,20 @@ export function normalizeNewlines(input) {
   return String(input || "").replace(/\r\n/g, "\n");
 }
 
+export function repairMojibakePunctuation(input) {
+  return String(input || "")
+    .replaceAll("â€™", "\u2019")
+    .replaceAll("â€˜", "\u2018")
+    .replaceAll("â€œ", "\u201c")
+    .replaceAll("â€\u009d", "\u201d")
+    .replaceAll("â€¦", "\u2026")
+    .replaceAll("â€”", "\u2014")
+    .replaceAll("â€“", "\u2013")
+    .replaceAll("\u00c2\u00a0", "\u00a0");
+}
+
 export function speakablePoemText(poemBody) {
-  const lines = normalizeNewlines(poemBody)
+  const lines = normalizeNewlines(repairMojibakePunctuation(poemBody))
     .split("\n")
     .map((line) => {
       const trimmed = line.trim();
@@ -61,9 +77,9 @@ export function speakablePoemScript(poem) {
     return speakablePoemText(poem);
   }
 
-  const title = String(poem?.title || "").trim();
-  const author = String(poem?.author || "").trim();
-  const translator = String(poem?.translator || "").trim();
+  const title = repairMojibakePunctuation(String(poem?.title || "")).trim();
+  const author = repairMojibakePunctuation(String(poem?.author || "")).trim();
+  const translator = repairMojibakePunctuation(String(poem?.translator || "")).trim();
   const poemText = speakablePoemText(poem?.poem || "");
   const preambleParts = [];
 
@@ -129,6 +145,7 @@ export function normalizeTtsManifest(input) {
 
     normalizedEntries[date] = {
       audioUrl,
+      timingsUrl: String(entry.timingsUrl || "").trim(),
       sourceHash: String(entry.sourceHash || "").trim(),
       assetKey: String(entry.assetKey || "").trim(),
       renderProfile: String(entry.renderProfile || "").trim(),
@@ -139,6 +156,10 @@ export function normalizeTtsManifest(input) {
       mimeType: String(entry.mimeType || "").trim(),
       instructions: String(entry.instructions || "").trim(),
       speed: Number.isFinite(Number(entry.speed)) ? Number(entry.speed) : null,
+      timingsVersion: Number.isFinite(Number(entry.timingsVersion)) ? Number(entry.timingsVersion) : null,
+      visibleWordCount: Number.isFinite(Number(entry.visibleWordCount)) ? Number(entry.visibleWordCount) : null,
+      matchedWordCount: Number.isFinite(Number(entry.matchedWordCount)) ? Number(entry.matchedWordCount) : null,
+      coverage: Number.isFinite(Number(entry.coverage)) ? Number(entry.coverage) : null,
       generatedAt: String(entry.generatedAt || "").trim()
     };
   }

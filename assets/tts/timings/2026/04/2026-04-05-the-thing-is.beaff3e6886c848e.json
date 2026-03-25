@@ -1,0 +1,821 @@
+{
+  "version": 1,
+  "visibleWordCount": 116,
+  "matchedWordCount": 116,
+  "coverage": 1,
+  "intervalFingerprint": "75f4d4f24eacf3e7",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "The",
+      "start": 0.06,
+      "end": 0.19,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Thing",
+      "start": 0.19,
+      "end": 0.58,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Is",
+      "start": 0.58,
+      "end": 1.03,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Ellen",
+      "start": 1.63,
+      "end": 1.97,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "Bass",
+      "start": 1.97,
+      "end": 2.51,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "to",
+      "start": 3.28,
+      "end": 3.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "love",
+      "start": 3.43,
+      "end": 3.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "life,",
+      "start": 3.75,
+      "end": 4.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "to",
+      "start": 4.66,
+      "end": 4.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "love",
+      "start": 4.81,
+      "end": 5.08,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "it",
+      "start": 5.08,
+      "end": 5.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "even",
+      "start": 5.27,
+      "end": 5.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "when",
+      "start": 5.59,
+      "end": 5.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "you",
+      "start": 5.73,
+      "end": 5.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "have",
+      "start": 5.83,
+      "end": 6.04,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "no",
+      "start": 6.04,
+      "end": 6.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "stomach",
+      "start": 6.24,
+      "end": 6.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "for",
+      "start": 6.68,
+      "end": 6.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "it",
+      "start": 6.93,
+      "end": 7.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "and",
+      "start": 7.79,
+      "end": 7.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "everything",
+      "start": 8.05,
+      "end": 8.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "you’ve",
+      "start": 8.6,
+      "end": 8.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "held",
+      "start": 8.77,
+      "end": 9.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "dear",
+      "start": 9.1,
+      "end": 9.47,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "crumbles",
+      "start": 9.85,
+      "end": 10.53,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "like",
+      "start": 10.53,
+      "end": 10.71,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "burnt",
+      "start": 10.71,
+      "end": 11.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "paper",
+      "start": 11.16,
+      "end": 11.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "in",
+      "start": 11.57,
+      "end": 11.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "your",
+      "start": 11.69,
+      "end": 11.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "hands,",
+      "start": 11.81,
+      "end": 12.4,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "your",
+      "start": 13.26,
+      "end": 13.46,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "throat",
+      "start": 13.46,
+      "end": 14.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "filled",
+      "start": 14.01,
+      "end": 14.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "with",
+      "start": 14.56,
+      "end": 14.72,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "the",
+      "start": 14.72,
+      "end": 14.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "silt",
+      "start": 14.81,
+      "end": 15.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "of",
+      "start": 15.25,
+      "end": 15.37,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "it.",
+      "start": 15.37,
+      "end": 15.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "When",
+      "start": 16.780001,
+      "end": 17.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "grief",
+      "start": 17.02,
+      "end": 17.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "sits",
+      "start": 17.42,
+      "end": 17.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "with",
+      "start": 17.83,
+      "end": 18.030001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "you,",
+      "start": 18.030001,
+      "end": 18.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "its",
+      "start": 18.620001,
+      "end": 18.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "tropical",
+      "start": 18.93,
+      "end": 19.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "heat",
+      "start": 19.5,
+      "end": 19.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "thickening",
+      "start": 20.030001,
+      "end": 20.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "the",
+      "start": 20.610001,
+      "end": 20.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "air,",
+      "start": 20.780001,
+      "end": 21.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "heavy",
+      "start": 21.719999,
+      "end": 22.120001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "as",
+      "start": 22.120001,
+      "end": 22.280001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "water",
+      "start": 22.280001,
+      "end": 22.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "more",
+      "start": 22.68,
+      "end": 22.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "fit",
+      "start": 22.92,
+      "end": 23.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "for",
+      "start": 23.25,
+      "end": 23.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "gills",
+      "start": 23.41,
+      "end": 23.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "than",
+      "start": 23.9,
+      "end": 24.120001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "lungs;",
+      "start": 24.120001,
+      "end": 24.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "when",
+      "start": 25.370001,
+      "end": 25.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "grief",
+      "start": 25.57,
+      "end": 26.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "weights",
+      "start": 26.049999,
+      "end": 26.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "you",
+      "start": 26.48,
+      "end": 26.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "down",
+      "start": 26.58,
+      "end": 26.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "like",
+      "start": 26.98,
+      "end": 27.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "your",
+      "start": 27.18,
+      "end": 27.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "own",
+      "start": 27.34,
+      "end": 27.559999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "flesh",
+      "start": 27.559999,
+      "end": 28.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "only",
+      "start": 28.42,
+      "end": 28.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "more",
+      "start": 28.700001,
+      "end": 28.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "of",
+      "start": 28.98,
+      "end": 29.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "it,",
+      "start": 29.09,
+      "end": 29.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "an",
+      "start": 29.790001,
+      "end": 29.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "obesity",
+      "start": 29.9,
+      "end": 30.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "of",
+      "start": 30.610001,
+      "end": 30.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "grief,",
+      "start": 30.75,
+      "end": 31.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "you",
+      "start": 32.119999,
+      "end": 32.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "think,",
+      "start": 32.27,
+      "end": 32.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "How",
+      "start": 33.02,
+      "end": 33.380001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "can",
+      "start": 33.380001,
+      "end": 33.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 80,
+      "text": "a",
+      "start": 33.59,
+      "end": 33.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 81,
+      "text": "body",
+      "start": 33.650002,
+      "end": 34.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 82,
+      "text": "withstand",
+      "start": 34.049999,
+      "end": 34.689999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 83,
+      "text": "this?",
+      "start": 34.689999,
+      "end": 35.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 84,
+      "text": "Then",
+      "start": 36.209999,
+      "end": 36.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 85,
+      "text": "you",
+      "start": 36.389999,
+      "end": 36.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 86,
+      "text": "hold",
+      "start": 36.529999,
+      "end": 36.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 87,
+      "text": "life",
+      "start": 36.91,
+      "end": 37.330002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 88,
+      "text": "like",
+      "start": 37.330002,
+      "end": 37.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 89,
+      "text": "a",
+      "start": 37.459999,
+      "end": 37.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 90,
+      "text": "face",
+      "start": 37.52,
+      "end": 37.939999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 91,
+      "text": "between",
+      "start": 37.939999,
+      "end": 38.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 92,
+      "text": "your",
+      "start": 38.290001,
+      "end": 38.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 93,
+      "text": "palms,",
+      "start": 38.41,
+      "end": 39.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 94,
+      "text": "a",
+      "start": 39.450001,
+      "end": 39.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 95,
+      "text": "plain",
+      "start": 39.529999,
+      "end": 39.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 96,
+      "text": "face,",
+      "start": 39.970001,
+      "end": 40.490002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 97,
+      "text": "no",
+      "start": 40.880001,
+      "end": 41.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 98,
+      "text": "charming",
+      "start": 41.099998,
+      "end": 41.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 99,
+      "text": "smile,",
+      "start": 41.549999,
+      "end": 42.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 100,
+      "text": "no",
+      "start": 42.439999,
+      "end": 42.689999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 101,
+      "text": "violet",
+      "start": 42.689999,
+      "end": 43.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 102,
+      "text": "eyes,",
+      "start": 43.099998,
+      "end": 43.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 103,
+      "text": "and",
+      "start": 43.970001,
+      "end": 44.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 104,
+      "text": "you",
+      "start": 44.130001,
+      "end": 44.220001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 105,
+      "text": "say,",
+      "start": 44.220001,
+      "end": 44.669998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 106,
+      "text": "yes,",
+      "start": 44.970001,
+      "end": 45.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 107,
+      "text": "I",
+      "start": 45.810001,
+      "end": 45.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 108,
+      "text": "will",
+      "start": 45.959999,
+      "end": 46.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 109,
+      "text": "take",
+      "start": 46.130001,
+      "end": 46.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 110,
+      "text": "you",
+      "start": 46.52,
+      "end": 46.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 111,
+      "text": "I",
+      "start": 47.02,
+      "end": 47.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 112,
+      "text": "will",
+      "start": 47.16,
+      "end": 47.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 113,
+      "text": "love",
+      "start": 47.349998,
+      "end": 47.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 114,
+      "text": "you,",
+      "start": 47.610001,
+      "end": 47.880001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 115,
+      "text": "again.",
+      "start": 48.16,
+      "end": 48.66,
+      "segment": "body"
+    }
+  ]
+}

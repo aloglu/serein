@@ -1,0 +1,660 @@
+{
+  "version": 1,
+  "visibleWordCount": 93,
+  "matchedWordCount": 93,
+  "coverage": 1,
+  "intervalFingerprint": "add1a70cdae16edc",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Nobody",
+      "start": 0.06,
+      "end": 0.84,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Comes",
+      "start": 0.84,
+      "end": 1.52,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Thomas",
+      "start": 2.07,
+      "end": 2.62,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Hardy",
+      "start": 2.62,
+      "end": 3.16,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "TREE-LEAVES",
+      "start": 3.75,
+      "end": 4.8,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "labour",
+      "start": 4.99,
+      "end": 5.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "up",
+      "start": 5.58,
+      "end": 5.78,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "and",
+      "start": 5.78,
+      "end": 5.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "down,",
+      "start": 5.97,
+      "end": 6.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "And",
+      "start": 7.05,
+      "end": 7.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "through",
+      "start": 7.25,
+      "end": 7.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "them",
+      "start": 7.73,
+      "end": 8.05,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "the",
+      "start": 8.44,
+      "end": 8.54,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "fainting",
+      "start": 8.54,
+      "end": 9.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "light",
+      "start": 9.35,
+      "end": 9.72,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "Succumbs",
+      "start": 10.06,
+      "end": 11.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "to",
+      "start": 11.07,
+      "end": 11.2,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "the",
+      "start": 11.2,
+      "end": 11.31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "crawl",
+      "start": 11.31,
+      "end": 11.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "of",
+      "start": 11.91,
+      "end": 12.05,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "night.",
+      "start": 12.05,
+      "end": 12.54,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "Outside",
+      "start": 13.35,
+      "end": 13.96,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "in",
+      "start": 13.96,
+      "end": 14.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "the",
+      "start": 14.07,
+      "end": 14.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "road",
+      "start": 14.18,
+      "end": 14.67,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "the",
+      "start": 15.01,
+      "end": 15.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "telegraph",
+      "start": 15.1,
+      "end": 15.88,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "wire",
+      "start": 15.88,
+      "end": 16.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "To",
+      "start": 16.690001,
+      "end": 16.879999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "the",
+      "start": 16.879999,
+      "end": 16.969999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "town",
+      "start": 16.969999,
+      "end": 17.559999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "from",
+      "start": 17.799999,
+      "end": 18.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "the",
+      "start": 18.040001,
+      "end": 18.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "darkening",
+      "start": 18.15,
+      "end": 18.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "land",
+      "start": 18.84,
+      "end": 19.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "Intones",
+      "start": 19.82,
+      "end": 20.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "to",
+      "start": 20.639999,
+      "end": 20.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "travelers",
+      "start": 20.77,
+      "end": 21.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "like",
+      "start": 21.879999,
+      "end": 22.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "a",
+      "start": 22.09,
+      "end": 22.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "spectral",
+      "start": 22.15,
+      "end": 22.969999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "lyre",
+      "start": 22.969999,
+      "end": 23.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "Swept",
+      "start": 23.860001,
+      "end": 24.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "by",
+      "start": 24.799999,
+      "end": 24.940001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "a",
+      "start": 24.940001,
+      "end": 25.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "spectral",
+      "start": 25.07,
+      "end": 25.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "hand.",
+      "start": 25.799999,
+      "end": 26.379999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "A",
+      "start": 27.219999,
+      "end": 27.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "car",
+      "start": 27.379999,
+      "end": 27.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "comes",
+      "start": 27.780001,
+      "end": 28.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "up,",
+      "start": 28.16,
+      "end": 28.4,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "with",
+      "start": 28.83,
+      "end": 29.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "lamps",
+      "start": 29.040001,
+      "end": 29.629999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "full-glare,",
+      "start": 29.629999,
+      "end": 30.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "That",
+      "start": 31.120001,
+      "end": 31.299999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "flash",
+      "start": 31.299999,
+      "end": 32.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "upon",
+      "start": 32.259998,
+      "end": 32.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "a",
+      "start": 32.650002,
+      "end": 32.720001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "tree:",
+      "start": 32.720001,
+      "end": 33.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "It",
+      "start": 33.779999,
+      "end": 33.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "has",
+      "start": 33.91,
+      "end": 34.169998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "nothing",
+      "start": 34.169998,
+      "end": 34.689999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "to",
+      "start": 34.689999,
+      "end": 34.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "do",
+      "start": 34.799999,
+      "end": 34.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "with",
+      "start": 34.98,
+      "end": 35.169998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "me,",
+      "start": 35.169998,
+      "end": 35.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "And",
+      "start": 36.110001,
+      "end": 36.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "whangs",
+      "start": 36.360001,
+      "end": 36.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "along",
+      "start": 36.779999,
+      "end": 37.220001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "in",
+      "start": 37.220001,
+      "end": 37.310001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "a",
+      "start": 37.310001,
+      "end": 37.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "world",
+      "start": 37.389999,
+      "end": 37.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "of",
+      "start": 37.860001,
+      "end": 37.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "its",
+      "start": 37.959999,
+      "end": 38.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "own,",
+      "start": 38.150002,
+      "end": 38.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "Leaving",
+      "start": 39.169998,
+      "end": 39.630001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "a",
+      "start": 39.630001,
+      "end": 39.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "blacker",
+      "start": 39.700001,
+      "end": 40.299999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "air;",
+      "start": 40.349998,
+      "end": 40.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "And",
+      "start": 41.23,
+      "end": 41.509998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 80,
+      "text": "mute",
+      "start": 41.509998,
+      "end": 41.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 81,
+      "text": "by",
+      "start": 41.889999,
+      "end": 42.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 82,
+      "text": "the",
+      "start": 42.040001,
+      "end": 42.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 83,
+      "text": "gate",
+      "start": 42.150002,
+      "end": 42.619999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 84,
+      "text": "I",
+      "start": 42.869999,
+      "end": 42.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 85,
+      "text": "stand",
+      "start": 42.970001,
+      "end": 43.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 86,
+      "text": "again",
+      "start": 43.57,
+      "end": 43.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 87,
+      "text": "alone,",
+      "start": 43.849998,
+      "end": 44.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 88,
+      "text": "And",
+      "start": 44.959999,
+      "end": 45.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 89,
+      "text": "nobody",
+      "start": 45.349998,
+      "end": 45.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 90,
+      "text": "pulls",
+      "start": 45.849998,
+      "end": 46.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 91,
+      "text": "up",
+      "start": 46.349998,
+      "end": 46.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 92,
+      "text": "there.",
+      "start": 46.59,
+      "end": 46.970001,
+      "segment": "body"
+    }
+  ]
+}

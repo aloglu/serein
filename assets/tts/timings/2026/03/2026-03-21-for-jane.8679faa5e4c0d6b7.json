@@ -1,0 +1,569 @@
+{
+  "version": 1,
+  "visibleWordCount": 80,
+  "matchedWordCount": 80,
+  "coverage": 1,
+  "intervalFingerprint": "c0aa4f73f83fcba4",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "for",
+      "start": 0.04,
+      "end": 0.43,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Jane",
+      "start": 0.43,
+      "end": 1.04,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Charles",
+      "start": 1.76,
+      "end": 2.39,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Bukowski",
+      "start": 2.39,
+      "end": 3.18,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "225",
+      "start": 3.92,
+      "end": 5.3,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "days",
+      "start": 5.3,
+      "end": 5.67,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "under",
+      "start": 5.71,
+      "end": 5.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "grass",
+      "start": 5.97,
+      "end": 6.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "and",
+      "start": 6.88,
+      "end": 7.06,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "you",
+      "start": 7.06,
+      "end": 7.33,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "know",
+      "start": 7.33,
+      "end": 7.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "more",
+      "start": 7.56,
+      "end": 7.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "than",
+      "start": 7.85,
+      "end": 8.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "I.",
+      "start": 8.02,
+      "end": 8.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "they",
+      "start": 8.93,
+      "end": 9.06,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "have",
+      "start": 9.06,
+      "end": 9.21,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "long",
+      "start": 9.21,
+      "end": 9.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "taken",
+      "start": 9.69,
+      "end": 10.13,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "your",
+      "start": 10.13,
+      "end": 10.28,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "blood,",
+      "start": 10.28,
+      "end": 10.71,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "you",
+      "start": 11.14,
+      "end": 11.37,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "are",
+      "start": 11.37,
+      "end": 11.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "a",
+      "start": 11.5,
+      "end": 11.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "dry",
+      "start": 11.57,
+      "end": 11.99,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "stick",
+      "start": 11.99,
+      "end": 12.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "in",
+      "start": 12.43,
+      "end": 12.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "a",
+      "start": 12.58,
+      "end": 12.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "basket.",
+      "start": 12.64,
+      "end": 13.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "is",
+      "start": 14.13,
+      "end": 14.37,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "this",
+      "start": 14.37,
+      "end": 14.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "how",
+      "start": 14.65,
+      "end": 14.89,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "it",
+      "start": 14.89,
+      "end": 15.03,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "works?",
+      "start": 15.03,
+      "end": 15.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "in",
+      "start": 16.209999,
+      "end": 16.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "this",
+      "start": 16.42,
+      "end": 16.719999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "room",
+      "start": 16.719999,
+      "end": 17.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "the",
+      "start": 17.1,
+      "end": 17.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "hours",
+      "start": 17.33,
+      "end": 17.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "of",
+      "start": 17.76,
+      "end": 17.879999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "love",
+      "start": 17.879999,
+      "end": 18.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "still",
+      "start": 18.24,
+      "end": 18.690001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "make",
+      "start": 18.690001,
+      "end": 18.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "shadows.",
+      "start": 18.92,
+      "end": 19.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "when",
+      "start": 20.129999,
+      "end": 20.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "you",
+      "start": 20.360001,
+      "end": 20.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "left",
+      "start": 20.6,
+      "end": 21.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "you",
+      "start": 21.32,
+      "end": 21.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "took",
+      "start": 21.49,
+      "end": 21.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "almost",
+      "start": 21.85,
+      "end": 22.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "everything.",
+      "start": 22.35,
+      "end": 22.950001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "I",
+      "start": 23.51,
+      "end": 23.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "kneel",
+      "start": 23.66,
+      "end": 24.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "in",
+      "start": 24.139999,
+      "end": 24.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "the",
+      "start": 24.24,
+      "end": 24.33,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "nights",
+      "start": 24.33,
+      "end": 24.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "before",
+      "start": 24.74,
+      "end": 25.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "tigers",
+      "start": 25.09,
+      "end": 25.719999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "that",
+      "start": 25.719999,
+      "end": 25.879999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "will",
+      "start": 25.879999,
+      "end": 26.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "not",
+      "start": 26.01,
+      "end": 26.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "let",
+      "start": 26.309999,
+      "end": 26.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "me",
+      "start": 26.49,
+      "end": 26.629999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "be.",
+      "start": 26.629999,
+      "end": 27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "what",
+      "start": 27.549999,
+      "end": 27.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "you",
+      "start": 27.780001,
+      "end": 28.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "were",
+      "start": 28.040001,
+      "end": 28.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "will",
+      "start": 28.389999,
+      "end": 28.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "not",
+      "start": 28.58,
+      "end": 28.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "happen",
+      "start": 28.889999,
+      "end": 29.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "again.",
+      "start": 29.24,
+      "end": 29.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "the",
+      "start": 30.16,
+      "end": 30.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "tigers",
+      "start": 30.25,
+      "end": 30.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "have",
+      "start": 30.860001,
+      "end": 31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "found",
+      "start": 31,
+      "end": 31.440001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "me",
+      "start": 31.440001,
+      "end": 31.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "and",
+      "start": 32.099998,
+      "end": 32.240002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "I",
+      "start": 32.240002,
+      "end": 32.330002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "do",
+      "start": 32.330002,
+      "end": 32.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "not",
+      "start": 32.599998,
+      "end": 32.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "care.",
+      "start": 32.849998,
+      "end": 33.32,
+      "segment": "body"
+    }
+  ]
+}

@@ -1,0 +1,114 @@
+{
+  "version": 1,
+  "visibleWordCount": 15,
+  "matchedWordCount": 15,
+  "coverage": 1,
+  "intervalFingerprint": "9f28ab010f9eff79",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "AN",
+      "start": 0.04,
+      "end": 0.36,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "AFFAIR",
+      "start": 0.45,
+      "end": 1.13,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Ted",
+      "start": 2.03,
+      "end": 2.46,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Joans",
+      "start": 2.46,
+      "end": 3.11,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "MONEY",
+      "start": 3.84,
+      "end": 4.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "MADE",
+      "start": 4.35,
+      "end": 4.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "LOVE",
+      "start": 4.74,
+      "end": 5.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "TO",
+      "start": 5.19,
+      "end": 5.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "AMERICA",
+      "start": 5.41,
+      "end": 6.13,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "AMERICA",
+      "start": 6.34,
+      "end": 7.03,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "MARRIED",
+      "start": 7.23,
+      "end": 7.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "MONEY",
+      "start": 7.81,
+      "end": 8.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "AT",
+      "start": 8.38,
+      "end": 8.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "FIRST",
+      "start": 8.56,
+      "end": 9.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "BITE",
+      "start": 9.25,
+      "end": 9.72,
+      "segment": "body"
+    }
+  ]
+}

@@ -1,5 +1,7 @@
 node_modules/
 .cache/
+.mamba/
+.tools/
 dist/
 reports/
 .DS_Store

@@ -6,6 +6,9 @@ let activeUrl = "";
 let suppressPauseUi = false;
 let activeSpeed = 1;
 let openSpeedMenuPlayer = null;
+let activeHighlight = null;
+let syncFrame = 0;
+const timingsCache = new Map();
 
 function setStatusText(player, text) {
   const status = player?.querySelector("[data-tts-status]");
@@ -31,6 +34,19 @@ function getSpeedOptions(player) {
   return Array.from(player?.querySelectorAll("[data-tts-speed-option]") ?? []);
 }
 
+function hasPlaybackStarted(player) {
+  const button = player?.querySelector("[data-tts-toggle]");
+  return button?.dataset.ttsStarted === "1";
+}
+
+function markPlaybackStarted(player, started) {
+  const button = player?.querySelector("[data-tts-toggle]");
+  if (!button) {
+    return;
+  }
+  button.dataset.ttsStarted = started ? "1" : "0";
+}
+
 function updateSpeedControl(player, { visible = false, speed = activeSpeed } = {}) {
   const control = getSpeedControl(player);
   if (!control) {
@@ -54,7 +70,7 @@ function updateSpeedControl(player, { visible = false, speed = activeSpeed } = {
 
 function shouldShowSpeedControl(player) {
   const button = player?.querySelector("[data-tts-toggle]");
-  return button?.dataset.ttsState === "playing";
+  return button?.dataset.ttsState === "playing" || button?.dataset.ttsStarted === "1";
 }
 
 function updateSpeedMenuOptions(player, speed = activeSpeed) {
@@ -139,6 +155,227 @@ function resetPlaybackSpeed() {
   setPlaybackSpeed(1, { announce: false, visible: false });
 }
 
+function firstPlayer(scope = document) {
+  return scope?.querySelector?.("[data-tts-root]") ?? null;
+}
+
+function nextPlaybackSpeed(currentSpeed, direction) {
+  const currentIndex = playbackSpeedOptions.indexOf(currentSpeed);
+  if (currentIndex < 0) {
+    return activeSpeed;
+  }
+  const nextIndex = currentIndex + direction;
+  if (nextIndex < 0 || nextIndex >= playbackSpeedOptions.length) {
+    return currentSpeed;
+  }
+  return playbackSpeedOptions[nextIndex];
+}
+
+function stopHighlightLoop() {
+  if (syncFrame) {
+    cancelAnimationFrame(syncFrame);
+    syncFrame = 0;
+  }
+}
+
+function clearHighlightState(context = activeHighlight) {
+  if (!context) {
+    return;
+  }
+  for (const node of context.nodesByIndex.values()) {
+    node.classList.remove("spoken");
+  }
+  context.spokenIndex = -1;
+}
+
+function updateHighlightState(currentTime) {
+  if (!activeHighlight) {
+    return;
+  }
+
+  const { words } = activeHighlight;
+  let nextIndex = -1;
+  while (nextIndex + 1 < words.length && words[nextIndex + 1].start <= currentTime) {
+    nextIndex += 1;
+  }
+
+  if (nextIndex < activeHighlight.spokenIndex) {
+    clearHighlightState(activeHighlight);
+  }
+  if (nextIndex === activeHighlight.spokenIndex) {
+    return;
+  }
+
+  for (let index = activeHighlight.spokenIndex + 1; index <= nextIndex; index += 1) {
+    const tokenIndex = words[index]?.tokenIndex;
+    if (!Number.isInteger(tokenIndex)) {
+      continue;
+    }
+    activeHighlight.nodesByIndex.get(tokenIndex)?.classList.add("spoken");
+  }
+  activeHighlight.spokenIndex = nextIndex;
+}
+
+function startHighlightLoop() {
+  stopHighlightLoop();
+  const step = () => {
+    if (!activeHighlight) {
+      syncFrame = 0;
+      return;
+    }
+    updateHighlightState(playback.currentTime);
+    if (!playback.paused && !playback.ended) {
+      syncFrame = requestAnimationFrame(step);
+      return;
+    }
+    syncFrame = 0;
+  };
+  syncFrame = requestAnimationFrame(step);
+}
+
+function tokenizedNodeClassList() {
+  return "tts-highlight-word";
+}
+
+function wrapTextNodes(container, startIndex, nodesByIndex) {
+  if (!container) {
+    return startIndex;
+  }
+
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+    acceptNode(node) {
+      const parent = node.parentElement;
+      if (!parent) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      if (!String(node.nodeValue || "").trim()) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      if (
+        parent.closest("[data-tts-root]")
+        || parent.closest(".publication-note")
+        || parent.closest(".published-note")
+        || parent.closest(`.${tokenizedNodeClassList()}`)
+      ) {
+        return NodeFilter.FILTER_REJECT;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+
+  const textNodes = [];
+  while (walker.nextNode()) {
+    textNodes.push(walker.currentNode);
+  }
+
+  let tokenIndex = startIndex;
+  for (const node of textNodes) {
+    const fragment = document.createDocumentFragment();
+    const source = String(node.nodeValue || "");
+    let lastIndex = 0;
+
+    for (const match of source.matchAll(/\S+/g)) {
+      const start = match.index ?? 0;
+      const end = start + match[0].length;
+      if (start > lastIndex) {
+        fragment.append(document.createTextNode(source.slice(lastIndex, start)));
+      }
+
+      const span = document.createElement("span");
+      span.className = tokenizedNodeClassList();
+      span.dataset.ttsTokenIndex = String(tokenIndex);
+      span.textContent = match[0];
+      nodesByIndex.set(tokenIndex, span);
+      fragment.append(span);
+      tokenIndex += 1;
+      lastIndex = end;
+    }
+
+    if (lastIndex < source.length) {
+      fragment.append(document.createTextNode(source.slice(lastIndex)));
+    }
+
+    node.parentNode?.replaceChild(fragment, node);
+  }
+
+  return tokenIndex;
+}
+
+function prepareHighlightContext(player, payload) {
+  const timingsUrl = String(player?.dataset?.ttsTimingsUrl || "").trim();
+  if (!timingsUrl || !Array.isArray(payload?.words) || payload.words.length === 0) {
+    return null;
+  }
+
+  if (player.__ttsHighlight?.timingsUrl === timingsUrl) {
+    player.__ttsHighlight.words = payload.words;
+    return player.__ttsHighlight;
+  }
+
+  const main = player.closest("main");
+  if (!main) {
+    return null;
+  }
+
+  const nodesByIndex = new Map();
+  let nextTokenIndex = 0;
+  nextTokenIndex = wrapTextNodes(main.querySelector("h1"), nextTokenIndex, nodesByIndex);
+  nextTokenIndex = wrapTextNodes(main.querySelector(".poem-meta-value-author"), nextTokenIndex, nodesByIndex);
+  nextTokenIndex = wrapTextNodes(main.querySelector(".poem-meta-value-translator"), nextTokenIndex, nodesByIndex);
+  nextTokenIndex = wrapTextNodes(main.querySelector(".content-block"), nextTokenIndex, nodesByIndex);
+
+  const context = {
+    timingsUrl,
+    words: payload.words,
+    nodesByIndex,
+    spokenIndex: -1,
+    tokenCount: nextTokenIndex
+  };
+  player.__ttsHighlight = context;
+  return context;
+}
+
+async function loadTimingsPayload(player) {
+  const rawUrl = String(player?.dataset?.ttsTimingsUrl || "").trim();
+  if (!rawUrl) {
+    return null;
+  }
+
+  const url = new URL(rawUrl, window.location.href).href;
+  if (!timingsCache.has(url)) {
+    timingsCache.set(url, fetch(url, { cache: "no-store" }).then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load TTS timings (${response.status}).`);
+      }
+      return response.json();
+    }));
+  }
+
+  return timingsCache.get(url);
+}
+
+async function ensureHighlightContext(player) {
+  const payload = await loadTimingsPayload(player).catch((error) => {
+    console.error("TTS timings failed to load.", error);
+    return null;
+  });
+  if (!payload || activePlayer !== player) {
+    return null;
+  }
+
+  const context = prepareHighlightContext(player, payload);
+  if (!context) {
+    return null;
+  }
+
+  if (activeHighlight && activeHighlight !== context) {
+    clearHighlightState(activeHighlight);
+  }
+  activeHighlight = context;
+  updateHighlightState(playback.currentTime);
+  return context;
+}
+
 function setPlayerState(player, state) {
   const button = player?.querySelector("[data-tts-toggle]");
   if (!button) {
@@ -149,6 +386,7 @@ function setPlayerState(player, state) {
   button.setAttribute("aria-busy", state === "loading" ? "true" : "false");
 
   if (state === "playing") {
+    markPlaybackStarted(player, true);
     button.setAttribute("aria-label", "Pause poem audio");
     button.setAttribute("title", "Pause poem audio");
     updateSpeedControl(player, { visible: true });
@@ -160,12 +398,13 @@ function setPlayerState(player, state) {
     button.setAttribute("aria-label", "Loading poem audio");
     button.setAttribute("title", "Loading poem audio");
     closeSpeedMenu(player);
-    updateSpeedControl(player, { visible: false });
+    updateSpeedControl(player, { visible: hasPlaybackStarted(player) });
     setStatusText(player, "Loading poem audio.");
     return;
   }
 
   if (state === "ended") {
+    markPlaybackStarted(player, false);
     button.setAttribute("aria-label", "Play poem audio again");
     button.setAttribute("title", "Play poem audio again");
     closeSpeedMenu(player);
@@ -175,6 +414,7 @@ function setPlayerState(player, state) {
   }
 
   if (state === "error") {
+    markPlaybackStarted(player, false);
     button.setAttribute("aria-label", "Poem audio is unavailable");
     button.setAttribute("title", "Poem audio is unavailable");
     closeSpeedMenu(player);
@@ -183,11 +423,12 @@ function setPlayerState(player, state) {
     return;
   }
 
-  button.setAttribute("aria-label", "Play poem audio");
-  button.setAttribute("title", "Play poem audio");
+  const resumable = hasPlaybackStarted(player);
+  button.setAttribute("aria-label", resumable ? "Resume poem audio" : "Play poem audio");
+  button.setAttribute("title", resumable ? "Resume poem audio" : "Play poem audio");
   closeSpeedMenu(player);
-  updateSpeedControl(player, { visible: false });
-  setStatusText(player, "Poem audio paused.");
+  updateSpeedControl(player, { visible: resumable });
+  setStatusText(player, resumable ? "Poem audio paused." : "Poem audio ready.");
 }
 
 playback.preload = "none";
@@ -195,11 +436,16 @@ playback.addEventListener("playing", () => {
   if (activePlayer) {
     setPlayerState(activePlayer, "playing");
   }
+  if (activeHighlight) {
+    startHighlightLoop();
+  }
 });
 playback.addEventListener("pause", () => {
   if (!activePlayer || suppressPauseUi) {
     return;
   }
+  stopHighlightLoop();
+  updateHighlightState(playback.currentTime);
   setPlayerState(activePlayer, playback.ended ? "ended" : "paused");
 });
 playback.addEventListener("waiting", () => {
@@ -208,15 +454,29 @@ playback.addEventListener("waiting", () => {
   }
 });
 playback.addEventListener("ended", () => {
+  stopHighlightLoop();
+  clearHighlightState();
   if (activePlayer) {
     setPlayerState(activePlayer, "ended");
   }
 });
 playback.addEventListener("error", () => {
+  stopHighlightLoop();
   console.error("TTS playback failed.", playback.error);
   if (activePlayer) {
     setPlayerState(activePlayer, "error");
   }
+});
+playback.addEventListener("seeked", () => {
+  if (playback.paused || playback.ended) {
+    clearHighlightState();
+    return;
+  }
+  updateHighlightState(playback.currentTime);
+});
+playback.addEventListener("emptied", () => {
+  stopHighlightLoop();
+  clearHighlightState();
 });
 
 export function resetTtsPlayback() {
@@ -229,11 +489,40 @@ export function resetTtsPlayback() {
   suppressPauseUi = false;
   playback.currentTime = 0;
   resetPlaybackSpeed();
+  stopHighlightLoop();
+  clearHighlightState();
   if (activePlayer) {
+    markPlaybackStarted(activePlayer, false);
     setPlayerState(activePlayer, "paused");
   }
+  activeHighlight = null;
   activePlayer = null;
   activeUrl = "";
+}
+
+export function toggleTtsPlayback(scope = document) {
+  const player = firstPlayer(scope);
+  const button = player?.querySelector("[data-tts-toggle]");
+  if (!button) {
+    return false;
+  }
+  button.click();
+  return true;
+}
+
+export function stepTtsPlaybackSpeed(direction, scope = document) {
+  const player = firstPlayer(scope);
+  if (!player || activePlayer !== player || playback.paused || playback.ended) {
+    return false;
+  }
+
+  const nextSpeed = nextPlaybackSpeed(activeSpeed, direction);
+  if (nextSpeed === activeSpeed) {
+    return false;
+  }
+
+  setPlaybackSpeed(nextSpeed);
+  return true;
 }
 
 export function bindTtsPlayers(scope = document) {
@@ -269,6 +558,8 @@ export function bindTtsPlayers(scope = document) {
 
       if (previousPlayer && previousPlayer !== player) {
         setPlayerState(previousPlayer, "paused");
+        clearHighlightState(activeHighlight);
+        activeHighlight = null;
       }
 
       activePlayer = player;
@@ -283,10 +574,15 @@ export function bindTtsPlayers(scope = document) {
           playback.src = normalizedUrl;
           playback.currentTime = 0;
           resetPlaybackSpeed();
+          markPlaybackStarted(player, false);
         } else if (playback.ended) {
           playback.currentTime = 0;
           resetPlaybackSpeed();
+          markPlaybackStarted(player, false);
+        } else if (playback.paused) {
+          updateSpeedControl(player, { visible: true });
         }
+        await ensureHighlightContext(player);
         await playback.play();
         setPlayerState(player, "playing");
       } catch (error) {
@@ -363,6 +659,7 @@ export function bindTtsPlayers(scope = document) {
     }
 
     setPlayerState(player, "paused");
+    markPlaybackStarted(player, false);
     setStatusText(player, "");
   }
 }

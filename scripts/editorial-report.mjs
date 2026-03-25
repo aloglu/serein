@@ -30,7 +30,7 @@ const rawPoems = await loadPoems();
 const authors = buildAuthorPages(rawPoems);
 const authorRouteByName = new Map(authors.map((entry) => [entry.author, entry.route]));
 const poems = preparePoems(rawPoems, authorRouteByName);
-const report = createEditorialReport(poems, {
+const report = await createEditorialReport(poems, {
   asOfDate: parseAsOfDateArg(),
   authorPagesList: authors
 });

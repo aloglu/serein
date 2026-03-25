@@ -34,9 +34,11 @@
   --byline-translator: color-mix(in oklab, var(--muted) 48%, var(--bg));
   --border: #d8cbb8;
   --source-divider: color-mix(in oklab, var(--border), transparent 52%);
-  --link-underline: color-mix(in oklab, var(--text), transparent 65%);
+  --link-underline: color-mix(in oklab, var(--bg) 78%, var(--text));
   --link-hover: color-mix(in oklab, var(--text) 84%, #b46f2f);
   --byline-link-hover: color-mix(in oklab, var(--byline-poet) 65%, var(--link-hover));
+  --tts-spoken-text: color-mix(in oklab, var(--text) 52%, #b46f2f);
+  --tts-spoken-meta: color-mix(in oklab, var(--byline-poet) 58%, #b46f2f);
   --card-bg: rgba(255, 255, 255, 0.52);
   --note-bg: rgba(255, 255, 255, 0.45);
   --card-shadow: 0 8px 20px rgba(71, 56, 38, 0.05);
@@ -104,11 +106,11 @@ a {
   position: relative;
   z-index: 0;
   text-decoration-line: underline;
-  text-decoration-style: dotted;
+  text-decoration-style: solid;
   text-decoration-thickness: 0.04em;
   text-underline-offset: 0.2em;
   text-decoration-color: var(--link-underline);
-  transition: color 160ms ease, text-decoration-color 160ms ease;
+  transition: color 160ms ease;
 }
 
 a::after {
@@ -136,7 +138,6 @@ a::after {
 a:hover,
 a:focus-visible {
   color: var(--link-hover);
-  text-decoration-color: color-mix(in oklab, var(--link-hover), transparent 42%);
 }
 
 .visually-hidden {
@@ -230,7 +231,6 @@ main > h1:first-child {
 .poem-meta-value-author a:hover,
 .poem-meta-value-author a:focus-visible {
   color: var(--byline-link-hover);
-  text-decoration-color: color-mix(in oklab, var(--byline-link-hover), transparent 42%);
 }
 
 .poem-meta-label-translator {
@@ -296,11 +296,12 @@ main > h1:first-child {
 }
 
 .tts-toggle-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: inline-grid;
+  place-items: center;
   line-height: 0;
   min-width: 1.18rem;
+  width: 1.18rem;
+  height: 1.32rem;
   text-align: center;
 }
 
@@ -315,8 +316,22 @@ main > h1:first-child {
   display: none;
 }
 
+.tts-icon-resume {
+  display: none;
+  width: 1.32rem;
+  height: 1.32rem;
+}
+
 .tts-toggle[data-tts-state="playing"] .tts-icon-play {
   display: none;
+}
+
+.tts-toggle[data-tts-started="1"]:not([data-tts-state="playing"]) .tts-icon-play {
+  display: none;
+}
+
+.tts-toggle[data-tts-started="1"]:not([data-tts-state="playing"]) .tts-icon-resume {
+  display: block;
 }
 
 .tts-toggle[data-tts-state="playing"] .tts-icon-pause {
@@ -701,6 +716,18 @@ main > .empty:only-child {
   border-top: 1px solid var(--source-divider);
 }
 
+.tts-highlight-word {
+  transition: color 220ms ease;
+}
+
+.tts-highlight-word.spoken {
+  color: var(--tts-spoken-text);
+}
+
+.poem-meta .tts-highlight-word.spoken {
+  color: var(--tts-spoken-meta);
+}
+
 .publication-label {
   user-select: none;
   -webkit-user-select: none;
@@ -715,7 +742,6 @@ main > .empty:only-child {
 .poet-authors a:hover,
 .poet-authors a:focus-visible {
   color: var(--link-hover);
-  text-decoration-color: color-mix(in oklab, var(--link-hover), transparent 42%);
 }
 
 .site-footer {
@@ -774,8 +800,10 @@ main > .empty:only-child {
     --subtle-meta: color-mix(in oklab, var(--bg) 68%, var(--text));
     --border: #584836;
     --source-divider: color-mix(in oklab, var(--border), transparent 72%);
-    --link-underline: color-mix(in oklab, var(--text), transparent 55%);
+    --link-underline: color-mix(in oklab, var(--bg) 72%, var(--text));
     --link-hover: color-mix(in oklab, var(--text) 78%, #e1a761);
+    --tts-spoken-text: color-mix(in oklab, var(--text) 85%, var(--bg));
+    --tts-spoken-meta: color-mix(in oklab, var(--byline-poet) 85%, var(--bg));
     --card-bg: rgba(50, 40, 31, 0.72);
     --note-bg: rgba(42, 34, 26, 0.72);
     --card-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);

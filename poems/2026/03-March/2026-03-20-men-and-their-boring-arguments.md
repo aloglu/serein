@@ -2,6 +2,7 @@
 title: Men and Their Boring Arguments
 author: Wendy Cope
 date: 2026-03-20
+tts: yes
 ---
 
 One man on his own can be quite good fun

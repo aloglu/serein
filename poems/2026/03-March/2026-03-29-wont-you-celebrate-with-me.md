@@ -2,6 +2,7 @@
 title: won’t you celebrate with me
 author: Lucille Clifton
 date: 2026-03-29
+tts: yes
 ---
 
 won’t you celebrate with me

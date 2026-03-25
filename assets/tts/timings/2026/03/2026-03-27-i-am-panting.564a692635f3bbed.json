@@ -1,0 +1,415 @@
+{
+  "version": 1,
+  "visibleWordCount": 58,
+  "matchedWordCount": 58,
+  "coverage": 1,
+  "intervalFingerprint": "0862eafe82269899",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "I",
+      "start": 0.16,
+      "end": 0.61,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "am",
+      "start": 0.68,
+      "end": 0.96,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Panting",
+      "start": 0.96,
+      "end": 1.65,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Anna",
+      "start": 2.37,
+      "end": 2.62,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "Swir",
+      "start": 2.62,
+      "end": 3.19,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "Czesław",
+      "start": 4.67,
+      "end": 5.53,
+      "segment": "translator"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "Miłosz",
+      "start": 5.53,
+      "end": 5.99,
+      "segment": "translator"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "Why",
+      "start": 6.92,
+      "end": 7.22,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "talk",
+      "start": 7.22,
+      "end": 7.71,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "if",
+      "start": 7.71,
+      "end": 7.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "one",
+      "start": 7.91,
+      "end": 8.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "can",
+      "start": 8.09,
+      "end": 8.26,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "shout",
+      "start": 8.26,
+      "end": 8.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "why",
+      "start": 9.01,
+      "end": 9.28,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "walk",
+      "start": 9.28,
+      "end": 9.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "if",
+      "start": 9.73,
+      "end": 9.89,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "one",
+      "start": 9.89,
+      "end": 10.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "can",
+      "start": 10.07,
+      "end": 10.29,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "run",
+      "start": 10.29,
+      "end": 10.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "why",
+      "start": 11.1,
+      "end": 11.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "live",
+      "start": 11.34,
+      "end": 11.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "if",
+      "start": 11.89,
+      "end": 12.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "one",
+      "start": 12.07,
+      "end": 12.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "can",
+      "start": 12.24,
+      "end": 12.45,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "burn.",
+      "start": 12.45,
+      "end": 12.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "I",
+      "start": 13.62,
+      "end": 13.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "am",
+      "start": 13.77,
+      "end": 13.97,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "running",
+      "start": 13.97,
+      "end": 14.45,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "and",
+      "start": 14.45,
+      "end": 14.62,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "screaming",
+      "start": 14.62,
+      "end": 15.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "from",
+      "start": 15.17,
+      "end": 15.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "joy",
+      "start": 15.43,
+      "end": 15.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "I",
+      "start": 16.209999,
+      "end": 16.280001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "am",
+      "start": 16.280001,
+      "end": 16.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "running",
+      "start": 16.52,
+      "end": 16.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "and",
+      "start": 16.889999,
+      "end": 17.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "screaming",
+      "start": 17.049999,
+      "end": 17.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "from",
+      "start": 17.6,
+      "end": 17.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "despair",
+      "start": 17.799999,
+      "end": 18.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "I",
+      "start": 18.879999,
+      "end": 18.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "am",
+      "start": 18.98,
+      "end": 19.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "panting",
+      "start": 19.15,
+      "end": 19.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "my",
+      "start": 20.17,
+      "end": 20.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "lungs",
+      "start": 20.35,
+      "end": 20.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "work",
+      "start": 20.790001,
+      "end": 21.030001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "like",
+      "start": 21.030001,
+      "end": 21.190001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "crazy.",
+      "start": 21.190001,
+      "end": 21.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "Violent",
+      "start": 22.34,
+      "end": 22.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "feelings",
+      "start": 22.9,
+      "end": 23.379999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "are",
+      "start": 23.379999,
+      "end": 23.469999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "good,",
+      "start": 23.469999,
+      "end": 23.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "so",
+      "start": 24.15,
+      "end": 24.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "I",
+      "start": 24.389999,
+      "end": 24.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "have",
+      "start": 24.48,
+      "end": 24.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "heard,",
+      "start": 24.68,
+      "end": 25.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "for",
+      "start": 25.41,
+      "end": 25.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "your",
+      "start": 25.610001,
+      "end": 25.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "health.",
+      "start": 25.780001,
+      "end": 26.290001,
+      "segment": "body"
+    }
+  ]
+}

@@ -1,0 +1,1920 @@
+{
+  "version": 1,
+  "visibleWordCount": 273,
+  "matchedWordCount": 273,
+  "coverage": 1,
+  "intervalFingerprint": "0efd2d0efa737902",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Do",
+      "start": 0.18,
+      "end": 0.62,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Not",
+      "start": 0.62,
+      "end": 1.2,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Love",
+      "start": 1.27,
+      "end": 1.73,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Half",
+      "start": 1.73,
+      "end": 2.23,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "Lovers",
+      "start": 2.23,
+      "end": 2.78,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "Gibran",
+      "start": 3.35,
+      "end": 4.08,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "Khalil",
+      "start": 4.08,
+      "end": 4.33,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "Gibran",
+      "start": 4.33,
+      "end": 5.32,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "Do",
+      "start": 6.19,
+      "end": 6.45,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "not",
+      "start": 6.45,
+      "end": 6.72,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "love",
+      "start": 6.72,
+      "end": 6.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "half",
+      "start": 6.98,
+      "end": 7.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "lovers",
+      "start": 7.32,
+      "end": 7.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "Do",
+      "start": 8.34,
+      "end": 8.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "not",
+      "start": 8.59,
+      "end": 8.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "entertain",
+      "start": 8.83,
+      "end": 9.46,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "half",
+      "start": 9.46,
+      "end": 9.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "friends",
+      "start": 9.77,
+      "end": 10.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "Do",
+      "start": 10.92,
+      "end": 11.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "not",
+      "start": 11.17,
+      "end": 11.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "indulge",
+      "start": 11.39,
+      "end": 12.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "in",
+      "start": 12.02,
+      "end": 12.22,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "works",
+      "start": 12.22,
+      "end": 12.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "of",
+      "start": 12.66,
+      "end": 12.78,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "the",
+      "start": 12.78,
+      "end": 12.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "half",
+      "start": 12.85,
+      "end": 13.37,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "talented",
+      "start": 13.37,
+      "end": 14.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "Do",
+      "start": 14.69,
+      "end": 14.95,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "not",
+      "start": 14.95,
+      "end": 15.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "live",
+      "start": 15.23,
+      "end": 15.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "half",
+      "start": 15.49,
+      "end": 15.89,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "a",
+      "start": 15.89,
+      "end": 15.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "life",
+      "start": 15.93,
+      "end": 16.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "and",
+      "start": 16.809999,
+      "end": 17.059999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "do",
+      "start": 17.059999,
+      "end": 17.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "not",
+      "start": 17.309999,
+      "end": 17.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "die",
+      "start": 17.700001,
+      "end": 18.200001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "a",
+      "start": 18.26,
+      "end": 18.309999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "half",
+      "start": 18.309999,
+      "end": 18.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "death",
+      "start": 18.780001,
+      "end": 19.200001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "If",
+      "start": 19.76,
+      "end": 19.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "you",
+      "start": 19.98,
+      "end": 20.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "choose",
+      "start": 20.17,
+      "end": 20.559999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "silence,",
+      "start": 20.559999,
+      "end": 21.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "then",
+      "start": 21.58,
+      "end": 21.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "be",
+      "start": 21.92,
+      "end": 22.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "silent",
+      "start": 22.09,
+      "end": 22.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "When",
+      "start": 23.200001,
+      "end": 23.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "you",
+      "start": 23.389999,
+      "end": 23.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "speak,",
+      "start": 23.58,
+      "end": 24.129999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "do",
+      "start": 24.51,
+      "end": 24.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "so",
+      "start": 24.700001,
+      "end": 25.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "until",
+      "start": 25.040001,
+      "end": 25.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "you",
+      "start": 25.41,
+      "end": 25.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "are",
+      "start": 25.57,
+      "end": 25.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "finished",
+      "start": 25.66,
+      "end": 26.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "Do",
+      "start": 26.82,
+      "end": 27.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "not",
+      "start": 27.09,
+      "end": 27.35,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "silence",
+      "start": 27.35,
+      "end": 27.98,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "yourself",
+      "start": 27.98,
+      "end": 28.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "to",
+      "start": 28.5,
+      "end": 28.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "say",
+      "start": 28.610001,
+      "end": 28.879999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "something",
+      "start": 28.879999,
+      "end": 29.469999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "And",
+      "start": 29.99,
+      "end": 30.24,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "do",
+      "start": 30.24,
+      "end": 30.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "not",
+      "start": 30.459999,
+      "end": 30.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "speak",
+      "start": 30.73,
+      "end": 31.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "to",
+      "start": 31.43,
+      "end": 31.559999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "be",
+      "start": 31.559999,
+      "end": 31.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "silent",
+      "start": 31.700001,
+      "end": 32.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "If",
+      "start": 32.93,
+      "end": 33.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "you",
+      "start": 33.130001,
+      "end": 33.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "accept,",
+      "start": 33.27,
+      "end": 33.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "then",
+      "start": 34.18,
+      "end": 34.400002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "express",
+      "start": 34.400002,
+      "end": 34.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "it",
+      "start": 34.970001,
+      "end": 35.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "bluntly",
+      "start": 35.130001,
+      "end": 35.669998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "Do",
+      "start": 36.02,
+      "end": 36.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "not",
+      "start": 36.23,
+      "end": 36.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "mask",
+      "start": 36.459999,
+      "end": 36.849998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 80,
+      "text": "it",
+      "start": 36.849998,
+      "end": 37.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 81,
+      "text": "If",
+      "start": 37.529999,
+      "end": 37.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 82,
+      "text": "you",
+      "start": 37.700001,
+      "end": 37.810001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 83,
+      "text": "refuse",
+      "start": 37.810001,
+      "end": 38.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 84,
+      "text": "then",
+      "start": 38.459999,
+      "end": 38.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 85,
+      "text": "be",
+      "start": 38.66,
+      "end": 38.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 86,
+      "text": "clear",
+      "start": 38.799999,
+      "end": 39.220001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 87,
+      "text": "about",
+      "start": 39.220001,
+      "end": 39.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 88,
+      "text": "it",
+      "start": 39.5,
+      "end": 39.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 89,
+      "text": "for",
+      "start": 40.099998,
+      "end": 40.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 90,
+      "text": "an",
+      "start": 40.349998,
+      "end": 40.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 91,
+      "text": "ambiguous",
+      "start": 40.459999,
+      "end": 41.189999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 92,
+      "text": "refusal",
+      "start": 41.189999,
+      "end": 41.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 93,
+      "text": "is",
+      "start": 42.139999,
+      "end": 42.310001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 94,
+      "text": "but",
+      "start": 42.310001,
+      "end": 42.490002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 95,
+      "text": "a",
+      "start": 42.490002,
+      "end": 42.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 96,
+      "text": "weak",
+      "start": 42.59,
+      "end": 43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 97,
+      "text": "acceptance",
+      "start": 43.040001,
+      "end": 43.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 98,
+      "text": "Do",
+      "start": 44.52,
+      "end": 44.810001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 99,
+      "text": "not",
+      "start": 44.810001,
+      "end": 45.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 100,
+      "text": "accept",
+      "start": 45.02,
+      "end": 45.490002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 101,
+      "text": "half",
+      "start": 45.490002,
+      "end": 45.880001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 102,
+      "text": "a",
+      "start": 45.880001,
+      "end": 45.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 103,
+      "text": "solution",
+      "start": 45.93,
+      "end": 46.59,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 104,
+      "text": "Do",
+      "start": 47.07,
+      "end": 47.299999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 105,
+      "text": "not",
+      "start": 47.299999,
+      "end": 47.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 106,
+      "text": "believe",
+      "start": 47.529999,
+      "end": 47.950001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 107,
+      "text": "half",
+      "start": 47.950001,
+      "end": 48.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 108,
+      "text": "truths",
+      "start": 48.32,
+      "end": 48.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 109,
+      "text": "Do",
+      "start": 49.419998,
+      "end": 49.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 110,
+      "text": "not",
+      "start": 49.650002,
+      "end": 49.950001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 111,
+      "text": "dream",
+      "start": 49.950001,
+      "end": 50.349998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 112,
+      "text": "half",
+      "start": 50.349998,
+      "end": 50.740002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 113,
+      "text": "a",
+      "start": 50.740002,
+      "end": 50.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 114,
+      "text": "dream",
+      "start": 50.790001,
+      "end": 51.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 115,
+      "text": "Do",
+      "start": 51.799999,
+      "end": 52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 116,
+      "text": "not",
+      "start": 52,
+      "end": 52.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 117,
+      "text": "fantasize",
+      "start": 52.18,
+      "end": 53.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 118,
+      "text": "about",
+      "start": 53.040001,
+      "end": 53.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 119,
+      "text": "half",
+      "start": 53.290001,
+      "end": 53.619999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 120,
+      "text": "hopes",
+      "start": 53.619999,
+      "end": 54.119999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 121,
+      "text": "Half",
+      "start": 54.610001,
+      "end": 55.009998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 122,
+      "text": "a",
+      "start": 55.009998,
+      "end": 55.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 123,
+      "text": "drink",
+      "start": 55.07,
+      "end": 55.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 124,
+      "text": "will",
+      "start": 55.5,
+      "end": 55.619999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 125,
+      "text": "not",
+      "start": 55.619999,
+      "end": 55.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 126,
+      "text": "quench",
+      "start": 55.959999,
+      "end": 56.32,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 127,
+      "text": "your",
+      "start": 56.32,
+      "end": 56.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 128,
+      "text": "thirst",
+      "start": 56.41,
+      "end": 56.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 129,
+      "text": "Half",
+      "start": 57.290001,
+      "end": 57.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 130,
+      "text": "a",
+      "start": 57.639999,
+      "end": 57.689999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 131,
+      "text": "meal",
+      "start": 57.689999,
+      "end": 58.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 132,
+      "text": "will",
+      "start": 58.07,
+      "end": 58.240002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 133,
+      "text": "not",
+      "start": 58.240002,
+      "end": 58.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 134,
+      "text": "satiate",
+      "start": 58.57,
+      "end": 59.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 135,
+      "text": "your",
+      "start": 59.110001,
+      "end": 59.240002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 136,
+      "text": "hunger",
+      "start": 59.240002,
+      "end": 59.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 137,
+      "text": "Half",
+      "start": 60.169998,
+      "end": 60.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 138,
+      "text": "the",
+      "start": 60.650002,
+      "end": 60.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 139,
+      "text": "way",
+      "start": 60.77,
+      "end": 61.189999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 140,
+      "text": "will",
+      "start": 61.48,
+      "end": 61.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 141,
+      "text": "get",
+      "start": 61.650002,
+      "end": 61.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 142,
+      "text": "you",
+      "start": 61.919998,
+      "end": 62.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 143,
+      "text": "no",
+      "start": 62.080002,
+      "end": 62.330002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 144,
+      "text": "where",
+      "start": 62.330002,
+      "end": 62.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 145,
+      "text": "Half",
+      "start": 63.009998,
+      "end": 63.400002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 146,
+      "text": "an",
+      "start": 63.400002,
+      "end": 63.490002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 147,
+      "text": "idea",
+      "start": 63.490002,
+      "end": 63.939999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 148,
+      "text": "will",
+      "start": 63.939999,
+      "end": 64.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 149,
+      "text": "bear",
+      "start": 64.110001,
+      "end": 64.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 150,
+      "text": "you",
+      "start": 64.43,
+      "end": 64.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 151,
+      "text": "no",
+      "start": 64.639999,
+      "end": 64.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 152,
+      "text": "results",
+      "start": 64.919998,
+      "end": 65.57,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 153,
+      "text": "Your",
+      "start": 66.07,
+      "end": 66.370003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 154,
+      "text": "other",
+      "start": 66.440002,
+      "end": 66.690002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 155,
+      "text": "half",
+      "start": 66.690002,
+      "end": 67.199997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 156,
+      "text": "is",
+      "start": 67.470001,
+      "end": 67.660004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 157,
+      "text": "not",
+      "start": 67.660004,
+      "end": 67.980003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 158,
+      "text": "the",
+      "start": 67.980003,
+      "end": 68.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 159,
+      "text": "one",
+      "start": 68.080002,
+      "end": 68.330002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 160,
+      "text": "you",
+      "start": 68.330002,
+      "end": 68.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 161,
+      "text": "love",
+      "start": 68.5,
+      "end": 68.879997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 162,
+      "text": "It",
+      "start": 69.389999,
+      "end": 69.519997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 163,
+      "text": "is",
+      "start": 69.519997,
+      "end": 69.699997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 164,
+      "text": "you",
+      "start": 69.699997,
+      "end": 70.129997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 165,
+      "text": "in",
+      "start": 70.160004,
+      "end": 70.260002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 166,
+      "text": "another",
+      "start": 70.260002,
+      "end": 70.669998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 167,
+      "text": "time",
+      "start": 70.669998,
+      "end": 71.150002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 168,
+      "text": "yet",
+      "start": 71.449997,
+      "end": 71.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 169,
+      "text": "in",
+      "start": 71.709999,
+      "end": 71.830002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 170,
+      "text": "the",
+      "start": 71.830002,
+      "end": 71.919998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 171,
+      "text": "same",
+      "start": 71.919998,
+      "end": 72.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 172,
+      "text": "space",
+      "start": 72.309998,
+      "end": 72.889999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 173,
+      "text": "It",
+      "start": 73.400002,
+      "end": 73.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 174,
+      "text": "is",
+      "start": 73.529999,
+      "end": 73.720001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 175,
+      "text": "you",
+      "start": 73.720001,
+      "end": 74.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 176,
+      "text": "when",
+      "start": 74.07,
+      "end": 74.269997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 177,
+      "text": "you",
+      "start": 74.269997,
+      "end": 74.440002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 178,
+      "text": "are",
+      "start": 74.440002,
+      "end": 74.540001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 179,
+      "text": "not",
+      "start": 74.540001,
+      "end": 74.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 180,
+      "text": "Half",
+      "start": 75.519997,
+      "end": 75.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 181,
+      "text": "a",
+      "start": 75.93,
+      "end": 75.970001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 182,
+      "text": "life",
+      "start": 75.970001,
+      "end": 76.440002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 183,
+      "text": "is",
+      "start": 76.790001,
+      "end": 76.940002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 184,
+      "text": "a",
+      "start": 76.940002,
+      "end": 77.019997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 185,
+      "text": "life",
+      "start": 77.019997,
+      "end": 77.400002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 186,
+      "text": "you",
+      "start": 77.400002,
+      "end": 77.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 187,
+      "text": "didn’t",
+      "start": 77.5,
+      "end": 77.839996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 188,
+      "text": "live,",
+      "start": 77.839996,
+      "end": 78.260002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 189,
+      "text": "A",
+      "start": 78.629997,
+      "end": 78.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 190,
+      "text": "word",
+      "start": 78.709999,
+      "end": 79.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 191,
+      "text": "you",
+      "start": 79.080002,
+      "end": 79.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 192,
+      "text": "have",
+      "start": 79.209999,
+      "end": 79.419998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 193,
+      "text": "not",
+      "start": 79.419998,
+      "end": 79.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 194,
+      "text": "said",
+      "start": 79.709999,
+      "end": 80.120003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 195,
+      "text": "A",
+      "start": 80.480003,
+      "end": 80.540001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 196,
+      "text": "smile",
+      "start": 80.540001,
+      "end": 81.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 197,
+      "text": "you",
+      "start": 81.139999,
+      "end": 81.309998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 198,
+      "text": "postponed",
+      "start": 81.309998,
+      "end": 82.089996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 199,
+      "text": "A",
+      "start": 82.559998,
+      "end": 82.660004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 200,
+      "text": "love",
+      "start": 82.660004,
+      "end": 83.059998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 201,
+      "text": "you",
+      "start": 83.059998,
+      "end": 83.190002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 202,
+      "text": "have",
+      "start": 83.190002,
+      "end": 83.419998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 203,
+      "text": "not",
+      "start": 83.419998,
+      "end": 83.720001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 204,
+      "text": "had",
+      "start": 83.720001,
+      "end": 84.120003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 205,
+      "text": "A",
+      "start": 84.540001,
+      "end": 84.620003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 206,
+      "text": "friendship",
+      "start": 84.620003,
+      "end": 85.269997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 207,
+      "text": "you",
+      "start": 85.269997,
+      "end": 85.370003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 208,
+      "text": "did",
+      "start": 85.370003,
+      "end": 85.589996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 209,
+      "text": "not",
+      "start": 85.589996,
+      "end": 85.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 210,
+      "text": "know",
+      "start": 85.809998,
+      "end": 86.169998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 211,
+      "text": "To",
+      "start": 86.529999,
+      "end": 86.699997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 212,
+      "text": "reach",
+      "start": 86.699997,
+      "end": 87.230003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 213,
+      "text": "and",
+      "start": 87.330002,
+      "end": 87.519997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 214,
+      "text": "not",
+      "start": 87.519997,
+      "end": 87.720001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 215,
+      "text": "arrive",
+      "start": 87.720001,
+      "end": 88.230003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 216,
+      "text": "Work",
+      "start": 88.57,
+      "end": 88.940002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 217,
+      "text": "and",
+      "start": 89.010002,
+      "end": 89.190002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 218,
+      "text": "not",
+      "start": 89.190002,
+      "end": 89.400002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 219,
+      "text": "work",
+      "start": 89.400002,
+      "end": 89.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 220,
+      "text": "Attend",
+      "start": 90.190002,
+      "end": 90.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 221,
+      "text": "only",
+      "start": 90.779999,
+      "end": 91.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 222,
+      "text": "to",
+      "start": 91.099998,
+      "end": 91.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 223,
+      "text": "be",
+      "start": 91.25,
+      "end": 91.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 224,
+      "text": "absent",
+      "start": 91.459999,
+      "end": 92.050003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 225,
+      "text": "What",
+      "start": 92.559998,
+      "end": 92.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 226,
+      "text": "makes",
+      "start": 92.809998,
+      "end": 93.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 227,
+      "text": "you",
+      "start": 93.25,
+      "end": 93.370003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 228,
+      "text": "a",
+      "start": 93.370003,
+      "end": 93.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 229,
+      "text": "stranger",
+      "start": 93.43,
+      "end": 94.010002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 230,
+      "text": "to",
+      "start": 94.010002,
+      "end": 94.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 231,
+      "text": "them",
+      "start": 94.18,
+      "end": 94.419998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 232,
+      "text": "closest",
+      "start": 94.419998,
+      "end": 94.980003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 233,
+      "text": "to",
+      "start": 94.980003,
+      "end": 95.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 234,
+      "text": "you",
+      "start": 95.080002,
+      "end": 95.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 235,
+      "text": "and",
+      "start": 95.75,
+      "end": 95.949997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 236,
+      "text": "they",
+      "start": 95.949997,
+      "end": 96.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 237,
+      "text": "strangers",
+      "start": 96.139999,
+      "end": 96.800003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 238,
+      "text": "to",
+      "start": 96.800003,
+      "end": 96.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 239,
+      "text": "you",
+      "start": 96.93,
+      "end": 97.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 240,
+      "text": "The",
+      "start": 97.760002,
+      "end": 97.870003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 241,
+      "text": "half",
+      "start": 97.870003,
+      "end": 98.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 242,
+      "text": "is",
+      "start": 98.459999,
+      "end": 98.610001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 243,
+      "text": "a",
+      "start": 98.610001,
+      "end": 98.669998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 244,
+      "text": "mere",
+      "start": 98.669998,
+      "end": 99.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 245,
+      "text": "moment",
+      "start": 99.029999,
+      "end": 99.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 246,
+      "text": "of",
+      "start": 99.43,
+      "end": 99.540001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 247,
+      "text": "inability",
+      "start": 99.610001,
+      "end": 100.300003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 248,
+      "text": "but",
+      "start": 100.660004,
+      "end": 100.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 249,
+      "text": "you",
+      "start": 100.82,
+      "end": 101.089996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 250,
+      "text": "are",
+      "start": 101.089996,
+      "end": 101.230003,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 251,
+      "text": "able",
+      "start": 101.269997,
+      "end": 101.629997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 252,
+      "text": "for",
+      "start": 101.629997,
+      "end": 101.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 253,
+      "text": "you",
+      "start": 101.809998,
+      "end": 102.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 254,
+      "text": "are",
+      "start": 102.040001,
+      "end": 102.169998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 255,
+      "text": "not",
+      "start": 102.169998,
+      "end": 102.510002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 256,
+      "text": "half",
+      "start": 102.510002,
+      "end": 102.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 257,
+      "text": "a",
+      "start": 102.809998,
+      "end": 102.860001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 258,
+      "text": "being",
+      "start": 102.860001,
+      "end": 103.269997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 259,
+      "text": "You",
+      "start": 103.709999,
+      "end": 103.940002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 260,
+      "text": "are",
+      "start": 103.940002,
+      "end": 104.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 261,
+      "text": "a",
+      "start": 104.099998,
+      "end": 104.160004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 262,
+      "text": "whole",
+      "start": 104.160004,
+      "end": 104.589996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 263,
+      "text": "that",
+      "start": 104.589996,
+      "end": 104.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 264,
+      "text": "exists",
+      "start": 104.75,
+      "end": 105.419998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 265,
+      "text": "to",
+      "start": 105.449997,
+      "end": 105.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 266,
+      "text": "live",
+      "start": 105.599998,
+      "end": 105.809998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 267,
+      "text": "a",
+      "start": 105.809998,
+      "end": 105.879997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 268,
+      "text": "life",
+      "start": 105.879997,
+      "end": 106.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 269,
+      "text": "not",
+      "start": 106.139999,
+      "end": 106.190002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 270,
+      "text": "half",
+      "start": 106.190002,
+      "end": 106.260002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 271,
+      "text": "a",
+      "start": 106.260002,
+      "end": 106.269997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 272,
+      "text": "life",
+      "start": 106.269997,
+      "end": 106.339996,
+      "segment": "body"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 title: If I must die
 author: Refaat Alareer
 date: 2026-10-07
+tts: yes
 ---
 
 If I must die,

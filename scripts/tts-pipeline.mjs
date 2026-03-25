@@ -37,7 +37,7 @@ export function assetKeyForPoem({ poem, profile, sourceHash }) {
   }));
 }
 
-export async function listManagedAudioFiles(dirPath) {
+export async function listManagedFiles(dirPath) {
   if (!(await fileExists(dirPath))) {
     return [];
   }
@@ -48,7 +48,7 @@ export async function listManagedAudioFiles(dirPath) {
   for (const entry of entries) {
     const fullPath = path.join(dirPath, entry.name);
     if (entry.isDirectory()) {
-      files.push(...await listManagedAudioFiles(fullPath));
+      files.push(...await listManagedFiles(fullPath));
       continue;
     }
     if (entry.isFile()) {
@@ -58,3 +58,5 @@ export async function listManagedAudioFiles(dirPath) {
 
   return files;
 }
+
+export const listManagedAudioFiles = listManagedFiles;

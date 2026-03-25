@@ -1,0 +1,247 @@
+{
+  "version": 1,
+  "visibleWordCount": 34,
+  "matchedWordCount": 34,
+  "coverage": 1,
+  "intervalFingerprint": "e3d1334b7245d2b3",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Fear",
+      "start": 0.06,
+      "end": 0.79,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Charles",
+      "start": 1.46,
+      "end": 1.97,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Simic",
+      "start": 1.97,
+      "end": 2.42,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Fear",
+      "start": 3.25,
+      "end": 3.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "passes",
+      "start": 3.77,
+      "end": 4.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "from",
+      "start": 4.41,
+      "end": 4.72,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "man",
+      "start": 4.72,
+      "end": 5.04,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "to",
+      "start": 5.04,
+      "end": 5.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "man",
+      "start": 5.19,
+      "end": 5.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "Unknowing,",
+      "start": 5.9,
+      "end": 6.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "As",
+      "start": 7.2,
+      "end": 7.44,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "one",
+      "start": 7.44,
+      "end": 7.83,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "leaf",
+      "start": 7.83,
+      "end": 8.17,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "passes",
+      "start": 8.17,
+      "end": 8.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "its",
+      "start": 8.69,
+      "end": 8.9,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "shudder",
+      "start": 8.9,
+      "end": 9.45,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "To",
+      "start": 9.69,
+      "end": 9.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "another.",
+      "start": 9.91,
+      "end": 10.4,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "All",
+      "start": 11.22,
+      "end": 11.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "at",
+      "start": 11.56,
+      "end": 11.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "once",
+      "start": 11.69,
+      "end": 12.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "the",
+      "start": 12.39,
+      "end": 12.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "whole",
+      "start": 12.49,
+      "end": 12.95,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "tree",
+      "start": 12.95,
+      "end": 13.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "is",
+      "start": 13.39,
+      "end": 13.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "trembling",
+      "start": 13.66,
+      "end": 14.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "And",
+      "start": 14.92,
+      "end": 15.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "there",
+      "start": 15.1,
+      "end": 15.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "is",
+      "start": 15.27,
+      "end": 15.46,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "no",
+      "start": 15.46,
+      "end": 15.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "sign",
+      "start": 15.85,
+      "end": 16.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "of",
+      "start": 16.42,
+      "end": 16.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "the",
+      "start": 16.639999,
+      "end": 16.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "wind.",
+      "start": 16.74,
+      "end": 17.26,
+      "segment": "body"
+    }
+  ]
+}

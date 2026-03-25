@@ -1,0 +1,1052 @@
+{
+  "version": 1,
+  "visibleWordCount": 149,
+  "matchedWordCount": 149,
+  "coverage": 1,
+  "intervalFingerprint": "6059fc1623ff16cb",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Monopoly",
+      "start": 0.05,
+      "end": 1.03,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Bill",
+      "start": 1.5,
+      "end": 1.91,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Knott",
+      "start": 1.91,
+      "end": 2.42,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Finally",
+      "start": 3.23,
+      "end": 3.99,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "the",
+      "start": 3.99,
+      "end": 4.13,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "day",
+      "start": 4.13,
+      "end": 4.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "dawned",
+      "start": 4.5,
+      "end": 5.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "when",
+      "start": 5.36,
+      "end": 5.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "a",
+      "start": 5.56,
+      "end": 5.62,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "monopoly",
+      "start": 5.62,
+      "end": 6.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "owned",
+      "start": 6.55,
+      "end": 6.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "everything",
+      "start": 6.97,
+      "end": 7.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "in",
+      "start": 7.56,
+      "end": 7.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "the",
+      "start": 7.66,
+      "end": 7.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "world",
+      "start": 7.75,
+      "end": 8.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "So",
+      "start": 8.91,
+      "end": 9.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "it",
+      "start": 9.25,
+      "end": 9.39,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "went",
+      "start": 9.39,
+      "end": 9.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "looking",
+      "start": 9.64,
+      "end": 10.07,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "for",
+      "start": 10.07,
+      "end": 10.27,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "its",
+      "start": 10.27,
+      "end": 10.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "stockholders",
+      "start": 10.43,
+      "end": 11.38,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "to",
+      "start": 11.38,
+      "end": 11.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "celebrate",
+      "start": 11.49,
+      "end": 12.28,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "But",
+      "start": 13,
+      "end": 13.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "they",
+      "start": 13.19,
+      "end": 13.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "were",
+      "start": 13.56,
+      "end": 13.79,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "all",
+      "start": 13.85,
+      "end": 14.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "owned",
+      "start": 14.28,
+      "end": 14.63,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "by",
+      "start": 14.63,
+      "end": 14.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "it",
+      "start": 14.81,
+      "end": 15.11,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "they",
+      "start": 15.43,
+      "end": 15.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "were",
+      "start": 15.64,
+      "end": 15.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "all",
+      "start": 15.89,
+      "end": 16.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "dead",
+      "start": 16.139999,
+      "end": 16.549999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "they",
+      "start": 16.93,
+      "end": 17.08,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 36,
+      "text": "were",
+      "start": 17.08,
+      "end": 17.200001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 37,
+      "text": "someplace",
+      "start": 17.200001,
+      "end": 18.059999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 38,
+      "text": "Their",
+      "start": 18.620001,
+      "end": 18.780001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 39,
+      "text": "photographs",
+      "start": 18.780001,
+      "end": 19.6,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 40,
+      "text": "hung",
+      "start": 19.6,
+      "end": 19.879999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 41,
+      "text": "in",
+      "start": 19.879999,
+      "end": 20.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 42,
+      "text": "elevators",
+      "start": 20.059999,
+      "end": 20.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 43,
+      "text": "which",
+      "start": 21.030001,
+      "end": 21.280001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 44,
+      "text": "went",
+      "start": 21.280001,
+      "end": 21.49,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 45,
+      "text": "up",
+      "start": 21.559999,
+      "end": 21.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 46,
+      "text": "and",
+      "start": 21.76,
+      "end": 21.92,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 47,
+      "text": "down",
+      "start": 21.92,
+      "end": 22.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 48,
+      "text": "up",
+      "start": 22.629999,
+      "end": 22.82,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 49,
+      "text": "and",
+      "start": 22.82,
+      "end": 23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 50,
+      "text": "down",
+      "start": 23,
+      "end": 23.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 51,
+      "text": "carrying",
+      "start": 23.709999,
+      "end": 24.280001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 52,
+      "text": "nobody",
+      "start": 24.280001,
+      "end": 24.870001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 53,
+      "text": "Everyone",
+      "start": 25.620001,
+      "end": 26.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 54,
+      "text": "else",
+      "start": 26.15,
+      "end": 26.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 55,
+      "text": "was",
+      "start": 26.459999,
+      "end": 26.620001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 56,
+      "text": "in",
+      "start": 26.620001,
+      "end": 26.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 57,
+      "text": "bed",
+      "start": 26.77,
+      "end": 27.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 58,
+      "text": "doing",
+      "start": 27.42,
+      "end": 27.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 59,
+      "text": "exercises",
+      "start": 27.790001,
+      "end": 28.65,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 60,
+      "text": "to",
+      "start": 28.65,
+      "end": 28.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 61,
+      "text": "get",
+      "start": 28.76,
+      "end": 28.940001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 62,
+      "text": "in",
+      "start": 28.940001,
+      "end": 29.059999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 63,
+      "text": "shape",
+      "start": 29.059999,
+      "end": 29.48,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 64,
+      "text": "for",
+      "start": 29.48,
+      "end": 29.67,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 65,
+      "text": "noon",
+      "start": 29.67,
+      "end": 30.15,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 66,
+      "text": "Hey",
+      "start": 31.16,
+      "end": 31.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 67,
+      "text": "the",
+      "start": 31.58,
+      "end": 31.700001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 68,
+      "text": "monopoly",
+      "start": 31.700001,
+      "end": 32.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 69,
+      "text": "said",
+      "start": 32.25,
+      "end": 32.630001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 70,
+      "text": "let’s",
+      "start": 32.919998,
+      "end": 33.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 71,
+      "text": "uncork",
+      "start": 33.290001,
+      "end": 33.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 72,
+      "text": "the",
+      "start": 33.91,
+      "end": 34.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 73,
+      "text": "Empire",
+      "start": 34.080002,
+      "end": 34.529999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 74,
+      "text": "State",
+      "start": 34.529999,
+      "end": 34.93,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 75,
+      "text": "Build-",
+      "start": 34.93,
+      "end": 35.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 76,
+      "text": "ing",
+      "start": 35.16,
+      "end": 35.389999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 77,
+      "text": "and",
+      "start": 35.580002,
+      "end": 35.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 78,
+      "text": "get",
+      "start": 35.77,
+      "end": 36.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 79,
+      "text": "blotto",
+      "start": 36.040001,
+      "end": 36.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 80,
+      "text": "Silence",
+      "start": 37.34,
+      "end": 38.23,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 81,
+      "text": "The",
+      "start": 38.970001,
+      "end": 39.119999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 82,
+      "text": "monopoly",
+      "start": 39.119999,
+      "end": 39.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 83,
+      "text": "scowled",
+      "start": 39.77,
+      "end": 40.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 84,
+      "text": "All",
+      "start": 40.869999,
+      "end": 41.130001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 85,
+      "text": "it",
+      "start": 41.130001,
+      "end": 41.240002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 86,
+      "text": "wanted",
+      "start": 41.240002,
+      "end": 41.709999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 87,
+      "text": "was",
+      "start": 41.709999,
+      "end": 41.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 88,
+      "text": "a",
+      "start": 41.900002,
+      "end": 41.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 89,
+      "text": "little",
+      "start": 41.959999,
+      "end": 42.220001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 90,
+      "text": "good-fellowship,",
+      "start": 42.220001,
+      "end": 43.200001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 91,
+      "text": "like",
+      "start": 43.509998,
+      "end": 43.799999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 92,
+      "text": "you",
+      "start": 43.799999,
+      "end": 43.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 93,
+      "text": "get",
+      "start": 43.900002,
+      "end": 44.110001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 94,
+      "text": "in",
+      "start": 44.110001,
+      "end": 44.209999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 95,
+      "text": "the",
+      "start": 44.209999,
+      "end": 44.279999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 96,
+      "text": "highrise",
+      "start": 44.279999,
+      "end": 44.950001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 97,
+      "text": "apartment-buildings",
+      "start": 44.950001,
+      "end": 46.049999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 98,
+      "text": "Then",
+      "start": 46.73,
+      "end": 47.080002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 99,
+      "text": "the",
+      "start": 47.080002,
+      "end": 47.169998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 100,
+      "text": "sky",
+      "start": 47.169998,
+      "end": 47.650002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 101,
+      "text": "got",
+      "start": 47.650002,
+      "end": 47.900002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 102,
+      "text": "awful",
+      "start": 47.990002,
+      "end": 48.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 103,
+      "text": "dark",
+      "start": 48.360001,
+      "end": 48.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 104,
+      "text": "Gee",
+      "start": 49.209999,
+      "end": 49.720001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 105,
+      "text": "And",
+      "start": 50.330002,
+      "end": 50.509998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 106,
+      "text": "everyone",
+      "start": 50.59,
+      "end": 51.119999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 107,
+      "text": "was",
+      "start": 51.119999,
+      "end": 51.290001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 108,
+      "text": "in",
+      "start": 51.290001,
+      "end": 51.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 109,
+      "text": "bed",
+      "start": 51.43,
+      "end": 51.720001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 110,
+      "text": "frantically",
+      "start": 51.720001,
+      "end": 52.43,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 111,
+      "text": "doing",
+      "start": 52.43,
+      "end": 52.779999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 112,
+      "text": "those",
+      "start": 52.779999,
+      "end": 53.029999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 113,
+      "text": "exercises",
+      "start": 53.080002,
+      "end": 53.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 114,
+      "text": "that",
+      "start": 53.91,
+      "end": 54.119999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 115,
+      "text": "prepare",
+      "start": 54.119999,
+      "end": 54.560001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 116,
+      "text": "us",
+      "start": 54.560001,
+      "end": 54.740002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 117,
+      "text": "for",
+      "start": 54.740002,
+      "end": 54.880001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 118,
+      "text": "death",
+      "start": 54.880001,
+      "end": 55.34,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 119,
+      "text": "Exercises",
+      "start": 56.189999,
+      "end": 57.060001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 120,
+      "text": "known",
+      "start": 57.060001,
+      "end": 57.369999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 121,
+      "text": "as",
+      "start": 57.369999,
+      "end": 57.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 122,
+      "text": "“kissing”",
+      "start": 57.599998,
+      "end": 58.16,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 123,
+      "text": "“fucking”",
+      "start": 58.43,
+      "end": 59.040001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 124,
+      "text": "“caressing”",
+      "start": 59.43,
+      "end": 60.099998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 125,
+      "text": "Everyone",
+      "start": 61.080002,
+      "end": 61.66,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 126,
+      "text": "was",
+      "start": 61.66,
+      "end": 61.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 127,
+      "text": "unaware",
+      "start": 61.900002,
+      "end": 62.459999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 128,
+      "text": "that",
+      "start": 62.459999,
+      "end": 62.639999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 129,
+      "text": "they",
+      "start": 62.639999,
+      "end": 62.759998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 130,
+      "text": "had",
+      "start": 62.759998,
+      "end": 62.959999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 131,
+      "text": "been",
+      "start": 62.959999,
+      "end": 63.139999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 132,
+      "text": "bought",
+      "start": 63.139999,
+      "end": 63.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 133,
+      "text": "Or",
+      "start": 64.239998,
+      "end": 64.410004,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 134,
+      "text": "that",
+      "start": 64.410004,
+      "end": 64.589996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 135,
+      "text": "the",
+      "start": 64.589996,
+      "end": 64.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 136,
+      "text": "earth",
+      "start": 64.790001,
+      "end": 65.089996,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 137,
+      "text": "was",
+      "start": 65.089996,
+      "end": 65.239998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 138,
+      "text": "about",
+      "start": 65.239998,
+      "end": 65.510002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 139,
+      "text": "to",
+      "start": 65.510002,
+      "end": 65.599998,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 140,
+      "text": "sell",
+      "start": 65.599998,
+      "end": 65.949997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 141,
+      "text": "them",
+      "start": 65.949997,
+      "end": 66.129997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 142,
+      "text": "to",
+      "start": 66.129997,
+      "end": 66.25,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 143,
+      "text": "the",
+      "start": 66.25,
+      "end": 66.360001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 144,
+      "text": "moon",
+      "start": 66.360001,
+      "end": 66.790001,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 145,
+      "text": "For",
+      "start": 67.519997,
+      "end": 67.75,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 146,
+      "text": "a",
+      "start": 67.75,
+      "end": 67.830002,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 147,
+      "text": "little",
+      "start": 67.830002,
+      "end": 68.199997,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 148,
+      "text": "light",
+      "start": 68.199997,
+      "end": 68.68,
+      "segment": "body"
+    }
+  ]
+}

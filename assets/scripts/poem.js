@@ -5,7 +5,12 @@ import {
   runtimeAsOfEnabled
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
-import { bindTtsPlayers, resetTtsPlayback } from "./shared/tts.js";
+import {
+  bindTtsPlayers,
+  resetTtsPlayback,
+  stepTtsPlaybackSpeed,
+  toggleTtsPlayback
+} from "./shared/tts.js";
 import {
   formatFutureAvailabilityCountdown,
   nextFutureAvailabilityDelay,
@@ -17,6 +22,8 @@ initLinkPrefetching();
 const blockedHeading = "Not Available Yet";
 const blockedTitle = `${blockedHeading} | A Poem Per Day`;
 const blockedDescription = "This poem is not available yet.";
+let keyboardShortcutsBound = false;
+let pendingNavigation = false;
 
 function setMetaContent(selector, value) {
   const el = document.querySelector(selector);
@@ -85,8 +92,127 @@ async function loadPublishedPoem(main) {
   if (!dataUrl) {
     throw new Error("Poem data is unavailable.");
   }
-  const poem = await loadJsonData(dataUrl);
-  renderPublishedPoem(main, poem);
+  main.setAttribute("aria-busy", "true");
+  try {
+    const poem = await loadJsonData(dataUrl);
+    renderPublishedPoem(main, poem);
+  } finally {
+    main.setAttribute("aria-busy", "false");
+  }
+}
+
+function addDaysToDateString(dateStr, dayCount) {
+  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return "";
+  }
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  date.setUTCDate(date.getUTCDate() + dayCount);
+  return date.toISOString().slice(0, 10);
+}
+
+function poemRouteForDate(dateStr) {
+  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return "";
+  }
+  return `/${match[1]}/${match[2]}/${match[3]}/`;
+}
+
+function shouldIgnoreShortcutTarget(target) {
+  if (!(target instanceof Element)) {
+    return false;
+  }
+  if (target.closest("[data-tts-root]")) {
+    return true;
+  }
+  return Boolean(
+    target.closest("input, textarea, select, button, [contenteditable='true'], [contenteditable=''], audio, video")
+  );
+}
+
+function navigateByDay(main, dayCount) {
+  if (pendingNavigation) {
+    return false;
+  }
+
+  const currentDate = main?.dataset?.poemDate || "";
+  const firstPoemDate = main?.dataset?.firstPoemDate || "";
+  const nextDate = addDaysToDateString(currentDate, dayCount);
+  const effectiveDate = effectiveDateFromQueryOrNow({
+    defaultAsOf: main?.dataset?.defaultAsOf || ""
+  });
+  if (dayCount < 0 && firstPoemDate && nextDate < firstPoemDate) {
+    return false;
+  }
+  if (dayCount > 0 && nextDate > effectiveDate) {
+    return false;
+  }
+  const nextRoute = poemRouteForDate(nextDate);
+  if (!nextRoute) {
+    return false;
+  }
+
+  pendingNavigation = true;
+  window.location.assign(`${nextRoute}${window.location.search}${window.location.hash}`);
+  return true;
+}
+
+function bindPoemKeyboardShortcuts(main) {
+  if (keyboardShortcutsBound || !main) {
+    return;
+  }
+
+  keyboardShortcutsBound = true;
+  document.addEventListener("keydown", (event) => {
+    if (
+      event.defaultPrevented
+      || event.altKey
+      || event.ctrlKey
+      || event.metaKey
+      || event.shiftKey
+      || shouldIgnoreShortcutTarget(event.target)
+    ) {
+      return;
+    }
+
+    if (event.key === " " || event.key.toLowerCase() === "p") {
+      const handled = toggleTtsPlayback(main);
+      if (handled) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowUp") {
+      const handled = stepTtsPlaybackSpeed(1, main);
+      if (handled) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowDown") {
+      const handled = stepTtsPlaybackSpeed(-1, main);
+      if (handled) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowLeft") {
+      if (navigateByDay(main, -1)) {
+        event.preventDefault();
+      }
+      return;
+    }
+
+    if (event.key === "ArrowRight") {
+      if (navigateByDay(main, 1)) {
+        event.preventDefault();
+      }
+    }
+  });
 }
 
 async function initPoemAccessGuard() {
@@ -98,6 +224,7 @@ async function initPoemAccessGuard() {
   const markReady = () => {
     if (main) {
       main.setAttribute("data-ready", "1");
+      main.setAttribute("aria-busy", "false");
     }
   };
 
@@ -106,6 +233,8 @@ async function initPoemAccessGuard() {
     markReady();
     return;
   }
+
+  bindPoemKeyboardShortcuts(main);
 
   const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
   if (poemDate <= effectiveDate) {
