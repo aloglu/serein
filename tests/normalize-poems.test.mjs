@@ -9,6 +9,7 @@ import test from "node:test";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const normalizeScriptSource = path.join(root, "scripts", "normalize-poems.mjs");
 const filenameScriptSource = path.join(root, "scripts", "poem-filenames.mjs");
+const mojibakeScriptSource = path.join(root, "scripts", "mojibake.mjs");
 const MONTH_DIR_NAMES = {
   "01": "01-January",
   "02": "02-February",
@@ -107,6 +108,7 @@ async function createNormalizeWorkspace({ baselinePoems = [], fixturePoems = [] 
   await mkdir(path.join(workspace, "poems"), { recursive: true });
   await copyFile(normalizeScriptSource, path.join(workspace, "scripts", "normalize-poems.mjs"));
   await copyFile(filenameScriptSource, path.join(workspace, "scripts", "poem-filenames.mjs"));
+  await copyFile(mojibakeScriptSource, path.join(workspace, "scripts", "mojibake.mjs"));
 
   for (const poem of baselinePoems) {
     await writeWorkspacePoem(

@@ -237,6 +237,20 @@ function tokenizedNodeClassList() {
   return "tts-highlight-word";
 }
 
+function normalizeHighlightToken(input) {
+  return String(input || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+    .replace(/^[^a-z0-9]+|[^a-z0-9]+$/gi, "")
+    .replace(/[^a-z0-9]+/gi, "");
+}
+
 function wrapTextNodes(container, startIndex, nodesByIndex) {
   if (!container) {
     return startIndex;
@@ -279,6 +293,12 @@ function wrapTextNodes(container, startIndex, nodesByIndex) {
       const end = start + match[0].length;
       if (start > lastIndex) {
         fragment.append(document.createTextNode(source.slice(lastIndex, start)));
+      }
+
+      if (!normalizeHighlightToken(match[0])) {
+        fragment.append(document.createTextNode(match[0]));
+        lastIndex = end;
+        continue;
       }
 
       const span = document.createElement("span");

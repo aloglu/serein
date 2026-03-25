@@ -2,6 +2,8 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { speakablePoetryLineDirective } from "./poetry-line.mjs";
+import { verbalizeStandaloneNumbers } from "./number-words.mjs";
+import { repairMojibakeText } from "./mojibake.mjs";
 
 export const TTS_MANIFEST_VERSION = 2;
 
@@ -41,19 +43,25 @@ export function normalizeNewlines(input) {
 }
 
 export function repairMojibakePunctuation(input) {
-  return String(input || "")
-    .replaceAll("â€™", "\u2019")
-    .replaceAll("â€˜", "\u2018")
-    .replaceAll("â€œ", "\u201c")
-    .replaceAll("â€\u009d", "\u201d")
-    .replaceAll("â€¦", "\u2026")
-    .replaceAll("â€”", "\u2014")
-    .replaceAll("â€“", "\u2013")
-    .replaceAll("\u00c2\u00a0", "\u00a0");
+  return repairMojibakeText(input);
+  const source = String(input || "");
+  if (!/[ÃÂâ]/.test(source)) {
+    return source;
+  }
+
+  try {
+    const repaired = Buffer.from(source, "latin1").toString("utf8");
+    if (!repaired || repaired.includes("\uFFFD")) {
+      return source;
+    }
+    return repaired.replaceAll("\u00c2\u00a0", "\u00a0");
+  } catch {
+    return source;
+  }
 }
 
 export function speakablePoemText(poemBody) {
-  const lines = normalizeNewlines(repairMojibakePunctuation(poemBody))
+  const lines = normalizeNewlines(verbalizeStandaloneNumbers(repairMojibakePunctuation(poemBody)))
     .split("\n")
     .map((line) => {
       const trimmed = line.trim();
@@ -77,9 +85,9 @@ export function speakablePoemScript(poem) {
     return speakablePoemText(poem);
   }
 
-  const title = repairMojibakePunctuation(String(poem?.title || "")).trim();
-  const author = repairMojibakePunctuation(String(poem?.author || "")).trim();
-  const translator = repairMojibakePunctuation(String(poem?.translator || "")).trim();
+  const title = verbalizeStandaloneNumbers(repairMojibakePunctuation(String(poem?.title || ""))).trim();
+  const author = verbalizeStandaloneNumbers(repairMojibakePunctuation(String(poem?.author || ""))).trim();
+  const translator = verbalizeStandaloneNumbers(repairMojibakePunctuation(String(poem?.translator || ""))).trim();
   const poemText = speakablePoemText(poem?.poem || "");
   const preambleParts = [];
 

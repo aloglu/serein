@@ -3,6 +3,7 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { expectedPoemFilenameWithExtension } from "./poem-filenames.mjs";
+import { repairMojibakeText as repairWindows1252MojibakeText } from "./mojibake.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
@@ -63,6 +64,24 @@ function repairMojibakePunctuation(input) {
 
 function detectLineEnding(input) {
   return String(input || "").includes("\r\n") ? "\r\n" : "\n";
+}
+
+function repairMojibakeText(input) {
+  return repairWindows1252MojibakeText(input);
+  const source = String(input || "");
+  if (!/[ÃÂâ]/.test(source)) {
+    return source;
+  }
+
+  try {
+    const repaired = Buffer.from(source, "latin1").toString("utf8");
+    if (!repaired || repaired.includes("\uFFFD")) {
+      return source;
+    }
+    return repaired.replaceAll("\u00c2\u00a0", "\u00a0");
+  } catch {
+    return source;
+  }
 }
 
 function stripWrappingQuotes(input) {
@@ -187,7 +206,7 @@ function normalizeDoubleQuotes(source) {
 
 function normalizeTypography(input, { transformDoubleQuotes = true } = {}) {
   const withBasicPunctuation = normalizeSingleQuotes(
-    repairMojibakePunctuation(input)
+    repairMojibakeText(input)
       .replace(/\.\.\./g, ELLIPSIS)
       .replace(/(?<!-)--(?!-)/g, EM_DASH)
   );

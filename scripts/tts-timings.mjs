@@ -1,12 +1,13 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { normalizeNewlines } from "./tts-manifest.mjs";
+import { normalizeNewlines, repairMojibakePunctuation } from "./tts-manifest.mjs";
+import { integerToWords } from "./number-words.mjs";
 import { speakablePoetryLineDirective } from "./poetry-line.mjs";
 
 export const TTS_TIMINGS_VERSION = 1;
 
 function normalizeComparisonText(input) {
-  return String(input || "")
+  return repairMojibakePunctuation(String(input || ""))
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[\u2018\u2019]/g, "'")
@@ -18,9 +19,13 @@ function normalizeComparisonText(input) {
 }
 
 export function normalizeTokenText(input) {
-  return normalizeComparisonText(input)
+  const normalized = normalizeComparisonText(input)
     .replace(/^[^a-z0-9]+|[^a-z0-9]+$/gi, "")
     .replace(/[^a-z0-9]+/gi, "");
+  if (/^\d+$/.test(normalized)) {
+    return integerToWords(Number(normalized));
+  }
+  return normalized;
 }
 
 function tokenizeText(text) {
@@ -259,6 +264,16 @@ function fingerprintIntervals(intervals) {
   return createHash("sha256").update(JSON.stringify(intervals)).digest("hex").slice(0, 16);
 }
 
+function findNextMatchIndex(items, startIndex, targetNormalized, window = 8) {
+  const limit = Math.min(items.length, startIndex + window + 1);
+  for (let index = startIndex + 1; index < limit; index += 1) {
+    if (items[index]?.normalized === targetNormalized) {
+      return index;
+    }
+  }
+  return -1;
+}
+
 export function alignVisibleWordTimings(poem, intervals) {
   const { visibleTokens, spokenTokens } = buildSpokenTokenSequence(poem);
   const spokenIntervals = intervals.filter((interval) => interval.normalized);
@@ -340,7 +355,21 @@ export function alignVisibleWordTimings(poem, intervals) {
       continue;
     }
 
+    const nextSpokenMatch = findNextMatchIndex(spokenTokens, spokenIndex, interval.normalized);
+    const nextIntervalMatch = findNextMatchIndex(spokenIntervals, intervalIndex, spokenToken.normalized);
+
+    if (nextSpokenMatch >= 0 && (nextIntervalMatch < 0 || (nextSpokenMatch - spokenIndex) <= (nextIntervalMatch - intervalIndex))) {
+      spokenIndex = nextSpokenMatch;
+      continue;
+    }
+
+    if (nextIntervalMatch >= 0) {
+      intervalIndex = nextIntervalMatch;
+      continue;
+    }
+
     spokenIndex += 1;
+    intervalIndex += 1;
   }
 
   const sortedWords = words.sort((left, right) => left.tokenIndex - right.tokenIndex);

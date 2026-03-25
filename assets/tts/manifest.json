@@ -35,9 +35,9 @@
       "speed": 0.96,
       "timingsVersion": 1,
       "visibleWordCount": 285,
-      "matchedWordCount": 134,
-      "coverage": 0.4702,
-      "generatedAt": "2026-03-25T12:13:03.854Z"
+      "matchedWordCount": 285,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T15:26:21.053Z"
     },
     "2026-03-01": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-01-masks.c33e0eb3253d041c.mp3",
@@ -379,13 +379,13 @@
       "visibleWordCount": 115,
       "matchedWordCount": 115,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:29:40.818Z"
+      "generatedAt": "2026-03-25T14:54:22.554Z"
     },
     "2026-03-19": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-19-fifteen.96a8cc05b6464799.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-19-fifteen.96a8cc05b6464799.json",
-      "sourceHash": "8d66539c1b147ee6",
-      "assetKey": "96a8cc05b6464799",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-19-fifteen.7e7213794abb7210.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-19-fifteen.7e7213794abb7210.json",
+      "sourceHash": "75981e72be50dcb8",
+      "assetKey": "7e7213794abb7210",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -396,9 +396,9 @@
       "speed": 0.96,
       "timingsVersion": 1,
       "visibleWordCount": 55,
-      "matchedWordCount": 0,
-      "coverage": 0,
-      "generatedAt": "2026-03-25T12:30:40.054Z"
+      "matchedWordCount": 55,
+      "coverage": 1,
+      "generatedAt": "2026-03-25T14:06:06.407Z"
     },
     "2026-03-20": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-20-men-and-their-boring-arguments.4d255fea54ffbf57.mp3",
