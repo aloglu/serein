@@ -287,10 +287,10 @@
       "generatedAt": "2026-03-25T12:24:44.217Z"
     },
     "2026-03-14": {
-      "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.81e3740e6fa023e5.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-14-not-horses.81e3740e6fa023e5.json",
-      "sourceHash": "527c72ce9ac7bfa4",
-      "assetKey": "81e3740e6fa023e5",
+      "audioUrl": "/assets/tts/audio/2026/03/2026-03-14-not-horses.3de261e83db08d54.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/03/2026-03-14-not-horses.3de261e83db08d54.json",
+      "sourceHash": "ed843d06a03d5877",
+      "assetKey": "3de261e83db08d54",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -303,7 +303,7 @@
       "visibleWordCount": 153,
       "matchedWordCount": 153,
       "coverage": 1,
-      "generatedAt": "2026-03-25T15:42:45.064Z"
+      "generatedAt": "2026-03-26T04:15:35.110Z"
     },
     "2026-03-15": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-15-the-52-hertz-whale.08b93cc89635cba0.mp3",
