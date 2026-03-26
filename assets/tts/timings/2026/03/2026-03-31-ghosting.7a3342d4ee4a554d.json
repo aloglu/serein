@@ -1,8 +1,198 @@
 {
   "version": 1,
   "visibleWordCount": 27,
-  "matchedWordCount": 0,
-  "coverage": 0,
+  "matchedWordCount": 27,
+  "coverage": 1,
   "intervalFingerprint": "a07a1ad82a7e9ae0",
-  "words": []
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "Ghosting",
+      "start": 0.05,
+      "end": 0.53,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Andrea",
+      "start": 1.45,
+      "end": 1.96,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "Cohen",
+      "start": 1.96,
+      "end": 2.51,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "How",
+      "start": 3.31,
+      "end": 3.64,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "cavalier",
+      "start": 3.64,
+      "end": 4.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "people",
+      "start": 4.41,
+      "end": 4.84,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "are—",
+      "start": 4.84,
+      "end": 5.19,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "with",
+      "start": 5.52,
+      "end": 5.76,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "language",
+      "start": 5.76,
+      "end": 6.47,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "and",
+      "start": 6.54,
+      "end": 6.71,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "with",
+      "start": 6.71,
+      "end": 6.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "silence.",
+      "start": 6.87,
+      "end": 7.63,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "Any",
+      "start": 8.45,
+      "end": 8.77,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "ghost",
+      "start": 8.77,
+      "end": 9.31,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "will",
+      "start": 9.31,
+      "end": 9.44,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "tell",
+      "start": 9.44,
+      "end": 9.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "you—",
+      "start": 9.74,
+      "end": 10.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "the",
+      "start": 10.62,
+      "end": 10.79,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "last",
+      "start": 10.79,
+      "end": 11.29,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "thing",
+      "start": 11.29,
+      "end": 11.58,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "we",
+      "start": 11.58,
+      "end": 11.74,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "mean",
+      "start": 11.74,
+      "end": 12.01,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "to",
+      "start": 12.01,
+      "end": 12.14,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "do",
+      "start": 12.14,
+      "end": 12.54,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "is",
+      "start": 12.97,
+      "end": 13.18,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "leave",
+      "start": 13.18,
+      "end": 13.5,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "you.",
+      "start": 13.5,
+      "end": 13.81,
+      "segment": "body"
+    }
+  ]
 }

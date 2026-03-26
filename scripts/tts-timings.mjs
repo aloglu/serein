@@ -1,8 +1,7 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { normalizeNewlines, repairMojibakePunctuation } from "./tts-manifest.mjs";
+import { repairMojibakePunctuation, speakablePoemLines } from "./tts-manifest.mjs";
 import { integerToWords } from "./number-words.mjs";
-import { speakablePoetryLineDirective } from "./poetry-line.mjs";
 
 export const TTS_TIMINGS_VERSION = 1;
 
@@ -44,26 +43,20 @@ function tokenizeText(text) {
   return tokens;
 }
 
-function speakableBodyLines(poem) {
-  return normalizeNewlines(poem?.poem || "")
-    .split("\n")
-    .map((line) => {
-      const trimmed = line.trim();
-      if (!trimmed) {
-        return "";
-      }
-      if (trimmed.startsWith("::line")) {
-        return speakablePoetryLineDirective(trimmed) ?? trimmed.replace(/^::line\s*/, "");
-      }
-      return line;
-    })
-    .filter((line) => String(line || "").trim());
+function tokenizedPoemSections(poem) {
+  return {
+    titleTokens: tokenizeText(poem?.title || ""),
+    authorTokens: tokenizeText(poem?.author || ""),
+    translatorTokens: tokenizeText(poem?.translator || ""),
+    bodyLineTokens: speakablePoemLines(poem?.poem || "").map((line) => tokenizeText(line))
+  };
 }
 
 export function buildVisibleTokenSequence(poem) {
+  const sections = tokenizedPoemSections(poem);
   const visibleTokens = [];
 
-  for (const token of tokenizeText(poem?.title || "")) {
+  for (const token of sections.titleTokens) {
     visibleTokens.push({
       index: visibleTokens.length,
       text: token.text,
@@ -72,7 +65,7 @@ export function buildVisibleTokenSequence(poem) {
     });
   }
 
-  for (const token of tokenizeText(poem?.author || "")) {
+  for (const token of sections.authorTokens) {
     visibleTokens.push({
       index: visibleTokens.length,
       text: token.text,
@@ -81,7 +74,7 @@ export function buildVisibleTokenSequence(poem) {
     });
   }
 
-  for (const token of tokenizeText(poem?.translator || "")) {
+  for (const token of sections.translatorTokens) {
     visibleTokens.push({
       index: visibleTokens.length,
       text: token.text,
@@ -90,8 +83,8 @@ export function buildVisibleTokenSequence(poem) {
     });
   }
 
-  for (const line of speakableBodyLines(poem)) {
-    for (const token of tokenizeText(line)) {
+  for (const lineTokens of sections.bodyLineTokens) {
+    for (const token of lineTokens) {
       visibleTokens.push({
         index: visibleTokens.length,
         text: token.text,
@@ -105,63 +98,107 @@ export function buildVisibleTokenSequence(poem) {
 }
 
 export function buildSpokenTokenSequence(poem) {
-  const visibleTokens = buildVisibleTokenSequence(poem);
+  const sections = tokenizedPoemSections(poem);
+  const visibleTokens = [];
+  const titleIndexes = [];
+  const authorIndexes = [];
+  const translatorIndexes = [];
+  const bodyLineIndexes = [];
   const spokenTokens = [];
-  let visibleIndex = 0;
 
-  for (const token of tokenizeText(poem?.title || "")) {
+  for (const token of sections.titleTokens) {
+    titleIndexes.push(visibleTokens.length);
+    visibleTokens.push({
+      index: visibleTokens.length,
+      text: token.text,
+      normalized: token.normalized,
+      segment: "title"
+    });
+  }
+
+  for (const token of sections.authorTokens) {
+    authorIndexes.push(visibleTokens.length);
+    visibleTokens.push({
+      index: visibleTokens.length,
+      text: token.text,
+      normalized: token.normalized,
+      segment: "author"
+    });
+  }
+
+  for (const token of sections.translatorTokens) {
+    translatorIndexes.push(visibleTokens.length);
+    visibleTokens.push({
+      index: visibleTokens.length,
+      text: token.text,
+      normalized: token.normalized,
+      segment: "translator"
+    });
+  }
+
+  for (const lineTokens of sections.bodyLineTokens) {
+    const lineIndexes = [];
+    for (const token of lineTokens) {
+      lineIndexes.push(visibleTokens.length);
+      visibleTokens.push({
+        index: visibleTokens.length,
+        text: token.text,
+        normalized: token.normalized,
+        segment: "body"
+      });
+    }
+    bodyLineIndexes.push(lineIndexes);
+  }
+
+  for (const [index, token] of sections.titleTokens.entries()) {
     spokenTokens.push({
       text: token.text,
       normalized: token.normalized,
-      visibleIndex: visibleIndex
+      visibleIndexes: [titleIndexes[index]]
     });
-    visibleIndex += 1;
   }
 
-  if (String(poem?.author || "").trim()) {
+  if (sections.authorTokens.length > 0) {
     for (const token of tokenizeText("by")) {
       spokenTokens.push({
         text: token.text,
         normalized: token.normalized,
-        visibleIndex: null
+        visibleIndexes: []
       });
     }
-    for (const token of tokenizeText(poem.author)) {
+    for (const [index, token] of sections.authorTokens.entries()) {
       spokenTokens.push({
         text: token.text,
         normalized: token.normalized,
-        visibleIndex
+        visibleIndexes: [authorIndexes[index]]
       });
-      visibleIndex += 1;
     }
   }
 
-  if (String(poem?.translator || "").trim()) {
+  if (sections.translatorTokens.length > 0) {
     for (const token of tokenizeText("translated by")) {
       spokenTokens.push({
         text: token.text,
         normalized: token.normalized,
-        visibleIndex: null
+        visibleIndexes: []
       });
     }
-    for (const token of tokenizeText(poem.translator)) {
+    for (const [index, token] of sections.translatorTokens.entries()) {
       spokenTokens.push({
         text: token.text,
         normalized: token.normalized,
-        visibleIndex
+        visibleIndexes: [translatorIndexes[index]]
       });
-      visibleIndex += 1;
     }
   }
 
-  for (const line of speakableBodyLines(poem)) {
-    for (const token of tokenizeText(line)) {
+  for (const [lineIndex, lineTokens] of sections.bodyLineTokens.entries()) {
+    for (const [tokenIndex, token] of lineTokens.entries()) {
       spokenTokens.push({
         text: token.text,
         normalized: token.normalized,
-        visibleIndex
+        visibleIndexes: [bodyLineIndexes[lineIndex][tokenIndex]]
       });
-      visibleIndex += 1;
     }
   }
 
@@ -260,6 +297,74 @@ function splitRunAcrossTokens(tokens, start, end) {
   return slices;
 }
 
+function pushVisibleWordEntries(words, visibleTokens, spokenToken, start, end) {
+  const visibleIndexes = Array.isArray(spokenToken?.visibleIndexes) ? spokenToken.visibleIndexes : [];
+  for (const visibleIndex of visibleIndexes) {
+    if (!Number.isInteger(visibleIndex)) {
+      continue;
+    }
+    const visibleToken = visibleTokens[visibleIndex];
+    words.push({
+      tokenIndex: visibleIndex,
+      text: visibleToken?.text || spokenToken.text,
+      start,
+      end,
+      segment: visibleToken?.segment || ""
+    });
+  }
+}
+
+function estimatePendingRunSpan(pendingTokens, availableSpan) {
+  const countBased = pendingTokens.length * 0.18;
+  const weightBased = pendingTokens.reduce((sum, token) => sum + (tokenWeight(token) * 0.06), 0);
+  return Math.max(
+    0.24,
+    Math.min(
+      Math.max(availableSpan, 0.24),
+      Math.min(2.4, Math.max(countBased, weightBased))
+    )
+  );
+}
+
+function flushPendingSpokenRun(words, visibleTokens, pendingTokens, nextStart, previousEnd = Number.NaN) {
+  if (!Array.isArray(pendingTokens) || pendingTokens.length === 0 || !Number.isFinite(nextStart)) {
+    return;
+  }
+
+  const baseStart = Number.isFinite(previousEnd) ? previousEnd : 0.05;
+  const availableSpan = Math.max(0, nextStart - baseStart);
+  const minimumSpan = Math.max(0.04 * pendingTokens.length, 0.04);
+
+  let start = baseStart;
+  let end = nextStart;
+
+  if (!Number.isFinite(previousEnd)) {
+    const runSpan = estimatePendingRunSpan(pendingTokens, availableSpan);
+    end = Math.min(nextStart, baseStart + runSpan);
+  } else {
+    const runSpan = Math.max(
+      estimatePendingRunSpan(pendingTokens, availableSpan),
+      availableSpan * 0.82
+    );
+    start = Math.max(baseStart, nextStart - runSpan);
+  }
+
+  if ((end - start) < minimumSpan) {
+    if (Number.isFinite(previousEnd)) {
+      start = Math.max(baseStart, nextStart - minimumSpan);
+      end = nextStart;
+    } else {
+      start = baseStart;
+      end = Math.min(nextStart, baseStart + minimumSpan);
+    }
+  }
+
+  const slices = splitRunAcrossTokens(pendingTokens, start, end);
+  for (const slice of slices) {
+    pushVisibleWordEntries(words, visibleTokens, slice.token, slice.start, slice.end);
+  }
+}
+
 function fingerprintIntervals(intervals) {
   return createHash("sha256").update(JSON.stringify(intervals)).digest("hex").slice(0, 16);
 }
@@ -280,21 +385,18 @@ export function alignVisibleWordTimings(poem, intervals) {
   const words = [];
   let spokenIndex = 0;
   let intervalIndex = 0;
+  let lastConsumedEnd = Number.NaN;
+  let pendingSpokenTokens = [];
 
   while (spokenIndex < spokenTokens.length && intervalIndex < spokenIntervals.length) {
     const spokenToken = spokenTokens[spokenIndex];
     const interval = spokenIntervals[intervalIndex];
 
     if (spokenToken.normalized === interval.normalized) {
-      if (Number.isInteger(spokenToken.visibleIndex)) {
-        words.push({
-          tokenIndex: spokenToken.visibleIndex,
-          text: visibleTokens[spokenToken.visibleIndex]?.text || spokenToken.text,
-          start: interval.start,
-          end: interval.end,
-          segment: visibleTokens[spokenToken.visibleIndex]?.segment || ""
-        });
-      }
+      flushPendingSpokenRun(words, visibleTokens, pendingSpokenTokens, interval.start, lastConsumedEnd);
+      pendingSpokenTokens = [];
+      pushVisibleWordEntries(words, visibleTokens, spokenToken, interval.start, interval.end);
+      lastConsumedEnd = interval.end;
       spokenIndex += 1;
       intervalIndex += 1;
       continue;
@@ -311,20 +413,13 @@ export function alignVisibleWordTimings(poem, intervals) {
 
     if (mergedSpokenLength > 0) {
       const run = spokenTokens.slice(spokenIndex, spokenIndex + mergedSpokenLength);
+      flushPendingSpokenRun(words, visibleTokens, pendingSpokenTokens, interval.start, lastConsumedEnd);
+      pendingSpokenTokens = [];
       const slices = splitRunAcrossTokens(run, interval.start, interval.end);
       for (const slice of slices) {
-        if (!Number.isInteger(slice.token.visibleIndex)) {
-          continue;
-        }
-        const visibleToken = visibleTokens[slice.token.visibleIndex];
-        words.push({
-          tokenIndex: slice.token.visibleIndex,
-          text: visibleToken?.text || slice.token.text,
-          start: slice.start,
-          end: slice.end,
-          segment: visibleToken?.segment || ""
-        });
+        pushVisibleWordEntries(words, visibleTokens, slice.token, slice.start, slice.end);
       }
+      lastConsumedEnd = interval.end;
       spokenIndex += mergedSpokenLength;
       intervalIndex += 1;
       continue;
@@ -340,16 +435,16 @@ export function alignVisibleWordTimings(poem, intervals) {
     }
 
     if (mergedIntervalLength > 0) {
-      if (Number.isInteger(spokenToken.visibleIndex)) {
-        const visibleToken = visibleTokens[spokenToken.visibleIndex];
-        words.push({
-          tokenIndex: spokenToken.visibleIndex,
-          text: visibleToken?.text || spokenToken.text,
-          start: spokenIntervals[intervalIndex].start,
-          end: spokenIntervals[intervalIndex + mergedIntervalLength - 1].end,
-          segment: visibleToken?.segment || ""
-        });
-      }
+      flushPendingSpokenRun(words, visibleTokens, pendingSpokenTokens, spokenIntervals[intervalIndex].start, lastConsumedEnd);
+      pendingSpokenTokens = [];
+      pushVisibleWordEntries(
+        words,
+        visibleTokens,
+        spokenToken,
+        spokenIntervals[intervalIndex].start,
+        spokenIntervals[intervalIndex + mergedIntervalLength - 1].end
+      );
+      lastConsumedEnd = spokenIntervals[intervalIndex + mergedIntervalLength - 1].end;
       spokenIndex += 1;
       intervalIndex += mergedIntervalLength;
       continue;
@@ -359,6 +454,7 @@ export function alignVisibleWordTimings(poem, intervals) {
     const nextIntervalMatch = findNextMatchIndex(spokenIntervals, intervalIndex, spokenToken.normalized);
 
     if (nextSpokenMatch >= 0 && (nextIntervalMatch < 0 || (nextSpokenMatch - spokenIndex) <= (nextIntervalMatch - intervalIndex))) {
+      pendingSpokenTokens.push(...spokenTokens.slice(spokenIndex, nextSpokenMatch));
       spokenIndex = nextSpokenMatch;
       continue;
     }
@@ -368,6 +464,7 @@ export function alignVisibleWordTimings(poem, intervals) {
       continue;
     }
 
+    pendingSpokenTokens.push(spokenToken);
     spokenIndex += 1;
     intervalIndex += 1;
   }

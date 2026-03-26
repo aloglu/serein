@@ -531,7 +531,7 @@
       "visibleWordCount": 30,
       "matchedWordCount": 30,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:36:35.976Z"
+      "generatedAt": "2026-03-26T02:47:53.734Z"
     },
     "2026-03-27": {
       "audioUrl": "/assets/tts/audio/2026/03/2026-03-27-i-am-panting.564a692635f3bbed.mp3",
@@ -624,9 +624,9 @@
       "speed": 0.96,
       "timingsVersion": 1,
       "visibleWordCount": 27,
-      "matchedWordCount": 0,
-      "coverage": 0,
-      "generatedAt": "2026-03-25T12:41:27.358Z"
+      "matchedWordCount": 27,
+      "coverage": 1,
+      "generatedAt": "2026-03-26T03:41:40.992Z"
     },
     "2026-04-01": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-01-spring.d28e6f259cb62791.mp3",
@@ -781,10 +781,10 @@
       "generatedAt": "2026-03-25T12:49:15.514Z"
     },
     "2026-04-09": {
-      "audioUrl": "/assets/tts/audio/2026/04/2026-04-09-the-uses-of-sorrow.457a5cdd3ebbecdf.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-09-the-uses-of-sorrow.457a5cdd3ebbecdf.json",
-      "sourceHash": "87fe301ad36fe60f",
-      "assetKey": "457a5cdd3ebbecdf",
+      "audioUrl": "/assets/tts/audio/2026/04/2026-04-09-the-uses-of-sorrow.dd5ce70e2d08c2f1.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-09-the-uses-of-sorrow.dd5ce70e2d08c2f1.json",
+      "sourceHash": "08094b9b2b7e9d92",
+      "assetKey": "dd5ce70e2d08c2f1",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -795,9 +795,9 @@
       "speed": 0.96,
       "timingsVersion": 1,
       "visibleWordCount": 36,
-      "matchedWordCount": 6,
-      "coverage": 0.1667,
-      "generatedAt": "2026-03-25T12:50:15.644Z"
+      "matchedWordCount": 36,
+      "coverage": 1,
+      "generatedAt": "2026-03-26T04:04:40.431Z"
     },
     "2026-04-10": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-10-do-not-love-half-lovers.e0e3d70e1f98ed4d.mp3",

@@ -60,8 +60,19 @@ export function repairMojibakePunctuation(input) {
   }
 }
 
-export function speakablePoemText(poemBody) {
-  const lines = normalizeNewlines(repairMojibakePunctuation(poemBody))
+function stripInlineMarkdownSyntax(line) {
+  return String(line || "")
+    .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\\([\\`*_{}\[\]()#+\-.!|>~])/g, "$1")
+    .replace(/(?<!\\)[*_`~]+/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function speakablePoemLines(poemBody) {
+  return normalizeNewlines(repairMojibakePunctuation(poemBody))
     .split("\n")
     .map((line) => {
       const trimmed = line.trim();
@@ -71,13 +82,44 @@ export function speakablePoemText(poemBody) {
       if (trimmed.startsWith("::line")) {
         return speakablePoetryLineDirective(trimmed) ?? String(trimmed).replace(/^::line\s*/, "").trim();
       }
-      return verbalizeStandaloneNumbers(line.replace(/\s+$/g, ""));
+      return verbalizeStandaloneNumbers(stripInlineMarkdownSyntax(line.replace(/\s+$/g, "")));
     });
+}
 
+function joinSpeakableLines(lines) {
   return lines
     .join("\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+}
+
+export function speakablePoemText(poemBody) {
+  return joinSpeakableLines(speakablePoemLines(poemBody));
+}
+
+function stripAlignmentEdgePunctuation(token) {
+  return repairMojibakePunctuation(String(token || ""))
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2013\u2014]/g, "-")
+    .replace(/^[^\p{L}\p{N}'-]+|[^\p{L}\p{N}'-]+$/gu, "");
+}
+
+function alignmentSafeLine(line) {
+  return String(line || "")
+    .split(/\s+/)
+    .map((token) => stripAlignmentEdgePunctuation(token))
+    .filter(Boolean)
+    .join(" ");
+}
+
+export function alignmentPoemScript(poem) {
+  const script = speakablePoemScript(poem);
+  return joinSpeakableLines(
+    normalizeNewlines(script)
+      .split("\n")
+      .map((line) => alignmentSafeLine(line))
+  );
 }
 
 export function speakablePoemScript(poem) {
@@ -88,7 +130,7 @@ export function speakablePoemScript(poem) {
   const title = verbalizeStandaloneNumbers(repairMojibakePunctuation(String(poem?.title || ""))).trim();
   const author = verbalizeStandaloneNumbers(repairMojibakePunctuation(String(poem?.author || ""))).trim();
   const translator = verbalizeStandaloneNumbers(repairMojibakePunctuation(String(poem?.translator || ""))).trim();
-  const poemText = speakablePoemText(poem?.poem || "");
+  const spokenPoemText = speakablePoemText(poem?.poem || "");
   const preambleParts = [];
 
   if (title && author && translator) {
@@ -100,13 +142,13 @@ export function speakablePoemScript(poem) {
   }
 
   if (!preambleParts.length) {
-    return poemText;
+    return spokenPoemText;
   }
-  if (!poemText) {
+  if (!spokenPoemText) {
     return preambleParts.join("\n\n").trim();
   }
 
-  return `${preambleParts.join("\n\n")}\n\n${poemText}`.trim();
+  return `${preambleParts.join("\n\n")}\n\n${spokenPoemText}`.trim();
 }
 
 export function poemSourceHash(poem) {

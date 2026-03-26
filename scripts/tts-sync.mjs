@@ -8,6 +8,7 @@ import { loadPoems } from "./build.mjs";
 import { assertTtsProfileIsReady, resolveTtsProfile } from "./tts-config.mjs";
 import { assetKeyForPoem, listManagedFiles, selectedDates } from "./tts-pipeline.mjs";
 import {
+  alignmentPoemScript,
   audioUrlToRepoPath,
   buildManagedAudioUrl,
   fileExists,
@@ -117,7 +118,7 @@ async function alignWithMfa({ poem, mp3Path }) {
   try {
     await mkdir(corpusDir, { recursive: true });
     await mkdir(outputDir, { recursive: true });
-    await writeFile(textPath, `${speakablePoemScript(poem)}\n`, "utf8");
+    await writeFile(textPath, `${alignmentPoemScript(poem)}\n`, "utf8");
     await runCommand("ffmpeg", ["-y", "-i", mp3Path, "-ar", "16000", "-ac", "1", wavPath]);
 
     const alignmentAttempts = [
@@ -372,6 +373,9 @@ async function main() {
       !force
       && existingEntry?.timingsUrl === timingsUrl
       && existingEntry?.timingsVersion === TTS_TIMINGS_VERSION
+      && Number(existingEntry?.visibleWordCount || 0) > 0
+      && Number(existingEntry?.matchedWordCount || 0) > 0
+      && Number(existingEntry?.coverage || 0) > 0
       && await fileExists(existingTimingsPath)
     );
 

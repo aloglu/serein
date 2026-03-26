@@ -1,0 +1,261 @@
+{
+  "version": 1,
+  "visibleWordCount": 36,
+  "matchedWordCount": 36,
+  "coverage": 1,
+  "intervalFingerprint": "725a8f69a9791db2",
+  "words": [
+    {
+      "tokenIndex": 0,
+      "text": "The",
+      "start": 0.06,
+      "end": 0.26,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 1,
+      "text": "Uses",
+      "start": 0.26,
+      "end": 1.07,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 2,
+      "text": "of",
+      "start": 1.07,
+      "end": 1.32,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 3,
+      "text": "Sorrow",
+      "start": 1.32,
+      "end": 2.07,
+      "segment": "title"
+    },
+    {
+      "tokenIndex": 4,
+      "text": "Mary",
+      "start": 2.74,
+      "end": 3.2,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 5,
+      "text": "Oliver",
+      "start": 3.2,
+      "end": 3.74,
+      "segment": "author"
+    },
+    {
+      "tokenIndex": 6,
+      "text": "(In",
+      "start": 4.65,
+      "end": 4.88,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 7,
+      "text": "my",
+      "start": 4.88,
+      "end": 5.06,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 8,
+      "text": "sleep",
+      "start": 5.06,
+      "end": 5.63,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 9,
+      "text": "I",
+      "start": 5.9,
+      "end": 6.05,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 10,
+      "text": "dreamed",
+      "start": 6.05,
+      "end": 6.52,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 11,
+      "text": "this",
+      "start": 6.52,
+      "end": 6.81,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 12,
+      "text": "poem)",
+      "start": 6.81,
+      "end": 7.28,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 13,
+      "text": "Someone",
+      "start": 8.02,
+      "end": 8.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 14,
+      "text": "I",
+      "start": 8.56,
+      "end": 8.69,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 15,
+      "text": "loved",
+      "start": 8.69,
+      "end": 9.09,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 16,
+      "text": "once",
+      "start": 9.09,
+      "end": 9.42,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 17,
+      "text": "gave",
+      "start": 9.42,
+      "end": 9.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 18,
+      "text": "me",
+      "start": 9.73,
+      "end": 9.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 19,
+      "text": "a",
+      "start": 9.87,
+      "end": 9.94,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 20,
+      "text": "box",
+      "start": 9.94,
+      "end": 10.53,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 21,
+      "text": "full",
+      "start": 10.53,
+      "end": 10.87,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 22,
+      "text": "of",
+      "start": 10.87,
+      "end": 11.02,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 23,
+      "text": "darkness.",
+      "start": 11.02,
+      "end": 11.73,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 24,
+      "text": "It",
+      "start": 12.36,
+      "end": 12.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 25,
+      "text": "took",
+      "start": 12.56,
+      "end": 12.85,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 26,
+      "text": "me",
+      "start": 12.85,
+      "end": 13,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 27,
+      "text": "years",
+      "start": 13,
+      "end": 13.61,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 28,
+      "text": "to",
+      "start": 13.61,
+      "end": 13.78,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 29,
+      "text": "understand",
+      "start": 13.78,
+      "end": 14.56,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 30,
+      "text": "that",
+      "start": 14.78,
+      "end": 15.1,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 31,
+      "text": "this,",
+      "start": 15.1,
+      "end": 15.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 32,
+      "text": "too,",
+      "start": 15.41,
+      "end": 15.91,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 33,
+      "text": "was",
+      "start": 16.190001,
+      "end": 16.41,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 34,
+      "text": "a",
+      "start": 16.41,
+      "end": 16.469999,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 35,
+      "text": "gift.",
+      "start": 16.469999,
+      "end": 17.059999,
+      "segment": "body"
+    }
+  ]
+}
