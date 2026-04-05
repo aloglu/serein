@@ -683,7 +683,7 @@
       "visibleWordCount": 157,
       "matchedWordCount": 157,
       "coverage": 1,
-      "generatedAt": "2026-04-05T11:17:30.824Z"
+      "generatedAt": "2026-04-05T14:31:48.735Z"
     },
     "2026-04-04": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-04-simple.e386135b4dee9eb0.mp3",
@@ -817,6 +817,25 @@
       "matchedWordCount": 273,
       "coverage": 1,
       "generatedAt": "2026-03-25T12:52:12.052Z"
+    },
+    "2026-04-11": {
+      "audioUrl": "/assets/tts/audio/2026/04/2026-04-11-sailing-to-byzantium.97a0b965ad62095a.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-11-sailing-to-byzantium.97a0b965ad62095a.json",
+      "sourceHash": "800487059b466169",
+      "assetKey": "97a0b965ad62095a",
+      "renderProfile": "house-default-v1",
+      "provider": "openai",
+      "modelId": "gpt-4o-mini-tts",
+      "voice": "sage",
+      "outputFormat": "mp3",
+      "mimeType": "audio/mpeg",
+      "instructions": "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
+      "speed": 0.96,
+      "timingsVersion": 1,
+      "visibleWordCount": 232,
+      "matchedWordCount": 232,
+      "coverage": 1,
+      "generatedAt": "2026-04-05T14:17:03.366Z"
     },
     "2026-04-24": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-24-miracle-number-i.f3bf0e175c1a76fe.mp3",
