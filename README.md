@@ -25,11 +25,15 @@ That pipeline is responsible for:
 - generating social cards and editorial reports
 - generating RSS and sitemap files when `SITE_URL` is present
 
-The project targets Node.js 24 and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks.
+The project targets Node.js 24.x LTS and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` are checked in so local Node version managers can select the expected runtime.
 
 ## TTS support
 
 The website supports pre-generated text-to-speech audio for poem pages, with synced word highlighting during playback. Audio is generated ahead of time with OpenAI TTS, then aligned offline with [Montreal Forced Aligner](https://github.com/MontrealCorpusTools/Montreal-Forced-Aligner) so the browser can brighten the spoken words against the static poem text.
+
+Local TTS commands read credentials and TTS overrides from the shell environment first, and then fall back to `.env.local` at the repo root when a value is missing. That keeps Codespaces and CI secrets authoritative while letting local runs use a checked-out `.env.local`.
+
+When present, the TTS pipeline also auto-resolves `mfa` and `ffmpeg` from the repo-managed `.mamba/envs/mfa-env` toolchain, and defaults `MFA_ROOT_DIR` to the repo-local `.mfa/` directory. `SEREIN_MFA_EXE`, `SEREIN_FFMPEG_EXE`, `SEREIN_MFA_PREFIX`, and `MFA_ROOT_DIR` can still override that behavior explicitly.
 
 ## Content model
 

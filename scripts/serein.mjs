@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 
 import { spawn } from "node:child_process";
+import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
+
+const scriptDir = path.dirname(fileURLToPath(import.meta.url));
+const projectRoot = path.resolve(scriptDir, "..");
 
 function sanitizedEnv() {
   const env = {};
@@ -258,9 +263,10 @@ function runChild(command) {
     return;
   }
 
-  const child = spawn(process.execPath, [command.script, ...command.args], {
+  const child = spawn(process.execPath, [path.join(projectRoot, command.script), ...command.args], {
     stdio: "inherit",
-    env: sanitizedEnv()
+    env: sanitizedEnv(),
+    cwd: projectRoot
   });
 
   const forwardSignal = (signal) => {

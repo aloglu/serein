@@ -204,18 +204,31 @@ function normalizeDoubleQuotes(source) {
   return output;
 }
 
+function withProtectedHtmlComments(input, transform) {
+  const comments = [];
+  const protectedInput = String(input || "").replace(/<!--[\s\S]*?-->/g, (match) => {
+    const token = `__SEREIN_HTML_COMMENT_${comments.length}__`;
+    comments.push(match);
+    return token;
+  });
+  const transformed = transform(protectedInput);
+  return transformed.replace(/__SEREIN_HTML_COMMENT_(\d+)__/g, (_, index) => comments[Number(index)] || "");
+}
+
 function normalizeTypography(input, { transformDoubleQuotes = true } = {}) {
-  const withBasicPunctuation = normalizeSingleQuotes(
-    repairMojibakeText(input)
-      .replace(/\.\.\./g, ELLIPSIS)
-      .replace(/(?<!-)--(?!-)/g, EM_DASH)
-  );
+  return withProtectedHtmlComments(input, (source) => {
+    const withBasicPunctuation = normalizeSingleQuotes(
+      repairMojibakeText(source)
+        .replace(/\.\.\./g, ELLIPSIS)
+        .replace(/(?<!-)--(?!-)/g, EM_DASH)
+    );
 
-  if (!transformDoubleQuotes) {
-    return withBasicPunctuation;
-  }
+    if (!transformDoubleQuotes) {
+      return withBasicPunctuation;
+    }
 
-  return normalizeDoubleQuotes(withBasicPunctuation);
+    return normalizeDoubleQuotes(withBasicPunctuation);
+  });
 }
 
 function normalizePoemTypography(rawContent, filename) {

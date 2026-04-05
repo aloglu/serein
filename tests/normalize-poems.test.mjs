@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import test from "node:test";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const sereinCliSource = path.join(root, "scripts", "serein.mjs");
 const normalizeScriptSource = path.join(root, "scripts", "normalize-poems.mjs");
 const filenameScriptSource = path.join(root, "scripts", "poem-filenames.mjs");
 const mojibakeScriptSource = path.join(root, "scripts", "mojibake.mjs");
@@ -50,6 +51,35 @@ function runNormalize(workdir) {
       }
 
       reject(new Error(`Normalize failed with exit code ${code}.\n${stdout}${stderr}`));
+    });
+  });
+}
+
+function runSereinPoems(workdir, cwd = workdir) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(process.execPath, [path.join(workdir, "scripts", "serein.mjs"), "poems"], {
+      cwd,
+      env: process.env,
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+
+    let stdout = "";
+    let stderr = "";
+
+    child.stdout.on("data", (chunk) => {
+      stdout += String(chunk);
+    });
+    child.stderr.on("data", (chunk) => {
+      stderr += String(chunk);
+    });
+    child.on("error", reject);
+    child.on("close", (code) => {
+      if (code === 0) {
+        resolve({ stdout, stderr });
+        return;
+      }
+
+      reject(new Error(`serein poems failed with exit code ${code}.\n${stdout}${stderr}`));
     });
   });
 }
@@ -106,6 +136,7 @@ async function createNormalizeWorkspace({ baselinePoems = [], fixturePoems = [] 
   const workspace = await mkdtemp(path.join(os.tmpdir(), "serein-normalize-"));
   await mkdir(path.join(workspace, "scripts"), { recursive: true });
   await mkdir(path.join(workspace, "poems"), { recursive: true });
+  await copyFile(sereinCliSource, path.join(workspace, "scripts", "serein.mjs"));
   await copyFile(normalizeScriptSource, path.join(workspace, "scripts", "normalize-poems.mjs"));
   await copyFile(filenameScriptSource, path.join(workspace, "scripts", "poem-filenames.mjs"));
   await copyFile(mojibakeScriptSource, path.join(workspace, "scripts", "mojibake.mjs"));
@@ -390,6 +421,61 @@ test("normalize repairs common mojibake punctuation in poem text", { concurrency
     const contents = await readFile(expectedPath, "utf8");
     assert.match(contents, /hangman’s horse laughed… Then winter returned—slowly\./);
     assert.doesNotMatch(contents, /â€™|â€¦|â€”/);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("normalize preserves inline HTML TTS comments while normalizing surrounding poem text", { concurrency: false }, async () => {
+  const date = "2026-03-11";
+  const slug = "inline-tts-comment-fixture";
+  const workspace = await createNormalizeWorkspace({
+    fixturePoems: [
+      {
+        relativePath: path.join("__normalize-fixtures__", "inline-tts-comment.md"),
+        contents: buildPoemMarkdown({
+          title: "Inline TTS Comment Fixture",
+          date,
+          body: "He said -- \"hello\". <!-- tts: keep -- this \"exactly\" -->"
+        })
+      }
+    ]
+  });
+
+  try {
+    await runNormalize(workspace);
+    const expectedPath = path.join(workspace, "poems", poemRelativePath(date, slug));
+    const contents = await readFile(expectedPath, "utf8");
+    assert.match(contents, /He said — “hello”\. <!-- tts: keep -- this "exactly" -->/);
+    assert.doesNotMatch(contents, /<!—|—>/);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("serein poems resolves the project root when launched from the poems directory", { concurrency: false }, async () => {
+  const date = "2026-03-11";
+  const slug = "nested-cwd-cli-fixture";
+  const workspace = await createNormalizeWorkspace({
+    fixturePoems: [
+      {
+        relativePath: "new.md",
+        contents: buildPoemMarkdown({
+          title: "Nested Cwd CLI Fixture",
+          date,
+          body: "CLI line."
+        })
+      }
+    ]
+  });
+
+  try {
+    await runSereinPoems(workspace, path.join(workspace, "poems"));
+
+    const expectedPath = path.join(workspace, "poems", poemRelativePath(date, slug));
+    const contents = await readFile(expectedPath, "utf8");
+
+    assert.match(contents, /^title: Nested Cwd CLI Fixture$/m);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }

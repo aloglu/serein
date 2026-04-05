@@ -20,7 +20,7 @@
     "preview:asof": "node scripts/preview.mjs --watch"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24 <25"
   },
   "dependencies": {
     "marked": "^17.0.5"

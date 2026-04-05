@@ -31,55 +31,84 @@ const root = process.cwd();
 const dryRun = process.argv.includes("--dry-run");
 const force = process.argv.includes("--force");
 const alignOnly = process.argv.includes("--align-only");
+const defaultMfaRootDir = path.join(root, ".mfa");
 
 function poemTtsDisabled(poem) {
   return String(poem?.tts || poem?.tty || "").trim().toLowerCase() === "no";
 }
 
-function resolveMfaCommand() {
-  const explicit = String(process.env.SEREIN_MFA_EXE || "").trim();
-  if (explicit) {
-    return {
-      command: explicit,
-      pathPrefix: []
-    };
+function uniqueNonEmpty(values) {
+  return Array.from(new Set(values.filter(Boolean)));
+}
+
+function executablePathEntries(prefix) {
+  if (!prefix) {
+    return [];
   }
+
+  if (process.platform === "win32") {
+    return [
+      path.join(prefix, "Library", "bin"),
+      path.join(prefix, "Scripts"),
+      prefix
+    ];
+  }
+
+  return [path.join(prefix, "bin")];
+}
+
+function resolveManagedCommand(commandName, candidatePrefixes) {
+  for (const prefix of candidatePrefixes) {
+    const searchDirs = executablePathEntries(prefix);
+    for (const dirPath of searchDirs) {
+      const executable = path.join(
+        dirPath,
+        process.platform === "win32" ? `${commandName}.exe` : commandName
+      );
+      if (!existsSync(executable)) {
+        continue;
+      }
+
+      return {
+        command: executable,
+        pathPrefix: searchDirs
+      };
+    }
+  }
+
+  return null;
+}
+
+function resolveMfaToolchain() {
+  const explicit = String(process.env.SEREIN_MFA_EXE || "").trim();
+  const explicitFfmpeg = String(process.env.SEREIN_FFMPEG_EXE || "").trim();
 
   const envPrefix = String(process.env.SEREIN_MFA_PREFIX || "").trim();
   const candidatePrefixes = [
     envPrefix,
     path.join(root, ".mamba", "envs", "mfa-env")
   ].filter(Boolean);
-
-  for (const prefix of candidatePrefixes) {
-    const windowsExe = path.join(prefix, "Scripts", "mfa.exe");
-    const unixExe = path.join(prefix, "bin", "mfa");
-    if (process.platform === "win32" && existsSync(windowsExe)) {
-      return {
-        command: windowsExe,
-        pathPrefix: [prefix, path.join(prefix, "Library", "bin"), path.join(prefix, "Scripts")]
-      };
-    }
-    if (process.platform !== "win32" && existsSync(unixExe)) {
-      return {
-        command: unixExe,
-        pathPrefix: [path.join(prefix, "bin")]
-      };
-    }
-  }
+  const managedMfa = resolveManagedCommand("mfa", candidatePrefixes);
+  const managedFfmpeg = resolveManagedCommand("ffmpeg", candidatePrefixes);
 
   return {
-    command: "mfa",
-    pathPrefix: []
+    mfaCommand: explicit || managedMfa?.command || "mfa",
+    ffmpegCommand: explicitFfmpeg || managedFfmpeg?.command || "ffmpeg",
+    pathPrefix: uniqueNonEmpty([
+      ...(managedMfa?.pathPrefix || []),
+      ...(managedFfmpeg?.pathPrefix || [])
+    ]),
+    mfaRootDir: String(process.env.MFA_ROOT_DIR || defaultMfaRootDir).trim() || defaultMfaRootDir
   };
 }
 
-function runCommand(command, args, { cwd = root, extraPath = [] } = {}) {
+function runCommand(command, args, { cwd = root, extraPath = [], extraEnv = {} } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd,
       env: {
         ...process.env,
+        ...extraEnv,
         PATH: [...extraPath.filter(Boolean), process.env.PATH || ""].join(path.delimiter)
       },
       stdio: ["ignore", "pipe", "pipe"]
@@ -106,7 +135,7 @@ function runCommand(command, args, { cwd = root, extraPath = [] } = {}) {
 }
 
 async function alignWithMfa({ poem, mp3Path }) {
-  const mfa = resolveMfaCommand();
+  const toolchain = resolveMfaToolchain();
   const workDir = await mkdtemp(path.join(tmpdir(), "serein-mfa-"));
   const corpusDir = path.join(workDir, "corpus");
   const outputDir = path.join(workDir, "aligned");
@@ -118,8 +147,11 @@ async function alignWithMfa({ poem, mp3Path }) {
   try {
     await mkdir(corpusDir, { recursive: true });
     await mkdir(outputDir, { recursive: true });
+    await mkdir(toolchain.mfaRootDir, { recursive: true });
     await writeFile(textPath, `${alignmentPoemScript(poem)}\n`, "utf8");
-    await runCommand("ffmpeg", ["-y", "-i", mp3Path, "-ar", "16000", "-ac", "1", wavPath]);
+    await runCommand(toolchain.ffmpegCommand, ["-y", "-i", mp3Path, "-ar", "16000", "-ac", "1", wavPath], {
+      extraPath: toolchain.pathPrefix
+    });
 
     const alignmentAttempts = [
       [],
@@ -129,7 +161,7 @@ async function alignWithMfa({ poem, mp3Path }) {
     let lastError = null;
     for (const extraArgs of alignmentAttempts) {
       try {
-        await runCommand(mfa.command, [
+        await runCommand(toolchain.mfaCommand, [
           "align",
           corpusDir,
           "english_us_arpa",
@@ -138,7 +170,12 @@ async function alignWithMfa({ poem, mp3Path }) {
           "--clean",
           "--single_speaker",
           ...extraArgs
-        ], { extraPath: mfa.pathPrefix });
+        ], {
+          extraPath: toolchain.pathPrefix,
+          extraEnv: {
+            MFA_ROOT_DIR: toolchain.mfaRootDir
+          }
+        });
         lastError = null;
         break;
       } catch (error) {
