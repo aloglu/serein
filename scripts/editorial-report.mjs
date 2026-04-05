@@ -1,5 +1,5 @@
 import process from "node:process";
-import { buildAuthorPages, createEditorialReport, formatEditorialReportText, loadPoems, preparePoems } from "./build.mjs";
+import { buildPoetPages, createEditorialReport, formatEditorialReportText, loadPoems, preparePoems } from "./build.mjs";
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -27,12 +27,12 @@ function parseAsOfDateArg() {
 }
 
 const rawPoems = await loadPoems();
-const authors = buildAuthorPages(rawPoems);
-const authorRouteByName = new Map(authors.map((entry) => [entry.author, entry.route]));
-const poems = preparePoems(rawPoems, authorRouteByName);
+const poets = buildPoetPages(rawPoems);
+const poetRouteByName = new Map(poets.map((entry) => [entry.poet, entry.route]));
+const poems = preparePoems(rawPoems, poetRouteByName);
 const report = await createEditorialReport(poems, {
   asOfDate: parseAsOfDateArg(),
-  authorPagesList: authors
+  poetPagesList: poets
 });
 
 process.stdout.write(formatEditorialReportText(report));
