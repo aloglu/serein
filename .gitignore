@@ -2,7 +2,10 @@ node_modules/
 .cache/
 .codex
 .mamba/
+.mfa/
 .tools/
+.env
+.env.local
 dist/
 reports/
 .DS_Store

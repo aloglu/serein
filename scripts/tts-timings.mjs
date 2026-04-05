@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
-import { repairMojibakePunctuation, speakablePoemLines } from "./tts-manifest.mjs";
+import { repairMojibakePunctuation, speakablePoemLines, visiblePoemLines } from "./tts-manifest.mjs";
 import { integerToWords } from "./number-words.mjs";
 
 export const TTS_TIMINGS_VERSION = 1;
@@ -44,11 +44,15 @@ function tokenizeText(text) {
 }
 
 function tokenizedPoemSections(poem) {
+  const visibleBodyLineTokens = visiblePoemLines(poem?.poem || "").map((line) => tokenizeText(line));
+  const spokenBodyLineTokens = speakablePoemLines(poem?.poem || "").map((line) => tokenizeText(line));
+
   return {
     titleTokens: tokenizeText(poem?.title || ""),
     authorTokens: tokenizeText(poem?.author || ""),
     translatorTokens: tokenizeText(poem?.translator || ""),
-    bodyLineTokens: speakablePoemLines(poem?.poem || "").map((line) => tokenizeText(line))
+    visibleBodyLineTokens,
+    spokenBodyLineTokens
   };
 }
 
@@ -83,7 +87,7 @@ export function buildVisibleTokenSequence(poem) {
     });
   }
 
-  for (const lineTokens of sections.bodyLineTokens) {
+  for (const lineTokens of sections.visibleBodyLineTokens) {
     for (const token of lineTokens) {
       visibleTokens.push({
         index: visibleTokens.length,
@@ -136,7 +140,7 @@ export function buildSpokenTokenSequence(poem) {
     });
   }
 
-  for (const lineTokens of sections.bodyLineTokens) {
+  for (const lineTokens of sections.visibleBodyLineTokens) {
     const lineIndexes = [];
     for (const token of lineTokens) {
       lineIndexes.push(visibleTokens.length);
@@ -192,8 +196,25 @@ export function buildSpokenTokenSequence(poem) {
     }
   }
 
-  for (const [lineIndex, lineTokens] of sections.bodyLineTokens.entries()) {
-    for (const [tokenIndex, token] of lineTokens.entries()) {
+  if (sections.visibleBodyLineTokens.length !== sections.spokenBodyLineTokens.length) {
+    throw new Error("Visible poem lines and spoken poem lines fell out of sync.");
+  }
+
+  for (const [lineIndex, spokenLineTokens] of sections.spokenBodyLineTokens.entries()) {
+    const visibleLineTokens = sections.visibleBodyLineTokens[lineIndex] || [];
+    if (visibleLineTokens.length !== spokenLineTokens.length) {
+      throw new Error(
+        `Visible and spoken token counts differ on body line ${lineIndex + 1}. `
+        + "TTS overrides must preserve the normalized word sequence."
+      );
+    }
+    for (const [tokenIndex, token] of spokenLineTokens.entries()) {
+      if (visibleLineTokens[tokenIndex]?.normalized !== token.normalized) {
+        throw new Error(
+          `Visible and spoken tokens differ on body line ${lineIndex + 1}. `
+          + "TTS overrides must preserve the normalized word sequence."
+        );
+      }
       spokenTokens.push({
         text: token.text,
         normalized: token.normalized,

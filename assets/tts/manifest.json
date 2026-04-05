@@ -667,10 +667,10 @@
       "generatedAt": "2026-03-25T15:46:53.444Z"
     },
     "2026-04-03": {
-      "audioUrl": "/assets/tts/audio/2026/04/2026-04-03-one-art.f3c486a9d4568691.mp3",
-      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-03-one-art.f3c486a9d4568691.json",
-      "sourceHash": "8ab17347a7ea90f4",
-      "assetKey": "f3c486a9d4568691",
+      "audioUrl": "/assets/tts/audio/2026/04/2026-04-03-one-art.0c1ce72604b4541b.mp3",
+      "timingsUrl": "/assets/tts/timings/2026/04/2026-04-03-one-art.0c1ce72604b4541b.json",
+      "sourceHash": "e8a14c4ecef07140",
+      "assetKey": "0c1ce72604b4541b",
       "renderProfile": "house-default-v1",
       "provider": "openai",
       "modelId": "gpt-4o-mini-tts",
@@ -683,7 +683,7 @@
       "visibleWordCount": 157,
       "matchedWordCount": 157,
       "coverage": 1,
-      "generatedAt": "2026-03-25T12:44:22.452Z"
+      "generatedAt": "2026-04-05T11:17:30.824Z"
     },
     "2026-04-04": {
       "audioUrl": "/assets/tts/audio/2026/04/2026-04-04-simple.e386135b4dee9eb0.mp3",

@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { alignmentPoemScript, speakablePoemScript } from "../scripts/tts-manifest.mjs";
+import { alignmentPoemScript, speakablePoemScript, visiblePoemLines } from "../scripts/tts-manifest.mjs";
 import { alignVisibleWordTimings, normalizeTokenText } from "../scripts/tts-timings.mjs";
 
 test("normalizeTokenText repairs mojibake punctuation markers", () => {
@@ -89,6 +89,24 @@ test("alignmentPoemScript strips token-edge punctuation for MFA input", () => {
   assert.equal(
     alignmentPoemScript(poem),
     "The Uses of Sorrow by Mary Oliver\n\nIn my sleep I dreamed this poem\nSomeone I loved once gave me"
+  );
+});
+
+test("speakablePoemScript honors hidden inline TTS overrides without changing visible line tokens", () => {
+  const poem = {
+    title: "One Art",
+    author: "Elizabeth Bishop",
+    translator: "",
+    poem: "though it may look like (Write it!) like disaster. <!-- tts: though it may look like Write it like disaster. -->"
+  };
+
+  assert.deepEqual(
+    visiblePoemLines(poem.poem),
+    ["though it may look like (Write it!) like disaster."]
+  );
+  assert.equal(
+    speakablePoemScript(poem),
+    "One Art, by Elizabeth Bishop.\n\nthough it may look like Write it like disaster."
   );
 });
 

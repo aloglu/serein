@@ -71,18 +71,56 @@ function stripInlineMarkdownSyntax(line) {
     .trim();
 }
 
-export function speakablePoemLines(poemBody) {
+function extractInlineTtsOverride(line) {
+  const source = String(line || "");
+  const match = source.match(/<!--\s*tts:\s*([\s\S]*?)\s*-->/i);
+  return {
+    visibleSource: match ? source.replace(match[0], " ") : source,
+    spokenOverride: match ? match[1] : ""
+  };
+}
+
+function normalizePoemLineText(line) {
+  return verbalizeStandaloneNumbers(stripInlineMarkdownSyntax(String(line || "").replace(/\s+$/g, "")));
+}
+
+function poemBodyLineVariants(poemBody) {
   return normalizeNewlines(repairMojibakePunctuation(poemBody))
     .split("\n")
     .map((line) => {
-      const trimmed = line.trim();
-      if (!trimmed) {
+      const { visibleSource, spokenOverride } = extractInlineTtsOverride(line);
+      const trimmedVisible = visibleSource.trim();
+      if (!trimmedVisible) {
+        return {
+          visible: "",
+          spoken: ""
+        };
+      }
+
+      const visible = trimmedVisible.startsWith("::line")
+        ? (speakablePoetryLineDirective(trimmedVisible) ?? String(trimmedVisible).replace(/^::line\s*/, "").trim())
+        : normalizePoemLineText(visibleSource);
+      const spoken = spokenOverride
+        ? normalizePoemLineText(spokenOverride)
+        : visible;
+
+      return {
+        visible,
+        spoken
+      };
+    });
+}
+
+export function visiblePoemLines(poemBody) {
+  return poemBodyLineVariants(poemBody).map((line) => line.visible);
+}
+
+export function speakablePoemLines(poemBody) {
+  return poemBodyLineVariants(poemBody).map((line) => {
+      if (!line.spoken.trim()) {
         return "";
       }
-      if (trimmed.startsWith("::line")) {
-        return speakablePoetryLineDirective(trimmed) ?? String(trimmed).replace(/^::line\s*/, "").trim();
-      }
-      return verbalizeStandaloneNumbers(stripInlineMarkdownSyntax(line.replace(/\s+$/g, "")));
+      return line.spoken;
     });
 }
 
