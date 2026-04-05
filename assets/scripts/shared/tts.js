@@ -532,7 +532,7 @@ export function toggleTtsPlayback(scope = document) {
 
 export function stepTtsPlaybackSpeed(direction, scope = document) {
   const player = firstPlayer(scope);
-  if (!player || activePlayer !== player || playback.paused || playback.ended) {
+  if (!player || activePlayer !== player || playback.ended) {
     return false;
   }
 
@@ -614,14 +614,14 @@ export function bindTtsPlayers(scope = document) {
     if (speedControl && speedMenu) {
       speedControl.addEventListener("click", (event) => {
         event.preventDefault();
-        if (activePlayer !== player || playback.paused || playback.ended) {
+        if (activePlayer !== player || playback.ended) {
           return;
         }
         toggleSpeedMenu(player);
       });
 
       speedControl.addEventListener("keydown", (event) => {
-        if (activePlayer !== player || playback.paused || playback.ended) {
+        if (activePlayer !== player || playback.ended) {
           return;
         }
 
@@ -640,7 +640,7 @@ export function bindTtsPlayers(scope = document) {
       for (const option of getSpeedOptions(player)) {
         option.addEventListener("click", (event) => {
           event.preventDefault();
-          if (activePlayer !== player || playback.paused || playback.ended) {
+          if (activePlayer !== player || playback.ended) {
             return;
           }
           const speed = Number(option.dataset.ttsSpeedValue);
