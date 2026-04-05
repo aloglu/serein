@@ -283,3 +283,28 @@ test("alignVisibleWordTimings can recover after a stray MFA interval", () => {
     ["Say", "now", "the", "king,"]
   );
 });
+
+test("alignVisibleWordTimings backfills a trailing parenthetical run when alignment ends early", () => {
+  const poem = {
+    title: "",
+    author: "",
+    translator: "",
+    poem: "though it may look like (Write it!) like disaster."
+  };
+  const timings = alignVisibleWordTimings(poem, [
+    { word: "though", normalized: normalizeTokenText("though"), start: 0, end: 0.2 },
+    { word: "it", normalized: normalizeTokenText("it"), start: 0.2, end: 0.32 },
+    { word: "may", normalized: normalizeTokenText("may"), start: 0.32, end: 0.55 },
+    { word: "look", normalized: normalizeTokenText("look"), start: 0.55, end: 0.88 },
+    { word: "like", normalized: normalizeTokenText("like"), start: 0.88, end: 1.12 }
+  ]);
+
+  assert.equal(timings.matchedWordCount, 9);
+  assert.deepEqual(
+    timings.words.map((word) => word.text),
+    ["though", "it", "may", "look", "like", "(Write", "it!)", "like", "disaster."]
+  );
+  assert.equal(timings.words[5].start, 1.12);
+  assert.ok(timings.words[6].start >= timings.words[5].end);
+  assert.ok(timings.words[8].end > timings.words[7].end);
+});

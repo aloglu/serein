@@ -276,6 +276,12 @@ function tokenWeight(token) {
   return Math.max(1, String(token?.text || "").length);
 }
 
+function estimateStandaloneRunSpan(tokens) {
+  const countBased = tokens.length * 0.18;
+  const weightBased = tokens.reduce((sum, token) => sum + (tokenWeight(token) * 0.06), 0);
+  return Math.min(2.4, Math.max(0.24, Math.max(countBased, weightBased)));
+}
+
 function splitRunAcrossTokens(tokens, start, end) {
   const totalWeight = tokens.reduce((sum, token) => sum + tokenWeight(token), 0);
   const span = Math.max(0, end - start);
@@ -315,13 +321,12 @@ function pushVisibleWordEntries(words, visibleTokens, spokenToken, start, end) {
 }
 
 function estimatePendingRunSpan(pendingTokens, availableSpan) {
-  const countBased = pendingTokens.length * 0.18;
-  const weightBased = pendingTokens.reduce((sum, token) => sum + (tokenWeight(token) * 0.06), 0);
+  const estimatedSpan = estimateStandaloneRunSpan(pendingTokens);
   return Math.max(
     0.24,
     Math.min(
       Math.max(availableSpan, 0.24),
-      Math.min(2.4, Math.max(countBased, weightBased))
+      estimatedSpan
     )
   );
 }
@@ -359,6 +364,19 @@ function flushPendingSpokenRun(words, visibleTokens, pendingTokens, nextStart, p
     }
   }
 
+  const slices = splitRunAcrossTokens(pendingTokens, start, end);
+  for (const slice of slices) {
+    pushVisibleWordEntries(words, visibleTokens, slice.token, slice.start, slice.end);
+  }
+}
+
+function flushTrailingSpokenRun(words, visibleTokens, pendingTokens, previousEnd = Number.NaN) {
+  if (!Array.isArray(pendingTokens) || pendingTokens.length === 0) {
+    return;
+  }
+
+  const start = Number.isFinite(previousEnd) ? previousEnd : 0.05;
+  const end = start + estimateStandaloneRunSpan(pendingTokens);
   const slices = splitRunAcrossTokens(pendingTokens, start, end);
   for (const slice of slices) {
     pushVisibleWordEntries(words, visibleTokens, slice.token, slice.start, slice.end);
@@ -468,6 +486,13 @@ export function alignVisibleWordTimings(poem, intervals) {
     spokenIndex += 1;
     intervalIndex += 1;
   }
+
+  flushTrailingSpokenRun(
+    words,
+    visibleTokens,
+    pendingSpokenTokens.concat(spokenTokens.slice(spokenIndex)),
+    lastConsumedEnd
+  );
 
   const sortedWords = words.sort((left, right) => left.tokenIndex - right.tokenIndex);
   return {

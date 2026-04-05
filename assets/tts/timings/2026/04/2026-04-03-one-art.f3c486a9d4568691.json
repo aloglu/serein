@@ -1,8 +1,8 @@
 {
   "version": 1,
   "visibleWordCount": 157,
-  "matchedWordCount": 153,
-  "coverage": 0.9745,
+  "matchedWordCount": 157,
+  "coverage": 1,
   "intervalFingerprint": "e337c1827d17b81e",
   "words": [
     {
@@ -1074,6 +1074,34 @@
       "text": "like",
       "start": 66.449997,
       "end": 66.68,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 153,
+      "text": "(Write",
+      "start": 66.68,
+      "end": 67.222609,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 154,
+      "text": "it!)",
+      "start": 67.222609,
+      "end": 67.584348,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 155,
+      "text": "like",
+      "start": 67.584348,
+      "end": 67.946087,
+      "segment": "body"
+    },
+    {
+      "tokenIndex": 156,
+      "text": "disaster.",
+      "start": 67.946087,
+      "end": 68.76,
       "segment": "body"
     }
   ]
