@@ -1,8 +1,7 @@
 ---
 title: Not Horses
-author: Natalie Shapero
+poet: Natalie Shapero
 date: 2026-03-14
-tts: yes
 ---
 
 What I adore is not horses, with their modern

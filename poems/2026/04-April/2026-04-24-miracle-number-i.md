@@ -1,8 +1,7 @@
 ---
 title: Miracle Number I
-author: Hovhannes Shiraz
+poet: Hovhannes Shiraz
 date: 2026-04-24
-tts: yes
 ---
 
 In my dreams my door was knocked at,

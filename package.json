@@ -12,10 +12,6 @@
     "poems:sync": "node scripts/normalize-poems.mjs",
     "normalize:poems": "node scripts/normalize-poems.mjs",
     "editorial:report": "node scripts/editorial-report.mjs",
-    "tts:align": "node scripts/tts-align.mjs",
-    "tts:poem": "node scripts/tts-poem.mjs",
-    "tts:sync": "node scripts/tts-sync.mjs",
-    "tts:preview": "node scripts/tts-preview.mjs",
     "preview": "node scripts/preview.mjs",
     "preview:asof": "node scripts/preview.mjs --watch"
   },

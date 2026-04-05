@@ -11,25 +11,25 @@ import { initLinkPrefetching } from "./shared/prefetch.js";
 
 initLinkPrefetching();
 
-function renderAuthorArchive(poems, effectiveDate) {
+function renderPoetArchive(poems, effectiveDate) {
   const treeEl = document.getElementById("poet-page-tree");
   if (!treeEl) {
     return;
   }
 
   const { visible } = selectPoemForDate(poems, effectiveDate);
-  const authoredPoems = visible;
+  const publishedPoetPoems = visible;
 
-  if (authoredPoems.length === 0) {
-    const authorName = document.getElementById("poet-page-author")?.textContent || "this poet";
-    treeEl.innerHTML = `<p>No published poems by ${escapeHtml(authorName)} yet.</p>`;
+  if (publishedPoetPoems.length === 0) {
+    const poetName = document.getElementById("poet-page-poet")?.textContent || "this poet";
+    treeEl.innerHTML = `<p>No published poems by ${escapeHtml(poetName)} yet.</p>`;
     return;
   }
 
   const todayParts = effectiveDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
   const currentYear = todayParts ? todayParts[1] : "";
   const currentMonth = todayParts ? todayParts[2] : "";
-  const grouped = groupByYearMonth(authoredPoems);
+  const grouped = groupByYearMonth(publishedPoetPoems);
   const years = sortMapKeysDesc(grouped);
 
   treeEl.innerHTML = years
@@ -57,7 +57,7 @@ function renderAuthorArchive(poems, effectiveDate) {
 }
 
 async function init() {
-  const main = document.querySelector('main[data-dynamic-page="1"][data-author-route]');
+  const main = document.querySelector('main[data-dynamic-page="1"][data-poet-route]');
   if (!main) {
     return;
   }
@@ -86,7 +86,7 @@ async function init() {
       return;
     }
     const poems = await loadJsonData(dataUrl);
-    renderAuthorArchive(poems, effectiveDate);
+    renderPoetArchive(poems, effectiveDate);
   } catch (error) {
     const target = document.getElementById("poet-page-tree");
     if (target) {

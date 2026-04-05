@@ -96,7 +96,7 @@ export function sortMapKeysDesc(map) {
   return sortDesc(map.keys());
 }
 
-const authorCollator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
+const poetCollator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
 function normalizedAlphaText(input) {
   return String(input || "")
     .normalize("NFKD")
@@ -104,8 +104,8 @@ function normalizedAlphaText(input) {
     .trim();
 }
 
-function authorSortParts(author) {
-  const normalized = normalizedAlphaText(author);
+function poetSortParts(poet) {
+  const normalized = normalizedAlphaText(poet);
   const tokens = normalized.split(/\s+/).filter(Boolean);
   if (tokens.length === 0) {
     return { initialSource: "", primary: "", secondary: "" };
@@ -120,8 +120,8 @@ function authorSortParts(author) {
   };
 }
 
-export function formatAuthorIndexLabel(author) {
-  const raw = String(author || "").trim();
+export function formatPoetIndexLabel(poet) {
+  const raw = String(poet || "").trim();
   const tokens = raw.split(/\s+/).filter(Boolean);
   if (tokens.length <= 1) {
     return raw;
@@ -131,38 +131,38 @@ export function formatAuthorIndexLabel(author) {
   return `${primary}, ${secondary}`;
 }
 
-function authorInitial(author) {
-  const { initialSource } = authorSortParts(author);
+function poetInitial(poet) {
+  const { initialSource } = poetSortParts(poet);
   const firstChar = initialSource.charAt(0).toUpperCase();
   return /^[A-Z]$/.test(firstChar) ? firstChar : "#";
 }
 
-export function compareAuthors(left, right) {
-  const leftParts = authorSortParts(left);
-  const rightParts = authorSortParts(right);
+export function comparePoets(left, right) {
+  const leftParts = poetSortParts(left);
+  const rightParts = poetSortParts(right);
   return (
-    authorCollator.compare(leftParts.primary, rightParts.primary)
-    || authorCollator.compare(leftParts.secondary, rightParts.secondary)
-    || authorCollator.compare(left, right)
+    poetCollator.compare(leftParts.primary, rightParts.primary)
+    || poetCollator.compare(leftParts.secondary, rightParts.secondary)
+    || poetCollator.compare(left, right)
   );
 }
 
-export function sortAuthors(values) {
-  return Array.from(values).sort(compareAuthors);
+export function sortPoets(values) {
+  return Array.from(values).sort(comparePoets);
 }
 
-export function compareAuthorInitials(left, right) {
+export function comparePoetInitials(left, right) {
   if (left === "#") {
     return 1;
   }
   if (right === "#") {
     return -1;
   }
-  return compareAuthors(left, right);
+  return comparePoets(left, right);
 }
 
-export function sortAuthorInitials(values) {
-  return Array.from(values).sort(compareAuthorInitials);
+export function sortPoetInitials(values) {
+  return Array.from(values).sort(comparePoetInitials);
 }
 
 export function groupByYearMonth(poems) {
@@ -189,23 +189,23 @@ export function groupByYearMonth(poems) {
   return grouped;
 }
 
-export function groupByAuthorInitial(poems) {
+export function groupByPoetInitial(poems) {
   const grouped = new Map();
   const sorted = poems
     .slice()
-    .sort((a, b) => compareAuthors(a.author, b.author) || comparePoemsByDateDesc(a, b));
+    .sort((a, b) => comparePoets(a.poet, b.poet) || comparePoemsByDateDesc(a, b));
 
   for (const poem of sorted) {
-    const author = String(poem.author || "").trim() || "Unknown";
-    const initial = authorInitial(author);
+    const poet = String(poem.poet || "").trim() || "Unknown";
+    const initial = poetInitial(poet);
     if (!grouped.has(initial)) {
       grouped.set(initial, new Map());
     }
-    const authorsMap = grouped.get(initial);
-    if (!authorsMap.has(author)) {
-      authorsMap.set(author, []);
+    const poetsMap = grouped.get(initial);
+    if (!poetsMap.has(poet)) {
+      poetsMap.set(poet, []);
     }
-    authorsMap.get(author).push(poem);
+    poetsMap.get(poet).push(poem);
   }
 
   return grouped;

@@ -8,9 +8,9 @@ import { repairMojibakeText as repairWindows1252MojibakeText } from "./mojibake.
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
 const PUBLICATION_TIME_ZONE = "Europe/Istanbul";
-const TYPOGRAPHY_FRONTMATTER_FIELDS = new Set(["title", "author", "translator", "publication"]);
-const REQUIRED_FRONTMATTER_FIELDS = new Set(["title", "author", "date"]);
-const FRONTMATTER_FIELD_ORDER = ["title", "author", "translator", "publication", "source", "date", "tts"];
+const TYPOGRAPHY_FRONTMATTER_FIELDS = new Set(["title", "poet", "translator", "publication"]);
+const REQUIRED_FRONTMATTER_FIELDS = new Set(["title", "poet", "date"]);
+const FRONTMATTER_FIELD_ORDER = ["title", "poet", "translator", "publication", "source", "date"];
 const ELISION_WORD_RE = /^(?:\d{2,4}(?:s)?\b|cause\b|cuz\b|em\b|gainst\b|neath\b|round\b|til\b|tis\b|twas\b|tween\b|twere\b|twill\b|n\b)/i;
 const LEFT_SINGLE_QUOTE = "\u2018";
 const RIGHT_SINGLE_QUOTE = "\u2019";
@@ -284,17 +284,11 @@ function normalizePoemFields(poem) {
   return {
     ...poem,
     title: normalizeTypography(poem.title, { transformDoubleQuotes: false }),
-    author: normalizeTypography(poem.author, { transformDoubleQuotes: false }),
+    poet: normalizeTypography(poem.poet, { transformDoubleQuotes: false }),
     translator: normalizeTypography(poem.translator, { transformDoubleQuotes: false }),
     publication: normalizeTypography(poem.publication, { transformDoubleQuotes: false }),
-    tts: normalizeTtsValue(poem.tts || poem.tty),
     poem: normalizeTypography(poem.poem)
   };
-}
-
-function normalizeTtsValue(value) {
-  const normalized = String(value ?? "").trim().toLowerCase();
-  return normalized === "no" ? "no" : "yes";
 }
 
 function needsFrontmatterQuoting(value) {
@@ -358,13 +352,11 @@ function parsePoemMarkdownFile(rawContent, filename) {
 
   const poem = {
     title: "",
-    author: "",
+    poet: "",
     translator: "",
     publication: "",
     date: "",
     source: "",
-    tts: "",
-    tty: "",
     poem: ""
   };
 
@@ -384,15 +376,15 @@ function parsePoemMarkdownFile(rawContent, filename) {
     const key = kv[1].toLowerCase();
     const value = kv[2];
 
+    if (key === "author") {
+      poem.poet = stripWrappingQuotes(value);
+      continue;
+    }
+
     if (key in poem && key !== "poem") {
       poem[key] = stripWrappingQuotes(value);
     }
   }
-
-  if (!poem.tts && poem.tty) {
-    poem.tts = poem.tty;
-  }
-  poem.tty = "";
 
   poem.poem = lines.slice(endIndex + 1).join("\n").replace(/^\n+/, "");
   return poem;

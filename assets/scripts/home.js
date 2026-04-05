@@ -4,7 +4,6 @@ import {
   selectPoemForDate
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
-import { bindTtsPlayers, resetTtsPlayback, stepTtsPlaybackSpeed, toggleTtsPlayback } from "./shared/tts.js";
 
 initLinkPrefetching();
 let keyboardShortcutsBound = false;
@@ -32,9 +31,6 @@ function poemRouteForDate(dateStr) {
 function shouldIgnoreShortcutTarget(target) {
   if (!(target instanceof Element)) {
     return false;
-  }
-  if (target.closest("[data-tts-root]")) {
-    return true;
   }
   return Boolean(
     target.closest("input, textarea, select, button, [contenteditable='true'], [contenteditable=''], audio, video")
@@ -89,30 +85,6 @@ function bindHomeKeyboardShortcuts(main) {
       return;
     }
 
-    if (event.key === " " || event.key.toLowerCase() === "p") {
-      const handled = toggleTtsPlayback(main);
-      if (handled) {
-        event.preventDefault();
-      }
-      return;
-    }
-
-    if (event.key === "ArrowUp") {
-      const handled = stepTtsPlaybackSpeed(1, main);
-      if (handled) {
-        event.preventDefault();
-      }
-      return;
-    }
-
-    if (event.key === "ArrowDown") {
-      const handled = stepTtsPlaybackSpeed(-1, main);
-      if (handled) {
-        event.preventDefault();
-      }
-      return;
-    }
-
     if (event.key === "ArrowLeft") {
       if (navigateByDay(main, -1)) {
         event.preventDefault();
@@ -151,7 +123,6 @@ function renderHomePoem(poem) {
     return;
   }
 
-  resetTtsPlayback();
   if (main) {
     main.dataset.poemDate = poem.date || "";
   }
@@ -159,8 +130,7 @@ function renderHomePoem(poem) {
     dateEl.innerHTML = poem.dateHtml || "";
   }
   titleEl.textContent = poem.title || "A Poem Per Day";
-  metaEl.innerHTML = poem.authorMetaHtml || "";
-  bindTtsPlayers(metaEl);
+  metaEl.innerHTML = poem.poetMetaHtml || "";
   contentEl.innerHTML = poem.poemHtml || '<p class="empty">Poem content is unavailable.</p>';
 }
 
@@ -221,7 +191,6 @@ async function init() {
   const renderedAsOf = main.dataset.renderedAsOf || "";
   const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
   if (/^\d{4}-\d{2}-\d{2}$/.test(renderedAsOf) && renderedAsOf === effectiveDate) {
-    bindTtsPlayers(main);
     markReady();
     return;
   }

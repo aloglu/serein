@@ -1,11 +1,11 @@
 import {
   effectiveDateFromQueryOrNow,
   escapeHtml,
-  formatAuthorIndexLabel,
-  groupByAuthorInitial,
+  formatPoetIndexLabel,
+  groupByPoetInitial,
   loadJsonData,
-  sortAuthorInitials,
-  sortAuthors,
+  sortPoetInitials,
+  sortPoets,
   selectPoemForDate
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
@@ -24,22 +24,22 @@ function renderPoets(poems, effectiveDate) {
     return;
   }
 
-  const grouped = groupByAuthorInitial(visible);
-  const letters = sortAuthorInitials(grouped.keys());
+  const grouped = groupByPoetInitial(visible);
+  const letters = sortPoetInitials(grouped.keys());
 
   treeEl.innerHTML = letters
     .map((letter) => {
-      const authorsMap = grouped.get(letter);
-      const authors = sortAuthors(authorsMap.keys());
-      const poetBlocks = authors
-        .map((author) => {
-          const poemsByAuthor = authorsMap.get(author);
-          const authorRoute = poemsByAuthor[0]?.authorRoute || "";
-          const label = formatAuthorIndexLabel(author);
-          const authorLabel = authorRoute
-            ? `<a href="${escapeHtml(`${authorRoute}/`)}">${escapeHtml(label)}</a>`
+      const poetsMap = grouped.get(letter);
+      const poets = sortPoets(poetsMap.keys());
+      const poetBlocks = poets
+        .map((poet) => {
+          const poemsByPoet = poetsMap.get(poet);
+          const poetRoute = poemsByPoet[0]?.poetRoute || "";
+          const label = formatPoetIndexLabel(poet);
+          const poetLabel = poetRoute
+            ? `<a href="${escapeHtml(`${poetRoute}/`)}">${escapeHtml(label)}</a>`
             : escapeHtml(label);
-          return `<li class="poet-authors-item">${authorLabel}</li>`;
+          return `<li class="poet-authors-item">${poetLabel}</li>`;
         })
         .join("");
       return `<details class="archive-year poet-letter"><summary>${escapeHtml(letter)}</summary><div class="archive-months poet-groups"><ul class="poet-authors">${poetBlocks}</ul></div></details>`;

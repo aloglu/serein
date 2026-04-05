@@ -1,8 +1,7 @@
 ---
 title: Good Morning, I Am Not Going to Commit Suicide Today
-author: Kimmy Walters
+poet: Kimmy Walters
 date: 2026-03-04
-tts: yes
 ---
 
 good morning,

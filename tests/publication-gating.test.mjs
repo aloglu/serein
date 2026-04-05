@@ -4,13 +4,10 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test, { after } from "node:test";
-import { poemSourceHash, speakablePoemScript, speakablePoemText, stableHash } from "../scripts/tts-manifest.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(root, ".cache", "test-dist", String(process.pid));
 const poemsDir = path.join(root, "poems");
-const ttsDir = path.join(root, "assets", "tts");
-const ttsManifestFile = path.join(ttsDir, "manifest.json");
 const defaultSiteUrl = "https://apoemperday.com";
 const MONTH_DIR_NAMES = {
   "01": "01-January",
@@ -167,7 +164,7 @@ test("publication gating keeps future poem HTML out of backdated builds", { conc
     relativePath: poemRelativePath(targetDate, "synthetic-publication-gating-fixture"),
     contents: `---
 title: Synthetic Publication Gating Fixture
-author: Test Gate
+poet: Test Gate
 publication:
 date: ${targetDate}
 source:
@@ -206,7 +203,7 @@ Line two of the synthetic gating fixture.
     assert.doesNotMatch(JSON.stringify(homeData), /Line one of the synthetic gating fixture/);
     assert.equal(homeData.poems.length <= 2, true);
     assert.equal(Object.hasOwn(homeData.poems[0] || {}, "poemHtml"), true);
-    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "authorMetaHtml"), true);
+    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "poetMetaHtml"), true);
     assert.equal(Object.hasOwn(homeData.poems[0] || {}, "pageDataUrl"), false);
 
     const sitemapXml = await readDistFile("sitemap.xml");
@@ -257,7 +254,7 @@ test("home and poem pages render date, byline prefixes, and publication footer s
     relativePath: poemRelativePath(targetDate, "synthetic-layout-meta-fixture"),
     contents: `---
 title: Synthetic Layout Meta Fixture
-author: Test Layout Fixture Poet
+poet: Test Layout Fixture Poet
 translator: Test Layout Fixture Translator
 publication: Synthetic Review
 date: ${targetDate}
@@ -280,14 +277,14 @@ Synthetic layout fixture line two.
       index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
     )));
     assert.match(poemPageHtml, new RegExp(`<p class="meta poem-date"><time datetime="${targetDate}">${expectedDateLabel}<\\/time><\\/p>`));
-    assert.match(poemPageHtml, /<span class="poem-meta-label poem-meta-label-author">By<\/span><span class="poem-meta-value poem-meta-value-author"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
+    assert.match(poemPageHtml, /<span class="poem-meta-label poem-meta-label-poet">By<\/span><span class="poem-meta-value poem-meta-value-poet"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
     assert.doesNotMatch(poemPageHtml, /translated by/);
     assert.doesNotMatch(poemPageHtml, /Published on/);
     assert.match(poemPageHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
 
     const homeHtml = await readDistFile("index.html");
     assert.match(homeHtml, new RegExp(`<p id="home-date" class="meta poem-date"><time datetime="${targetDate}">${expectedDateLabel}<\\/time><\\/p>`));
-    assert.match(homeHtml, /<span class="poem-meta-label poem-meta-label-author">By<\/span><span class="poem-meta-value poem-meta-value-author"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
+    assert.match(homeHtml, /<span class="poem-meta-label poem-meta-label-poet">By<\/span><span class="poem-meta-value poem-meta-value-poet"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
     assert.match(homeHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
   } finally {
     await rm(path.join(poemsDir, fixture.relativePath), { force: true });
@@ -300,7 +297,7 @@ test("rss falls back cleanly for poems that use custom markup", { concurrency: f
     relativePath: poemRelativePath(targetDate, "rss-custom-markup-fixture"),
     contents: `---
 title: RSS Custom Markup Fixture
-author: Test RSS Poet
+poet: Test RSS Poet
 date: ${targetDate}
 ---
 
@@ -336,7 +333,7 @@ date: ${targetDate}
   }
 });
 
-test("poets fallback uses canonical author routes even when future-only authors share a slug", { concurrency: false }, async () => {
+test("poets fallback uses canonical poet routes even when future-only poets share a slug", { concurrency: false }, async () => {
   const [publishedDate, , futureDate] = await nextUnusedPoemDates(3);
   // Temporary synthetic poem fixtures created for this test and removed in the finally block.
   const fixtures = [
@@ -344,7 +341,7 @@ test("poets fallback uses canonical author routes even when future-only authors 
       relativePath: poemRelativePath(publishedDate, "synthetic-route-collision-published-fixture"),
       contents: `---
 title: Synthetic Route Collision Published Fixture
-author: Test Zebra
+poet: Test Zebra
 publication:
 date: ${publishedDate}
 source:
@@ -357,7 +354,7 @@ Synthetic published route collision fixture.
       relativePath: poemRelativePath(futureDate, "synthetic-route-collision-future-fixture"),
       contents: `---
 title: Synthetic Route Collision Future Fixture
-author: Test-Zebra
+poet: Test-Zebra
 publication:
 date: ${futureDate}
 source:
@@ -384,7 +381,7 @@ Synthetic future route collision fixture.
     const publishedPoetPage = await readDistFile("poets", "test-zebra-2", "index.html");
     assert.match(publishedPoetPage, /<title>Test Zebra \| A Poem Per Day<\/title>/);
     assert.match(publishedPoetPage, /content="index, follow"/);
-    assert.match(publishedPoetPage, /<h1 id="poet-page-author">Test Zebra<\/h1>\s*<div class="content-block poet-page-content">/);
+    assert.match(publishedPoetPage, /<h1 id="poet-page-poet">Test Zebra<\/h1>\s*<div class="content-block poet-page-content">/);
     assert.doesNotMatch(publishedPoetPage, /poet-page-meta/);
     assert.doesNotMatch(publishedPoetPage, /Test Zebra has one published poem on A Poem Per Day\./);
 
@@ -410,7 +407,7 @@ test("production data assets only include one day of future metadata", { concurr
       relativePath: poemRelativePath(nextDate, "synthetic-horizon-next-fixture"),
       contents: `---
 title: Synthetic Horizon Next Fixture
-author: Test Horizon
+poet: Test Horizon
 publication:
 date: ${nextDate}
 source:
@@ -423,7 +420,7 @@ Synthetic next-day horizon fixture.
       relativePath: poemRelativePath(laterDate, "synthetic-horizon-later-fixture"),
       contents: `---
 title: Synthetic Horizon Later Fixture
-author: Test Horizon
+poet: Test Horizon
 publication:
 date: ${laterDate}
 source:
@@ -466,154 +463,6 @@ Synthetic two-day horizon fixture.
   }
 });
 
-test("speakable poem text collapses custom aligned markup into plain speech text", () => {
-  const speech = speakablePoemText(`First line.
-
-::line |<left phrase| |~4ch| |>right phrase|
-
-Last line.`);
-
-  assert.equal(speech, `First line.\n\nleft phrase right phrase\n\nLast line.`);
-});
-
-test("speakable poem text keeps shorthand text from custom aligned markup lines", () => {
-  const speech = speakablePoemText(`A small white piece
-::line |~4ch| of an ancient mosaic,
-::line |~2ch| Did anyone see her`);
-
-  assert.equal(speech, `A small white piece\nof an ancient mosaic,\nDid anyone see her`);
-});
-
-test("speakable poem script includes title, author, translator, and a pause before the poem", () => {
-  const speech = speakablePoemScript({
-    title: "The 52-Hertz Whale",
-    author: "Joseph Fasano",
-    translator: "Test Translator",
-    poem: "They have called it\nthe loneliest of things."
-  });
-
-  assert.equal(
-    speech,
-    "The 52-Hertz Whale, by Joseph Fasano, translated by Test Translator.\n\nThey have called it\nthe loneliest of things."
-  );
-});
-
-test("poem source hash changes when TTS metadata changes", () => {
-  const base = {
-    title: "Poem",
-    author: "Author",
-    translator: "",
-    poem: "Only the body stays the same."
-  };
-
-  assert.notEqual(
-    poemSourceHash(base),
-    poemSourceHash({
-      ...base,
-      translator: "Translator"
-    })
-  );
-});
-
-test("published poem and home pages render an inline listen control when a managed TTS asset exists", { concurrency: false }, async () => {
-  const [targetDate] = await nextUnusedPoemDates(1);
-  const slug = "synthetic-tts-player-fixture";
-  const fixture = {
-    relativePath: poemRelativePath(targetDate, slug),
-    contents: `---
-title: Synthetic TTS Player Fixture
-author: Test Audio Poet
-publication:
-date: ${targetDate}
-source:
----
-
-Synthetic audio fixture line one.
-Synthetic audio fixture line two.
-`
-  };
-  const manifestBackup = await readFile(ttsManifestFile, "utf8").catch(() => "");
-  const sourceHash = poemSourceHash({
-    title: fixture.contents.match(/^title:\s*(.+)$/m)?.[1] || "",
-    author: fixture.contents.match(/^author:\s*(.+)$/m)?.[1] || "",
-    translator: fixture.contents.match(/^translator:\s*(.+)$/m)?.[1] || "",
-    poem: "Synthetic audio fixture line one.\nSynthetic audio fixture line two.\n"
-  });
-  const assetKey = stableHash(JSON.stringify({
-    date: targetDate,
-    sourceHash,
-    renderProfile: "house-default-v1",
-    provider: "openai",
-    modelId: "gpt-4o-mini-tts",
-    voice: "sage",
-    outputFormat: "mp3",
-    instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
-    speed: 0.96
-  }));
-  const audioUrl = `/assets/tts/audio/${targetDate.slice(0, 4)}/${targetDate.slice(5, 7)}/${targetDate}-${slug}.${assetKey}.mp3`;
-  const audioPath = path.join(root, ...audioUrl.slice(1).split("/"));
-
-  try {
-    const fullPath = path.join(poemsDir, fixture.relativePath);
-    await mkdir(path.dirname(fullPath), { recursive: true });
-    await writeFile(fullPath, fixture.contents, "utf8");
-
-    await mkdir(path.dirname(audioPath), { recursive: true });
-    await writeFile(audioPath, "synthetic audio bytes", "utf8");
-    await writeFile(ttsManifestFile, `${JSON.stringify({
-      version: 1,
-      poems: {
-        [targetDate]: {
-          audioUrl,
-          sourceHash,
-          assetKey,
-          renderProfile: "house-default-v1",
-          provider: "openai",
-          modelId: "gpt-4o-mini-tts",
-          voice: "sage",
-          outputFormat: "mp3",
-          mimeType: "audio/mpeg",
-          instructions: "Read this poem aloud with calm, attentive pacing. Respect line breaks as natural pauses and keep the delivery intimate rather than theatrical. Read every line exactly once, including isolated final lines and single-word final lines.",
-          speed: 0.96,
-          generatedAt: "2026-03-14T00:00:00.000Z"
-        }
-      }
-    }, null, 2)}\n`, "utf8");
-
-    await runBuild({ SEREIN_AS_OF: targetDate });
-
-    const poemPageHtml = await readDistFile(...targetDate.split("-").flatMap((part, index) => (
-      index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
-    )));
-    assert.match(poemPageHtml, /data-tts-root/);
-    assert.match(poemPageHtml, /data-tts-toggle/);
-    assert.match(poemPageHtml, /class="tts-toggle-icon"/);
-    assert.match(poemPageHtml, /data-tts-speed/);
-    assert.match(poemPageHtml, /data-tts-status/);
-    assert.match(poemPageHtml, /role="status"/);
-    assert.match(poemPageHtml, new RegExp(escapeRegex(audioUrl)));
-    assert.match(poemPageHtml, /aria-label="Play poem audio"/);
-    assert.match(
-      poemPageHtml,
-      /poem-meta-value-author[^>]*>.*?Test Audio Poet.*?poem-meta-separator.*?poem-meta-tts/s
-    );
-    assert.doesNotMatch(poemPageHtml, /poem-tts-slot/);
-
-    const homeHtml = await readDistFile("index.html");
-    assert.match(homeHtml, /data-tts-root/);
-    assert.match(homeHtml, new RegExp(escapeRegex(audioUrl)));
-    assert.match(homeHtml, /<nav class="site-footer-nav" aria-label="Footer">/);
-
-    const copiedAudio = path.join(distDir, ...audioUrl.slice(1).split("/"));
-    const copiedAudioContents = await readFile(copiedAudio, "utf8");
-    assert.equal(copiedAudioContents, "synthetic audio bytes");
-  } finally {
-    await rm(path.join(poemsDir, fixture.relativePath), { force: true });
-    await rm(audioPath, { force: true });
-    await writeFile(ttsManifestFile, manifestBackup, "utf8");
-  }
-});
-
 test("page bundles include guarded link prefetching for likely next navigations", { concurrency: false }, async () => {
   await runBuild();
 
@@ -640,4 +489,23 @@ test("page bundles include guarded link prefetching for likely next navigations"
     assert.match(contents, /requestIdleCallback/);
     assert.match(contents, /data-prefetch="eager"|data-prefetch=\\"eager\\"/);
   }
+});
+
+test("build output remains text-only and emits no audio player hooks or copied audio assets", { concurrency: false }, async () => {
+  await runBuild();
+
+  const homeHtml = await readDistFile("index.html");
+  assert.doesNotMatch(homeHtml, /data-tts|Play poem audio|tts-toggle|tts-speed|tts-highlight-word|assets\/tts/);
+
+  const poemDates = await listPoemDates();
+  const publishedDate = poemDates.sort()[0];
+  assert.ok(publishedDate, "Expected at least one published poem date");
+  const poemHtml = await readDistFile(...publishedDate.split("-").flatMap((part, index) => (
+    index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
+  )));
+  assert.doesNotMatch(poemHtml, /data-tts|Play poem audio|tts-toggle|tts-speed|tts-highlight-word|assets\/tts/);
+
+  const assetsDir = path.join(distDir, "assets");
+  const topLevelAssets = await readdir(assetsDir);
+  assert.equal(topLevelAssets.includes("tts"), false);
 });

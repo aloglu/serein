@@ -1,8 +1,7 @@
 ---
 title: I have to tell you
-author: Dorothea Grossman
+poet: Dorothea Grossman
 date: 2026-03-26
-tts: yes
 ---
 
 I have to tell you,

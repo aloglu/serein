@@ -1,8 +1,7 @@
 ---
 title: Nobody Comes
-author: Thomas Hardy
+poet: Thomas Hardy
 date: 2026-03-28
-tts: yes
 ---
 
 TREE-LEAVES labour up and down,

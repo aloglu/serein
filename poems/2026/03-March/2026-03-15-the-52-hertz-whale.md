@@ -1,8 +1,7 @@
 ---
 title: The 52-Hertz Whale
-author: Joseph Fasano
+poet: Joseph Fasano
 date: 2026-03-15
-tts: yes
 ---
 
 They have called it

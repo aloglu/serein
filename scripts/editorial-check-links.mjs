@@ -79,7 +79,7 @@ for (const poem of poems) {
     });
   }
 
-  sourceEntriesByUrl.get(source).poems.push(`${poem.date}: ${poem.title} by ${poem.author}`);
+  sourceEntriesByUrl.get(source).poems.push(`${poem.date}: ${poem.title} by ${poem.poet}`);
 }
 
 const sourceEntries = Array.from(sourceEntriesByUrl.values());

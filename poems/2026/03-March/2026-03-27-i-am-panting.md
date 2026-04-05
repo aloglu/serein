@@ -1,9 +1,8 @@
 ---
 title: I am Panting
-author: Anna Swir
+poet: Anna Swir
 translator: Czesław Miłosz
 date: 2026-03-27
-tts: yes
 ---
 
 Why talk

@@ -1,8 +1,7 @@
 ---
 title: Missed Time
-author: Ha Jin
+poet: Ha Jin
 date: 2026-03-23
-tts: yes
 ---
 
 My notebook has remained blank for months

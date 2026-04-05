@@ -1,8 +1,7 @@
 ---
 title: Do Not Love Half Lovers
-author: Gibran Khalil Gibran
+poet: Gibran Khalil Gibran
 date: 2026-04-10
-tts: yes
 ---
 
 Do not love half lovers

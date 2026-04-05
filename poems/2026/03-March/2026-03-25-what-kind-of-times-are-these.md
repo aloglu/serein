@@ -1,9 +1,8 @@
 ---
 title: What Kind of Times Are These
-author: Adrienne Rich
+poet: Adrienne Rich
 publication: "Collected Poems: 1950-2012"
 date: 2026-03-25
-tts: yes
 ---
 
 There’s a place between two stands of trees where the grass grows uphill

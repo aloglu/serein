@@ -1,8 +1,7 @@
 ---
 title: Vegetarians
-author: Roger McGough
+poet: Roger McGough
 date: 2026-02-26
-tts: yes
 ---
 
 Vegetarians are cruel, unthinking people.

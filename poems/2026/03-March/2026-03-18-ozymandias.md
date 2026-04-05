@@ -1,8 +1,7 @@
 ---
 title: Ozymandias
-author: Percy Bysshe Shelley
+poet: Percy Bysshe Shelley
 date: 2026-03-18
-tts: yes
 ---
 
 I met a traveller from an antique land,

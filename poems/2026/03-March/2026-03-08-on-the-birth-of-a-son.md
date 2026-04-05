@@ -1,9 +1,8 @@
 ---
 title: On the Birth of a Son
-author: Su Tung-Po
+poet: Su Tung-Po
 publication: Poetry (January 1918)
 date: 2026-03-08
-tts: yes
 ---
 
 Families when a child is born

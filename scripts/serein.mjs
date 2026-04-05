@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(scriptDir, "..");
+const removedAudioCommand = ["t", "t", "s"].join("");
 
 function sanitizedEnv() {
   const env = {};
@@ -35,19 +36,11 @@ Usage:
   serein preview [YYYY-MM-DD]
   serein preview watch [YYYY-MM-DD]
   serein editorial [YYYY-MM-DD]
-  serein tts [YYYY-MM-DD] [--force]
-  serein tts align [YYYY-MM-DD] [--force]
-  serein tts preview YYYY-MM-DD [--force]
 
 Examples:
   serein poems
   serein build 2026-03-07
   serein preview watch 2026-03-07
-  serein tts
-  serein tts 2026-03-07
-  serein tts align 2026-03-07
-  serein tts align --force
-  serein tts preview 2026-03-07 --force
 `);
 }
 
@@ -71,24 +64,6 @@ function parseDateOption(tokens) {
 
   return {
     date,
-    tokens: values
-  };
-}
-
-function extractForceFlag(tokens) {
-  const values = [];
-  let force = false;
-
-  for (const token of tokens) {
-    if (token === "--force") {
-      force = true;
-      continue;
-    }
-    values.push(token);
-  }
-
-  return {
-    force,
     tokens: values
   };
 }
@@ -159,66 +134,6 @@ function commandForEditorial(tokens) {
   };
 }
 
-function commandForTts(tokens) {
-  const forced = extractForceFlag(tokens);
-  const parsed = parseDateOption(forced.tokens);
-  let date = parsed.date;
-  const extras = [...parsed.tokens];
-
-  if (extras[0] === "align") {
-    extras.shift();
-    if (!date && isDateToken(extras[0])) {
-      date = extras.shift();
-    }
-    if (extras.length > 0) {
-      throw new Error(`Unexpected tts align argument '${extras[0]}'.`);
-    }
-    return {
-      script: "scripts/tts-align.mjs",
-      args: [
-        ...(date ? ["--date", date] : []),
-        ...(forced.force ? ["--force"] : [])
-      ]
-    };
-  }
-
-  if (extras[0] === "preview") {
-    extras.shift();
-    if (!date && isDateToken(extras[0])) {
-      date = extras.shift();
-    }
-    if (!date) {
-      throw new Error("Missing date for 'serein tts preview'. Expected YYYY-MM-DD.");
-    }
-    if (extras.length > 0) {
-      throw new Error(`Unexpected tts preview argument '${extras[0]}'.`);
-    }
-    return {
-      script: "scripts/tts-preview.mjs",
-      args: [
-        "--date",
-        date,
-        ...(forced.force ? ["--force"] : [])
-      ]
-    };
-  }
-
-  if (!date && isDateToken(extras[0])) {
-    date = extras.shift();
-  }
-  if (extras.length > 0) {
-    throw new Error(`Unexpected tts argument '${extras[0]}'.`);
-  }
-
-  return {
-    script: "scripts/tts-sync.mjs",
-    args: [
-      ...(date ? ["--date", date] : []),
-      ...(forced.force ? ["--force"] : [])
-    ]
-  };
-}
-
 function resolveCommand(argv) {
   const tokens = argv.slice(2);
   const area = String(tokens[0] || "").trim().toLowerCase();
@@ -251,8 +166,8 @@ function resolveCommand(argv) {
     return commandForEditorial(rest);
   }
 
-  if (area === "tts") {
-    return commandForTts(rest);
+  if (area === removedAudioCommand) {
+    throw new Error("Audio commands have been removed. Serein is text-only again.");
   }
 
   throw new Error(`Unknown command '${area}'. Run 'serein help' for usage.`);

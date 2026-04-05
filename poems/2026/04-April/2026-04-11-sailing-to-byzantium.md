@@ -1,8 +1,7 @@
 ---
 title: Sailing to Byzantium
-author: William Butler Yeats
+poet: William Butler Yeats
 date: 2026-04-11
-tts: yes
 ---
 
 That is no country for old men. The young

@@ -111,10 +111,10 @@ function poemRelativePath(yyyyMmDd, slug) {
   return path.join(match[1], monthDir, `${yyyyMmDd}-${slug}.md`);
 }
 
-function buildPoemMarkdown({ title, author = "Test Normalize", date, body }) {
+function buildPoemMarkdown({ title, poet = "Test Normalize", date, body }) {
   return `---
 title: ${title}
-author: ${author}
+poet: ${poet}
 translator:
 date: ${date}
 publication:
@@ -147,7 +147,7 @@ async function createNormalizeWorkspace({ baselinePoems = [], fixturePoems = [] 
       poemRelativePath(poem.date, poem.slug),
       buildPoemMarkdown({
         title: poem.title,
-        author: poem.author,
+        poet: poem.poet,
         date: poem.date,
         body: poem.body || "Baseline line."
       })
@@ -326,7 +326,7 @@ source:
 date: next
 publication: "Collected Poems: Volume 1"
 translator:
-author: Test Normalize
+poet: Test Normalize
 title: "Frontmatter Order Fixture: Test"
 ---
 
@@ -344,22 +344,22 @@ Body line.
 
     assert.equal(contents, `---
 title: "Frontmatter Order Fixture: Test"
-author: Test Normalize
+poet: Test Normalize
 publication: "Collected Poems: Volume 1"
 date: ${tomorrow}
-tts: yes
 ---
 
 Body line.
 `);
     assert.doesNotMatch(contents, /^translator:/m);
     assert.doesNotMatch(contents, /^source:/m);
+    assert.doesNotMatch(contents, /^(?:t{2}s|t{2}y):/m);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }
 });
 
-test("normalize preserves legacy tty: no as tts: no and keeps tts as the last frontmatter field", { concurrency: false }, async () => {
+test("normalize drops legacy tty metadata from the canonical frontmatter output", { concurrency: false }, async () => {
   const today = currentPublicationDate();
   const slug = "tty-disabled-fixture";
   const workspace = await createNormalizeWorkspace({
@@ -369,7 +369,7 @@ test("normalize preserves legacy tty: no as tts: no and keeps tts as the last fr
         contents: `---
 tty: no
 date: ${today}
-author: Test Normalize
+poet: Test Normalize
 title: TTY Disabled Fixture
 ---
 
@@ -387,9 +387,8 @@ Body line.
 
     assert.equal(contents, `---
 title: TTY Disabled Fixture
-author: Test Normalize
+poet: Test Normalize
 date: ${today}
-tts: no
 ---
 
 Body line.
@@ -426,17 +425,17 @@ test("normalize repairs common mojibake punctuation in poem text", { concurrency
   }
 });
 
-test("normalize preserves inline HTML TTS comments while normalizing surrounding poem text", { concurrency: false }, async () => {
+test("normalize preserves inline HTML comments while normalizing surrounding poem text", { concurrency: false }, async () => {
   const date = "2026-03-11";
-  const slug = "inline-tts-comment-fixture";
+  const slug = "inline-html-comment-fixture";
   const workspace = await createNormalizeWorkspace({
     fixturePoems: [
       {
-        relativePath: path.join("__normalize-fixtures__", "inline-tts-comment.md"),
+        relativePath: path.join("__normalize-fixtures__", "inline-html-comment.md"),
         contents: buildPoemMarkdown({
-          title: "Inline TTS Comment Fixture",
+          title: "Inline HTML Comment Fixture",
           date,
-          body: "He said -- \"hello\". <!-- tts: keep -- this \"exactly\" -->"
+          body: "He said -- \"hello\". <!-- keep -- this \"exactly\" -->"
         })
       }
     ]
@@ -446,7 +445,7 @@ test("normalize preserves inline HTML TTS comments while normalizing surrounding
     await runNormalize(workspace);
     const expectedPath = path.join(workspace, "poems", poemRelativePath(date, slug));
     const contents = await readFile(expectedPath, "utf8");
-    assert.match(contents, /He said — “hello”\. <!-- tts: keep -- this "exactly" -->/);
+    assert.match(contents, /He said — “hello”\. <!-- keep -- this "exactly" -->/);
     assert.doesNotMatch(contents, /<!—|—>/);
   } finally {
     await rm(workspace, { recursive: true, force: true });

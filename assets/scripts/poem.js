@@ -6,12 +6,6 @@ import {
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
 import {
-  bindTtsPlayers,
-  resetTtsPlayback,
-  stepTtsPlaybackSpeed,
-  toggleTtsPlayback
-} from "./shared/tts.js";
-import {
   formatFutureAvailabilityCountdown,
   nextFutureAvailabilityDelay,
   startScheduledCountdown
@@ -46,7 +40,6 @@ function renderBlockedPoem(main, { withCountdown = true } = {}) {
   setMetaContent('meta[property="og:description"]', blockedDescription);
   setMetaContent('meta[name="twitter:description"]', blockedDescription);
 
-  resetTtsPlayback();
   if (titleEl) {
     titleEl.textContent = blockedHeading;
   }
@@ -67,20 +60,18 @@ function renderPublishedPoem(main, poem) {
   const pageTitle = poem?.title ? `${poem.title} | A Poem Per Day` : "A Poem Per Day";
 
   document.title = pageTitle;
-  setMetaContent('meta[name="author"]', poem?.author || "");
+  setMetaContent('meta[name="author"]', poem?.poet || "");
   setMetaContent('meta[name="description"]', poem?.description || "");
   setMetaContent('meta[property="og:title"]', pageTitle);
   setMetaContent('meta[name="twitter:title"]', pageTitle);
   setMetaContent('meta[property="og:description"]', poem?.description || "");
   setMetaContent('meta[name="twitter:description"]', poem?.description || "");
 
-  resetTtsPlayback();
   if (titleEl) {
     titleEl.textContent = poem?.title || "";
   }
   if (metaEl) {
-    metaEl.innerHTML = poem?.authorMetaHtml || "";
-    bindTtsPlayers(metaEl);
+    metaEl.innerHTML = poem?.poetMetaHtml || "";
   }
   if (contentEl) {
     contentEl.innerHTML = poem?.poemHtml || '<p class="empty">Poem content is unavailable.</p>';
@@ -123,9 +114,6 @@ function poemRouteForDate(dateStr) {
 function shouldIgnoreShortcutTarget(target) {
   if (!(target instanceof Element)) {
     return false;
-  }
-  if (target.closest("[data-tts-root]")) {
-    return true;
   }
   return Boolean(
     target.closest("input, textarea, select, button, [contenteditable='true'], [contenteditable=''], audio, video")
@@ -186,30 +174,6 @@ function bindPoemKeyboardShortcuts(main) {
       return;
     }
 
-    if (event.key === " " || event.key.toLowerCase() === "p") {
-      const handled = toggleTtsPlayback(main);
-      if (handled) {
-        event.preventDefault();
-      }
-      return;
-    }
-
-    if (event.key === "ArrowUp") {
-      const handled = stepTtsPlaybackSpeed(1, main);
-      if (handled) {
-        event.preventDefault();
-      }
-      return;
-    }
-
-    if (event.key === "ArrowDown") {
-      const handled = stepTtsPlaybackSpeed(-1, main);
-      if (handled) {
-        event.preventDefault();
-      }
-      return;
-    }
-
     if (event.key === "ArrowLeft") {
       if (navigateByDay(main, -1)) {
         event.preventDefault();
@@ -239,7 +203,6 @@ async function initPoemAccessGuard() {
   };
 
   if (!main || !/^\d{4}-\d{2}-\d{2}$/.test(poemDate)) {
-    bindTtsPlayers(document);
     markReady();
     return;
   }
@@ -251,8 +214,6 @@ async function initPoemAccessGuard() {
     try {
       if (main.dataset.poemBlocked === "1") {
         await loadPublishedPoem(main);
-      } else {
-        bindTtsPlayers(document);
       }
     } catch (error) {
       const contentEl = document.getElementById("poem-content");

@@ -1,8 +1,7 @@
 ---
 title: Miracle Number II
-author: Hovhannes Shiraz
+poet: Hovhannes Shiraz
 date: 2027-04-24
-tts: yes
 ---
 
 In my dreams this time I saw my Dad

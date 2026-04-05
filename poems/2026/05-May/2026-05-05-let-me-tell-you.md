@@ -1,8 +1,7 @@
 ---
 title: let me tell you
-author: Charles Bukowski
+poet: Charles Bukowski
 date: 2026-05-05
-tts: yes
 ---
 
 hell is built

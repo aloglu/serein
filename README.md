@@ -27,14 +27,6 @@ That pipeline is responsible for:
 
 The project targets Node.js 24.x LTS and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` are checked in so local Node version managers can select the expected runtime.
 
-## TTS support
-
-The website supports pre-generated text-to-speech audio for poem pages, with synced word highlighting during playback. Audio is generated ahead of time with OpenAI TTS, then aligned offline with [Montreal Forced Aligner](https://github.com/MontrealCorpusTools/Montreal-Forced-Aligner) so the browser can brighten the spoken words against the static poem text.
-
-Local TTS commands read credentials and TTS overrides from the shell environment first, and then fall back to `.env.local` at the repo root when a value is missing. That keeps Codespaces and CI secrets authoritative while letting local runs use a checked-out `.env.local`.
-
-When present, the TTS pipeline also auto-resolves `mfa` and `ffmpeg` from the repo-managed `.mamba/envs/mfa-env` toolchain, and defaults `MFA_ROOT_DIR` to the repo-local `.mfa/` directory. `SEREIN_MFA_EXE`, `SEREIN_FFMPEG_EXE`, `SEREIN_MFA_PREFIX`, and `MFA_ROOT_DIR` can still override that behavior explicitly.
-
 ## Content model
 
 Each poem is stored as a Markdown file with frontmatter.
@@ -42,7 +34,7 @@ Each poem is stored as a Markdown file with frontmatter.
 ```md
 ---
 title: The Title
-author: The Poet
+poet: The Poet
 translator:
 publication:
 source:
@@ -56,7 +48,7 @@ Second line of the poem.
 Required fields:
 
 - `title`
-- `author`
+- `poet`
 - `date`
 - poem body
 
@@ -73,7 +65,7 @@ Before running `npm run poems:sync` (alias: `npm run normalize:poems`), the `dat
 - `next` picks the closest unused date on or after the current publication date. Multiple `next` values in one normalize run are resolved sequentially in alphabetical path order.
 - `random-<month>` such as `random-may` picks an unused day in that month of the current publication year.
 
-The normalizer rewrites those symbolic values to concrete `YYYY-MM-DD` dates, removes empty optional frontmatter fields, rewrites frontmatter in the canonical order (`title`, `author`, `translator`, `publication`, `source`, `date`), and then renames the poem file/path to match.
+The normalizer rewrites those symbolic values to concrete `YYYY-MM-DD` dates, removes empty optional frontmatter fields, rewrites frontmatter in the canonical order (`title`, `poet`, `translator`, `publication`, `source`, `date`), and then renames the poem file/path to match.
 
 The poem renderer also supports one small piece of custom markup:
 

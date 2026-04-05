@@ -1,8 +1,7 @@
 ---
 title: The Uses of Sorrow
-author: Mary Oliver
+poet: Mary Oliver
 date: 2026-04-09
-tts: yes
 ---
 
 _(In my sleep I dreamed this poem)_
