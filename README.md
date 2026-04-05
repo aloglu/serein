@@ -27,6 +27,8 @@ That pipeline is responsible for:
 
 The project targets Node.js 24.x LTS and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` are checked in so local Node version managers can select the expected runtime.
 
+In an interactive terminal, `serein editorial` opens a keyboard-first report viewer. When output is redirected or piped, it falls back to the plain-text report.
+
 ## Content model
 
 Each poem is stored as a Markdown file with frontmatter.

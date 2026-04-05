@@ -1,6 +1,6 @@
 import process from "node:process";
-import { buildPoetPages, createEditorialReport, formatEditorialReportText, loadPoems, preparePoems } from "./build.mjs";
-import { canRenderEditorialReportTui, runEditorialReportTui } from "./editorial-report-ui.mjs";
+import { buildPoetPages, createEditorialReport, loadPoems, preparePoems } from "./build.mjs";
+import { runEditorialReportTui } from "./editorial-report-ui.mjs";
 
 function readArgValue(flagName) {
   const exactIndex = process.argv.indexOf(flagName);
@@ -36,10 +36,8 @@ const report = await createEditorialReport(poems, {
   poetPagesList: poets
 });
 
-if (canRenderEditorialReportTui()) {
-  await runEditorialReportTui(report, {
-    title: "SEREIN EDITORIAL REPORT"
-  });
-} else {
-  process.stdout.write(formatEditorialReportText(report));
-}
+await runEditorialReportTui(report, {
+  title: "SEREIN REPORT DEMO"
+});
+
+process.exit(0);
