@@ -13,7 +13,7 @@ I would almost say that they save me, and daily.
 I am so distant from the hope of myself,
 in which I have goodness, and discernment,
 and never hurry through the world
-::line |~3ch| but walk slowly, and bow often.
+but walk slowly, and bow often.
 
 Around me the trees stir in their leaves
 and call out, “Stay awhile.”
