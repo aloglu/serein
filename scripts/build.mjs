@@ -5,6 +5,7 @@ import process from "node:process";
 import { pathToFileURL } from "node:url";
 import { marked } from "marked";
 import { expectedPoemFilename } from "./poem-filenames.mjs";
+import { duplicatePoemGroups } from "./poem-duplicates.mjs";
 import { parsePoetryLineDirective } from "./poetry-line.mjs";
 
 const root = process.cwd();
@@ -1152,6 +1153,44 @@ function duplicateDateEntries(poems) {
     }));
 }
 
+function poemReportSummary(poem) {
+  return {
+    date: poem.date,
+    title: poem.title,
+    poet: poem.poet,
+    filepath: poem.filepath
+  };
+}
+
+function poetTalliesForReport(poems, effectiveAsOf) {
+  const byPoet = new Map();
+
+  for (const poem of poems) {
+    const poet = String(poem.poet || "").trim() || "Unknown";
+    if (!byPoet.has(poet)) {
+      byPoet.set(poet, {
+        poet,
+        totalPoems: 0,
+        publishedPoems: 0,
+        scheduledPoems: 0
+      });
+    }
+
+    const tally = byPoet.get(poet);
+    tally.totalPoems += 1;
+    if (poem.date <= effectiveAsOf) {
+      tally.publishedPoems += 1;
+    } else {
+      tally.scheduledPoems += 1;
+    }
+  }
+
+  return Array.from(byPoet.values()).sort((left, right) => (
+    right.totalPoems - left.totalPoems
+    || comparePoetsBySurname(left.poet, right.poet)
+  ));
+}
+
 function gapDaysBetween(leftDate, rightDate) {
   const left = parseDateParts(leftDate);
   const right = parseDateParts(rightDate);
@@ -2184,13 +2223,13 @@ export async function createEditorialReport(poems, { asOfDate = "", poetPagesLis
   const missingPublication = [];
   const missingSource = [];
   const customMarkup = [];
-  const publishedPoetNames = new Set();
+  const duplicatePoems = duplicatePoemGroups(poems);
+  const poetTallies = poetTalliesForReport(poems, effectiveAsOf);
 
   for (const poem of poems) {
-    const summary = { date: poem.date, title: poem.title, poet: poem.poet, filepath: poem.filepath };
+    const summary = poemReportSummary(poem);
     if (poem.date <= effectiveAsOf) {
       publishedPoems.push(poem);
-      publishedPoetNames.add(poem.poet);
     } else {
       upcomingPoems.push(poem);
     }
@@ -2220,7 +2259,7 @@ export async function createEditorialReport(poems, { asOfDate = "", poetPagesLis
     }
   }
 
-  const publishedPoetCount = publishedPoetNames.size;
+  const publishedPoetCount = poetTallies.filter((item) => item.publishedPoems > 0).length;
 
   return {
     generatedAt: new Date().toISOString(),
@@ -2229,11 +2268,12 @@ export async function createEditorialReport(poems, { asOfDate = "", poetPagesLis
       poems: poems.length,
       publishedPoems: publishedPoems.length,
       upcomingPoems: upcomingPoems.length,
-      poets: poetPagesList.length,
+      poets: poetTallies.length || poetPagesList.length,
       publishedPoets: publishedPoetCount,
       missingPublication: missingPublication.length,
       missingSource: missingSource.length,
-      customMarkup: customMarkup.length
+      customMarkup: customMarkup.length,
+      duplicatePoems: duplicatePoems.length
     },
     upcomingPoems: upcomingPoems.map((poem) => ({
       date: poem.date,
@@ -2244,7 +2284,9 @@ export async function createEditorialReport(poems, { asOfDate = "", poetPagesLis
     scheduleGaps,
     missingPublication,
     missingSource,
-    customMarkup
+    customMarkup,
+    duplicatePoems,
+    poetTallies
   };
 }
 
@@ -2262,6 +2304,7 @@ export function formatEditorialReportText(report) {
     `- Published poets: ${report.totals.publishedPoets}`,
     `- Missing publication fields: ${report.totals.missingPublication}`,
     `- Missing source fields: ${report.totals.missingSource}`,
+    `- Duplicate poem groups: ${report.totals.duplicatePoems}`,
     `- Poems using custom markup: ${report.totals.customMarkup}`,
     "",
     "Schedule gaps"
@@ -2272,6 +2315,18 @@ export function formatEditorialReportText(report) {
   } else {
     for (const gap of report.scheduleGaps) {
       lines.push(`- ${gap.after} -> ${gap.before}: ${gap.missingDays} missing day(s)`);
+    }
+  }
+
+  lines.push("", "Duplicate poems");
+  if (report.duplicatePoems.length === 0) {
+    lines.push("- None");
+  } else {
+    for (const group of report.duplicatePoems) {
+      lines.push(`- ${group.title} by ${group.poet}: ${group.count} entries`);
+      for (const poem of group.poems) {
+        lines.push(`  ${poem.date}: ${poem.filepath}`);
+      }
     }
   }
 
@@ -2298,6 +2353,14 @@ export function formatEditorialReportText(report) {
   appendSection("Missing publication", report.missingPublication);
   appendSection("Missing source", report.missingSource);
   appendSection("Custom markup", report.customMarkup);
+  lines.push("", "Poets");
+  if (report.poetTallies.length === 0) {
+    lines.push("- None");
+  } else {
+    for (const item of report.poetTallies) {
+      lines.push(`- ${item.poet}: ${item.totalPoems} total | ${item.publishedPoems} published | ${item.scheduledPoems} scheduled`);
+    }
+  }
 
   return `${lines.join("\n")}\n`;
 }

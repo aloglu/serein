@@ -49,6 +49,20 @@ function renderPoemItem(item, width) {
   ];
 }
 
+function renderDuplicateItem(item, width) {
+  return [
+    line(`${item.title}  ${item.poet}`, width),
+    line(`${item.count} entries  ${item.poems.map((poem) => poem.date).join(", ")}`, width)
+  ];
+}
+
+function renderPoetTallyItem(item, width) {
+  return [
+    line(item.poet, width),
+    line(`${item.totalPoems} total  ${item.publishedPoems} published  ${item.scheduledPoems} scheduled`, width)
+  ];
+}
+
 function createSections(report) {
   return [
     {
@@ -64,6 +78,13 @@ function createSections(report) {
       description: "Poems missing source metadata.",
       items: report.missingSource,
       renderItem: renderPoemItem
+    },
+    {
+      key: "duplicate-poems",
+      label: "Duplicate poems",
+      description: "Poems sharing the same normalized title, poet, and body.",
+      items: report.duplicatePoems,
+      renderItem: renderDuplicateItem
     },
     {
       key: "gaps",
@@ -85,6 +106,13 @@ function createSections(report) {
       description: "Poems scheduled after the current as-of date.",
       items: report.upcomingPoems,
       renderItem: renderPoemItem
+    },
+    {
+      key: "poets",
+      label: "Poets",
+      description: "All poets with published and scheduled poem counts.",
+      items: report.poetTallies,
+      renderItem: renderPoetTallyItem
     }
   ];
 }
@@ -151,7 +179,12 @@ function renderApp(report, sections, state, titleText) {
   const blockHeight = 3;
   const bodyRows = Math.max(6, rows - topHeight - bottomHeight);
   const visibleBlockCount = Math.max(1, Math.floor(bodyRows / blockHeight));
-  const issueCount = report.totals.missingPublication + report.totals.missingSource + report.scheduleGaps.length;
+  const issueCount = (
+    report.totals.missingPublication
+    + report.totals.missingSource
+    + report.scheduleGaps.length
+    + report.totals.duplicatePoems
+  );
   const currentSection = sections[state.sectionIndex];
   const currentItemIndex = state.itemIndexBySection[state.sectionIndex] || 0;
 
@@ -164,7 +197,7 @@ function renderApp(report, sections, state, titleText) {
 
   const lines = [];
   lines.push(`${ANSI.bold}${line(titleText, cols)}${ANSI.reset}`);
-  lines.push(line(`as-of ${report.asOfDate} | poems ${report.totals.poems} | published ${report.totals.publishedPoems} | upcoming ${report.totals.upcomingPoems} | poets ${report.totals.poets} | issues ${issueCount}`, cols));
+  lines.push(line(`as-of ${report.asOfDate} | poems ${report.totals.poems} | published ${report.totals.publishedPoems} | upcoming ${report.totals.upcomingPoems} | poets ${report.totals.poets} | duplicates ${report.totals.duplicatePoems} | issues ${issueCount}`, cols));
   lines.push(divider(cols));
 
   const sectionStart = state.sectionScroll;

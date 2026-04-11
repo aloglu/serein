@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import { copyFile, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import test from "node:test";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -11,6 +11,7 @@ const sereinCliSource = path.join(root, "scripts", "serein.mjs");
 const normalizeScriptSource = path.join(root, "scripts", "normalize-poems.mjs");
 const filenameScriptSource = path.join(root, "scripts", "poem-filenames.mjs");
 const mojibakeScriptSource = path.join(root, "scripts", "mojibake.mjs");
+const duplicateScriptSource = path.join(root, "scripts", "poem-duplicates.mjs");
 const MONTH_DIR_NAMES = {
   "01": "01-January",
   "02": "02-February",
@@ -84,6 +85,35 @@ function runSereinPoems(workdir, cwd = workdir) {
   });
 }
 
+async function captureNormalizeOutput(workspace, cwd = workspace) {
+  const originalCwd = process.cwd();
+  const originalWrite = process.stdout.write.bind(process.stdout);
+  let stdout = "";
+
+  process.chdir(cwd);
+  process.stdout.write = ((chunk, encoding, callback) => {
+    let cb = callback;
+    if (typeof encoding === "function") {
+      cb = encoding;
+    }
+    stdout += Buffer.isBuffer(chunk) ? chunk.toString("utf8") : String(chunk);
+    if (typeof cb === "function") {
+      cb();
+    }
+    return true;
+  });
+
+  try {
+    const moduleUrl = `${pathToFileURL(path.join(workspace, "scripts", "normalize-poems.mjs")).href}?test=${Date.now()}-${Math.random()}`;
+    const { normalizePoems } = await import(moduleUrl);
+    await normalizePoems();
+    return stdout;
+  } finally {
+    process.stdout.write = originalWrite;
+    process.chdir(originalCwd);
+  }
+}
+
 function currentPublicationDate() {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Istanbul",
@@ -140,6 +170,7 @@ async function createNormalizeWorkspace({ baselinePoems = [], fixturePoems = [] 
   await copyFile(normalizeScriptSource, path.join(workspace, "scripts", "normalize-poems.mjs"));
   await copyFile(filenameScriptSource, path.join(workspace, "scripts", "poem-filenames.mjs"));
   await copyFile(mojibakeScriptSource, path.join(workspace, "scripts", "mojibake.mjs"));
+  await copyFile(duplicateScriptSource, path.join(workspace, "scripts", "poem-duplicates.mjs"));
 
   for (const poem of baselinePoems) {
     await writeWorkspacePoem(
@@ -475,6 +506,75 @@ test("serein poems resolves the project root when launched from the poems direct
     const contents = await readFile(expectedPath, "utf8");
 
     assert.match(contents, /^title: Nested Cwd CLI Fixture$/m);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("normalize outputs bullet-style change items and a duplicate footer", { concurrency: false }, async () => {
+  const workspace = await createNormalizeWorkspace({
+    fixturePoems: [
+      {
+        relativePath: "new.md",
+        contents: buildPoemMarkdown({
+          title: "Bullet Output Fixture",
+          date: "2026-03-11",
+          body: "CLI line."
+        })
+      }
+    ]
+  });
+
+  try {
+    const stdout = await captureNormalizeOutput(workspace);
+
+    assert.match(stdout, /^- normalized: new\.md -> 2026\/03-March\/2026-03-11-bullet-output-fixture\.md/m);
+    assert.match(stdout, /Completed: renamed 1 poem file\(s\); cleaned frontmatter in 1 poem file\(s\)\./);
+    assert.match(stdout, /Duplicate poems: none found\./);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("normalize reports duplicate poem groups even when no file changes are needed", { concurrency: false }, async () => {
+  const workspace = await createNormalizeWorkspace({
+    fixturePoems: [
+      {
+        relativePath: poemRelativePath("2026-03-11", "repeated-poem-fixture"),
+        contents: `---
+title: Repeated Poem Fixture
+poet: Test Normalize
+date: 2026-03-11
+---
+
+Same line.
+Second same line.
+`
+      },
+      {
+        relativePath: poemRelativePath("2026-03-12", "repeated-poem-fixture"),
+        contents: `---
+title: Repeated Poem Fixture
+poet: Test Normalize
+date: 2026-03-12
+---
+
+Same line.
+Second same line.
+`
+      }
+    ]
+  });
+
+  try {
+    const stdout = await captureNormalizeOutput(workspace);
+
+    assert.match(stdout, /No poem path\/filename, frontmatter, date, or typography changes needed\./);
+    assert.match(stdout, /Duplicate poems: found 1 group\(s\)\./);
+    assert.match(
+      stdout,
+      /- duplicate: Repeated Poem Fixture by Test Normalize \(2 entries\) -> 2026\/03-March\/2026-03-11-repeated-poem-fixture\.md; 2026\/03-March\/2026-03-12-repeated-poem-fixture\.md/
+    );
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }

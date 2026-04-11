@@ -2,6 +2,7 @@ import { mkdir, readdir, readFile, rename, rmdir, writeFile } from "node:fs/prom
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+import { duplicatePoemGroups } from "./poem-duplicates.mjs";
 import { expectedPoemFilenameWithExtension } from "./poem-filenames.mjs";
 import { repairMojibakeText as repairWindows1252MojibakeText } from "./mojibake.mjs";
 
@@ -673,7 +674,30 @@ async function removeEmptyPoemDirs(dirPath) {
   }
 }
 
+async function writeReportLines(lines) {
+  if (!Array.isArray(lines) || lines.length === 0) {
+    return;
+  }
+  const output = `${lines.join("\n")}\n`;
+  await new Promise((resolve, reject) => {
+    process.stdout.write(output, (error) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+      resolve();
+    });
+  });
+}
+
 export async function normalizePoems() {
+  const outputLines = [];
+  const logLine = (message) => {
+    outputLines.push(String(message));
+  };
+  const logListItem = (message) => {
+    logLine(`- ${message}`);
+  };
   const entries = await collectPoemFiles(poemsDir);
   entries.sort((left, right) => left.relPath.localeCompare(right.relPath));
   const poems = [];
@@ -707,6 +731,13 @@ export async function normalizePoems() {
     }
     expectedPaths.set(item.expectedRelPath, item.currentRelPath);
   }
+  const duplicatePoems = duplicatePoemGroups(poems.map((item) => ({
+    date: item.poem.date,
+    title: item.poem.title,
+    poet: item.poem.poet,
+    poem: item.poem.poem,
+    filepath: item.expectedRelPath
+  })));
 
   let renamed = 0;
   let frontmatterUpdated = 0;
@@ -758,31 +789,31 @@ export async function normalizePoems() {
     }
 
     if (needsRename && updateKinds.length > 0) {
-      console.log(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + ${updateKinds.join(" + ")})`);
+      logListItem(`normalized: ${item.currentRelPath} -> ${item.expectedRelPath} (path + ${updateKinds.join(" + ")})`);
       continue;
     }
 
     if (needsRename) {
-      console.log(`moved: ${item.currentRelPath} -> ${item.expectedRelPath}`);
+      logListItem(`moved: ${item.currentRelPath} -> ${item.expectedRelPath}`);
       continue;
     }
 
     if (updateKinds.length > 1) {
-      console.log(`updated: ${item.currentRelPath} (${updateKinds.join(" + ")})`);
+      logListItem(`updated: ${item.currentRelPath} (${updateKinds.join(" + ")})`);
       continue;
     }
 
     if (needsDateUpdate) {
-      console.log(`date: ${item.currentRelPath} -> ${item.poem.date}`);
+      logListItem(`date: ${item.currentRelPath} -> ${item.poem.date}`);
       continue;
     }
 
     if (needsFrontmatterUpdate) {
-      console.log(`frontmatter: ${item.currentRelPath}`);
+      logListItem(`frontmatter: ${item.currentRelPath}`);
       continue;
     }
 
-    console.log(`typography: ${item.currentRelPath}`);
+    logListItem(`typography: ${item.currentRelPath}`);
   }
 
   if (renamed > 0) {
@@ -790,24 +821,37 @@ export async function normalizePoems() {
   }
 
   if (renamed === 0 && frontmatterUpdated === 0 && typographyUpdated === 0 && datesResolved === 0) {
-    console.log("No poem path/filename, frontmatter, date, or typography changes needed.");
+    logLine("No poem path/filename, frontmatter, date, or typography changes needed.");
+  } else {
+    const summary = [];
+    if (renamed > 0) {
+      summary.push(`renamed ${renamed} poem file(s)`);
+    }
+    if (datesResolved > 0) {
+      summary.push(`resolved ${datesResolved} symbolic date(s)`);
+    }
+    if (frontmatterUpdated > 0) {
+      summary.push(`cleaned frontmatter in ${frontmatterUpdated} poem file(s)`);
+    }
+    if (typographyUpdated > 0) {
+      summary.push(`updated typography in ${typographyUpdated} poem file(s)`);
+    }
+    logLine(`Completed: ${summary.join("; ")}.`);
+  }
+
+  if (duplicatePoems.length === 0) {
+    logLine("Duplicate poems: none found.");
+    await writeReportLines(outputLines);
     return;
   }
 
-  const summary = [];
-  if (renamed > 0) {
-    summary.push(`renamed ${renamed} poem file(s)`);
+  logLine(`Duplicate poems: found ${duplicatePoems.length} group(s).`);
+  for (const group of duplicatePoems) {
+    logListItem(
+      `duplicate: ${group.title} by ${group.poet} (${group.count} entries) -> ${group.poems.map((poem) => poem.filepath).join("; ")}`
+    );
   }
-  if (datesResolved > 0) {
-    summary.push(`resolved ${datesResolved} symbolic date(s)`);
-  }
-  if (frontmatterUpdated > 0) {
-    summary.push(`cleaned frontmatter in ${frontmatterUpdated} poem file(s)`);
-  }
-  if (typographyUpdated > 0) {
-    summary.push(`updated typography in ${typographyUpdated} poem file(s)`);
-  }
-  console.log(`Completed: ${summary.join("; ")}.`);
+  await writeReportLines(outputLines);
 }
 
 const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
