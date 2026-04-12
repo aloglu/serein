@@ -123,7 +123,7 @@ function createSections(report) {
       label: "Poet proximity",
       description: "Same-poet poems scheduled too close together. Select an actionable item and press f to push it forward.",
       items: poetProximityItems(report.poetProximity),
-      itemCount: report.poetProximity.length,
+      itemCount: report.poetProximity.filter((item) => item.actionable).length,
       renderItem: renderPoetProximityItem
     },
     {
@@ -278,12 +278,13 @@ function renderApp(report, sections, state, titleText) {
   const blockHeight = 3;
   const bodyRows = Math.max(6, rows - topHeight - bottomHeight);
   const visibleBlockCount = Math.max(1, Math.floor(bodyRows / blockHeight));
+  const actionablePoetProximityCount = report.poetProximity.filter((item) => item.actionable).length;
   const issueCount = (
     report.totals.missingPublication
     + report.totals.missingSource
     + report.scheduleGaps.length
     + report.totals.duplicatePoems
-    + report.totals.poetProximity
+    + actionablePoetProximityCount
   );
   const currentSection = sections[state.sectionIndex];
   const currentItemIndex = normalizedSelectableIndex(
@@ -326,8 +327,8 @@ function renderApp(report, sections, state, titleText) {
   visibleSections.forEach((section, offset) => {
     const absoluteSectionIndex = sectionStart + offset;
     const selected = absoluteSectionIndex === state.sectionIndex;
-    const primaryText = line(`${absoluteSectionIndex + 1}. ${section.label}`, leftContentWidth);
     const sectionItemCount = Number.isInteger(section.itemCount) ? section.itemCount : section.items.length;
+    const primaryText = line(`${absoluteSectionIndex + 1}. ${section.label}`, leftContentWidth);
     const secondaryText = line(`${sectionItemCount} items`, leftContentWidth);
     leftLines.push(selected ? styleSelected(primaryText, ANSI.pink, state.activePane === "sections") : primaryText);
     leftLines.push(selected ? styleSelected(secondaryText, ANSI.pink, state.activePane === "sections") : `${ANSI.gray}${secondaryText}${ANSI.reset}`);
