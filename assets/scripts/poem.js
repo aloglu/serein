@@ -1,8 +1,10 @@
 import {
+  addDaysToDateString,
   effectiveDateFromQueryOrNow,
   escapeHtml,
   loadJsonData,
-  runtimeAsOfEnabled
+  runtimeAsOfEnabled,
+  siteShareHorizonDate
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
 import {
@@ -10,8 +12,10 @@ import {
   nextFutureAvailabilityDelay,
   startScheduledCountdown
 } from "./shared/countdown.js";
+import { initSharing } from "./shared/share.js";
 
 initLinkPrefetching();
+initSharing();
 
 const blockedHeading = "Not Available Yet";
 const blockedTitle = `${blockedHeading} | A Poem Per Day`;
@@ -48,12 +52,14 @@ function renderBlockedPoem(main, { withCountdown = true } = {}) {
   }
   if (contentEl) {
     contentEl.innerHTML = withCountdown
-      ? '<p>This poem will become available in <strong id="future-availability-countdown">--</strong> in your local time.</p>'
+      ? '<p>This poem will become available in <strong id="future-availability-countdown">--</strong>.</p>'
       : `<p>${escapeHtml(blockedDescription)}</p>`;
   }
 }
 
 function renderPublishedPoem(main, poem) {
+  const dateEl = main.querySelector(".poem-date");
+  const shareEl = document.getElementById("poem-share");
   const titleEl = main.querySelector("h1");
   const metaEl = main.querySelector(".poem-meta");
   const contentEl = document.getElementById("poem-content");
@@ -67,6 +73,12 @@ function renderPublishedPoem(main, poem) {
   setMetaContent('meta[property="og:description"]', poem?.description || "");
   setMetaContent('meta[name="twitter:description"]', poem?.description || "");
 
+  if (dateEl && poem?.dateHtml) {
+    dateEl.innerHTML = poem.dateHtml;
+  }
+  if (shareEl) {
+    shareEl.innerHTML = poem?.shareHtml || "";
+  }
   if (titleEl) {
     titleEl.textContent = poem?.title || "";
   }
@@ -93,14 +105,33 @@ async function loadPublishedPoem(main) {
   }
 }
 
-function addDaysToDateString(dateStr, dayCount) {
-  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) {
-    return "";
+function timeZoneOffsetMillisecondsAt(date, timeZone) {
+  const value = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    timeZoneName: "shortOffset",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23"
+  }).formatToParts(date).find((part) => part.type === "timeZoneName")?.value || "GMT";
+  const match = value.match(/^GMT(?:(\+|-)(\d{1,2})(?::?(\d{2}))?)?$/);
+  if (!match || !match[1]) {
+    return 0;
   }
-  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
-  date.setUTCDate(date.getUTCDate() + dayCount);
-  return date.toISOString().slice(0, 10);
+  const sign = match[1] === "-" ? -1 : 1;
+  const hours = Number(match[2] || "0");
+  const minutes = Number(match[3] || "0");
+  return sign * (((hours * 60) + minutes) * 60 * 1000);
+}
+
+function shareableAtForPoemDate(poemDate) {
+  const availableDate = addDaysToDateString(poemDate, -1);
+  const match = String(availableDate).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return null;
+  }
+  const utcMidnight = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]), 0, 0, 0, 0));
+  const offsetMs = timeZoneOffsetMillisecondsAt(utcMidnight, "Europe/Istanbul");
+  return new Date(utcMidnight.getTime() - offsetMs);
 }
 
 function poemRouteForDate(dateStr) {
@@ -195,6 +226,7 @@ async function initPoemAccessGuard() {
   const defaultAsOf = main?.dataset?.defaultAsOf || "";
   const queryAsOf = runtimeAsOfEnabled() ? (new URLSearchParams(window.location.search).get("as_of") || "") : "";
   const hasQueryOverride = /^\d{4}-\d{2}-\d{2}$/.test(queryAsOf);
+  const hasFixedSiteDate = hasQueryOverride || /^\d{4}-\d{2}-\d{2}$/.test(defaultAsOf);
   const markReady = () => {
     if (main) {
       main.setAttribute("data-ready", "1");
@@ -209,8 +241,9 @@ async function initPoemAccessGuard() {
 
   bindPoemKeyboardShortcuts(main);
 
-  const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
-  if (poemDate <= effectiveDate) {
+  const viewerDate = effectiveDateFromQueryOrNow({ defaultAsOf });
+  const shareHorizon = siteShareHorizonDate({ defaultAsOf });
+  if (poemDate <= shareHorizon) {
     try {
       if (main.dataset.poemBlocked === "1") {
         await loadPublishedPoem(main);
@@ -225,11 +258,10 @@ async function initPoemAccessGuard() {
     return;
   }
 
-  const [year, month, day] = poemDate.split("-").map((part) => Number(part));
-  const availableAt = new Date(year, month - 1, day, 0, 0, 0, 0);
-  renderBlockedPoem(main, { withCountdown: !hasQueryOverride });
+  const availableAt = shareableAtForPoemDate(poemDate);
+  renderBlockedPoem(main, { withCountdown: !hasFixedSiteDate && Boolean(availableAt) });
 
-  if (!hasQueryOverride) {
+  if (!hasFixedSiteDate && availableAt) {
     const countdownEl = document.getElementById("future-availability-countdown");
     if (countdownEl) {
       startScheduledCountdown({
@@ -239,9 +271,10 @@ async function initPoemAccessGuard() {
         },
         getNextDelay: nextFutureAvailabilityDelay,
         onExpire: () => {
-          void loadPublishedPoem(main).catch(() => {
-            window.location.reload();
-          });
+          void loadPublishedPoem(main)
+            .catch(() => {
+              window.location.reload();
+            });
         }
       });
     }

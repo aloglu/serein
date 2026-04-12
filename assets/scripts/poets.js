@@ -1,5 +1,5 @@
 import {
-  effectiveDateFromQueryOrNow,
+  effectiveDiscoveryDate,
   escapeHtml,
   formatPoetIndexLabel,
   groupByPoetInitial,
@@ -64,7 +64,7 @@ async function init() {
 
   const defaultAsOf = main.dataset.defaultAsOf || "";
   const renderedAsOf = main.dataset.renderedAsOf || "";
-  const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
+  const effectiveDate = effectiveDiscoveryDate({ defaultAsOf });
   if (/^\d{4}-\d{2}-\d{2}$/.test(renderedAsOf) && renderedAsOf === effectiveDate) {
     markReady();
     return;

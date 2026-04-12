@@ -1,24 +1,17 @@
 import {
-  effectiveDateFromQueryOrNow,
+  addDaysToDateString,
+  effectiveDiscoveryDate,
   loadJsonData,
   selectPoemForDate
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
+import { initSharing } from "./shared/share.js";
 
 initLinkPrefetching();
+initSharing();
 let keyboardShortcutsBound = false;
 let pendingNavigation = false;
 const homeShortcutReturnKey = "serein-home-shortcut-return-date";
-
-function addDaysToDateString(dateStr, dayCount) {
-  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) {
-    return "";
-  }
-  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
-  date.setUTCDate(date.getUTCDate() + dayCount);
-  return date.toISOString().slice(0, 10);
-}
 
 function poemRouteForDate(dateStr) {
   const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
@@ -45,7 +38,7 @@ function navigateByDay(main, dayCount) {
   const currentDate = main?.dataset?.poemDate || "";
   const firstPoemDate = main?.dataset?.firstPoemDate || "";
   const nextDate = addDaysToDateString(currentDate, dayCount);
-  const effectiveDate = effectiveDateFromQueryOrNow({
+  const effectiveDate = effectiveDiscoveryDate({
     defaultAsOf: main?.dataset?.defaultAsOf || ""
   });
   if (dayCount < 0 && firstPoemDate && nextDate < firstPoemDate) {
@@ -103,6 +96,7 @@ function bindHomeKeyboardShortcuts(main) {
 function renderHomePoem(poem) {
   const main = document.querySelector('main[data-dynamic-page="1"]');
   const dateEl = document.getElementById("home-date");
+  const shareEl = document.getElementById("home-share");
   const titleEl = document.getElementById("home-title");
   const metaEl = document.getElementById("home-meta");
   const contentEl = document.getElementById("home-content");
@@ -117,6 +111,9 @@ function renderHomePoem(poem) {
     if (dateEl) {
       dateEl.innerHTML = "";
     }
+    if (shareEl) {
+      shareEl.innerHTML = "";
+    }
     titleEl.textContent = "A Poem Per Day";
     metaEl.textContent = "";
     contentEl.innerHTML = '<p class="empty">No poem is available for your local date yet.</p>';
@@ -128,6 +125,9 @@ function renderHomePoem(poem) {
   }
   if (dateEl) {
     dateEl.innerHTML = poem.dateHtml || "";
+  }
+  if (shareEl) {
+    shareEl.innerHTML = poem.shareHtml || "";
   }
   titleEl.textContent = poem.title || "A Poem Per Day";
   metaEl.innerHTML = poem.poetMetaHtml || "";
@@ -189,7 +189,7 @@ async function init() {
 
   const defaultAsOf = main.dataset.defaultAsOf || "";
   const renderedAsOf = main.dataset.renderedAsOf || "";
-  const effectiveDate = effectiveDateFromQueryOrNow({ defaultAsOf });
+  const effectiveDate = effectiveDiscoveryDate({ defaultAsOf });
   if (/^\d{4}-\d{2}-\d{2}$/.test(renderedAsOf) && renderedAsOf === effectiveDate) {
     markReady();
     return;

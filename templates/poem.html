@@ -30,16 +30,26 @@
       const defaultAsOf = "{{DEFAULT_AS_OF}}";
       const allowRuntimeAsOf = document.documentElement.dataset.runtimeAsOfEnabled === "1";
       const queryDate = allowRuntimeAsOf ? (new URLSearchParams(window.location.search).get("as_of") || "") : "";
-      const effectiveDate = /^\d{4}-\d{2}-\d{2}$/.test(queryDate)
+      const sitePublishedDate = /^\d{4}-\d{2}-\d{2}$/.test(queryDate)
         ? queryDate
         : (/^\d{4}-\d{2}-\d{2}$/.test(defaultAsOf) ? defaultAsOf : (() => {
-          const now = new Date();
-          const y = now.getFullYear();
-          const m = String(now.getMonth() + 1).padStart(2, "0");
-          const d = String(now.getDate()).padStart(2, "0");
-          return `${y}-${m}-${d}`;
+          const parts = new Intl.DateTimeFormat("en-CA", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            timeZone: "Europe/Istanbul"
+          }).formatToParts(new Date());
+          const values = Object.fromEntries(parts.filter((part) => part.type !== "literal").map((part) => [part.type, part.value]));
+          return `${values.year}-${values.month}-${values.day}`;
         })());
-      if (poemDate <= effectiveDate) return;
+      const shareHorizon = (() => {
+        const match = sitePublishedDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (!match) return "";
+        const dt = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+        dt.setUTCDate(dt.getUTCDate() + 1);
+        return dt.toISOString().slice(0, 10);
+      })();
+      if (poemDate <= shareHorizon) return;
       const blockedTitle = "Not Available Yet | A Poem Per Day";
       const blockedDescription = "This poem is not available yet.";
       document.title = blockedTitle;
@@ -69,6 +79,7 @@
     <h1>{{TITLE}}</h1>
     <p class="meta poem-meta">{{POET_META}}</p>
     <article id="poem-content" class="content-block">{{POEM_TEXT}}</article>
+    <p id="poem-share" class="meta poem-share">{{SHARE_META}}</p>
   </main>
   {{FOOTER}}
   <script src="{{SCRIPT_PATH}}" defer></script>

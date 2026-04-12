@@ -82,7 +82,7 @@ The poem renderer also supports one small piece of custom markup:
 Each poem is published at `/YYYY/MM/DD/`.
 Once a poem is published, its raw Markdown source is also available at `/YYYY/MM/DD.md`.
 
-The homepage, archive, poets index, and poet pages resolve against the viewer's local date. Future-dated poem pages are generated in advance but remain unavailable until local midnight on the scheduled date.
+The homepage, archive, poets index, and poet pages resolve against the viewer's local date, capped to the site's one-day public share horizon. Dated poem pages at `/YYYY/MM/DD/` become shareable as soon as they enter that horizon and only remain blocked for poems beyond it.
 
 The build system also supports date-controlled previews through `--as-of` and `SEREIN_AS_OF`. Runtime date overrides are gated behind `SEREIN_ENABLE_RUNTIME_AS_OF=1`.
 

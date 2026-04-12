@@ -9,6 +9,22 @@ export function localDateString(now = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
+export function dateStringInTimeZone(timeZone, now = new Date()) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone
+  }).formatToParts(now);
+  const values = Object.fromEntries(parts
+    .filter((part) => part.type !== "literal")
+    .map((part) => [part.type, part.value]));
+  if (!values.year || !values.month || !values.day) {
+    return "";
+  }
+  return `${values.year}-${values.month}-${values.day}`;
+}
+
 export function parseDateParts(yyyyMmDd) {
   const match = String(yyyyMmDd).match(/^(\d{4})-(\d{2})-(\d{2})$/);
   if (!match) {
@@ -32,6 +48,51 @@ export function effectiveDateFromQueryOrNow({ allowQueryOverride = runtimeAsOfEn
     return String(defaultAsOf).trim();
   }
   return localDateString();
+}
+
+export function addDaysToDateString(dateStr, dayCount) {
+  const match = String(dateStr || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) {
+    return "";
+  }
+  const date = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  date.setUTCDate(date.getUTCDate() + dayCount);
+  return date.toISOString().slice(0, 10);
+}
+
+export function minDateString(left, right) {
+  const leftValid = /^\d{4}-\d{2}-\d{2}$/.test(String(left || ""));
+  const rightValid = /^\d{4}-\d{2}-\d{2}$/.test(String(right || ""));
+  if (!leftValid) {
+    return rightValid ? String(right) : "";
+  }
+  if (!rightValid) {
+    return String(left);
+  }
+  return String(left) <= String(right) ? String(left) : String(right);
+}
+
+export function sitePublicationDateFromQueryOrNow({ allowQueryOverride = runtimeAsOfEnabled(), defaultAsOf = "" } = {}) {
+  if (allowQueryOverride) {
+    const queryDate = new URLSearchParams(window.location.search).get("as_of") || "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(queryDate)) {
+      return queryDate;
+    }
+  }
+  if (/^\d{4}-\d{2}-\d{2}$/.test(String(defaultAsOf || "").trim())) {
+    return String(defaultAsOf).trim();
+  }
+  return dateStringInTimeZone("Europe/Istanbul");
+}
+
+export function siteShareHorizonDate(options = {}) {
+  return addDaysToDateString(sitePublicationDateFromQueryOrNow(options), 1);
+}
+
+export function effectiveDiscoveryDate(options = {}) {
+  const viewerDate = effectiveDateFromQueryOrNow(options);
+  const shareHorizon = siteShareHorizonDate(options);
+  return minDateString(viewerDate, shareHorizon) || viewerDate;
 }
 
 export function monthLabel(monthNumber) {

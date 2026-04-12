@@ -779,6 +779,7 @@ async function writeSocialCard(filename, svgContents) {
 
 async function buildSocialCardManifest(poems, defaultAsOf = "") {
   const routeCards = new Map();
+  const shareablePoems = shareablePoemsForDate(poems, defaultAsOf);
   const publishedPoems = publishedPoemsForDate(poems, defaultAsOf);
   const publishedAuthorPages = poetPagesWithPublishedPoems(publishedPoems);
   const staticRouteCards = [
@@ -799,7 +800,7 @@ async function buildSocialCardManifest(poems, defaultAsOf = "") {
     });
   }
 
-  const poemCardEntries = await mapWithConcurrency(publishedPoems, async (poem) => {
+  const poemCardEntries = await mapWithConcurrency(shareablePoems, async (poem) => {
     const svgContents = renderSocialCardSvg({
       title: poem.title
     });
@@ -897,9 +898,21 @@ function runtimeDataCutoff(defaultAsOf = "") {
     : addDaysToYyyyMmDd(effectivePublicationCutoff(defaultAsOf), 1);
 }
 
+function poemVisibilityState(poem, defaultAsOf = "") {
+  const publicationCutoff = effectivePublicationCutoff(defaultAsOf);
+  if (poem.date <= publicationCutoff) {
+    return "published";
+  }
+  return poem.date <= runtimeDataCutoff(defaultAsOf) ? "shareable" : "scheduled";
+}
+
 function publishedPoemsForDate(poems, defaultAsOf = "") {
   const cutoff = effectivePublicationCutoff(defaultAsOf);
   return filterPoemsOnOrBefore(poems, cutoff);
+}
+
+function shareablePoemsForDate(poems, defaultAsOf = "") {
+  return filterPoemsOnOrBefore(poems, runtimeDataCutoff(defaultAsOf));
 }
 
 function poetPagesWithPublishedPoems(publishedPoems) {
@@ -1446,6 +1459,8 @@ async function renderPoemPageData(poem) {
       title: poem.title,
       poet: poem.poet,
       description: poemMetaDescription(poem),
+      dateHtml: renderDateMeta(poem),
+      shareHtml: renderShareAction(poem, { routePath: poem.route }),
       poetMetaHtml: renderPoetMeta(poem),
       poemHtml: poem.poemHtml || renderPoemContent(poem)
     })
@@ -1459,6 +1474,7 @@ function homePoemPayload(poem) {
     date: poem.date,
     title: poem.title,
     dateHtml: renderDateMeta(poem),
+    shareHtml: renderShareAction(poem, { routePath: poem.route }),
     poetMetaHtml: renderPoetMeta(poem),
     poemHtml: poem.poemHtml || renderPoemContent(poem)
   };
@@ -1479,16 +1495,24 @@ async function renderHomePoemData(poem) {
   return assetPath;
 }
 
-function renderPoemShell(template, poem, { noindex = true, routePath = "/", defaultAsOf = "", blocked = false, pageDataUrl = "", firstPoemDate = "" } = {}) {
+function renderPoemShell(template, poem, { visibilityState = "published", routePath = "/", defaultAsOf = "", pageDataUrl = "", firstPoemDate = "" } = {}) {
+  const blocked = visibilityState === "scheduled";
   const description = blocked ? blockedPoemDescription : poemMetaDescription(poem);
   const poetMeta = blocked ? "" : renderPoetMeta(poem);
   const poemHtml = blocked
     ? renderBlockedPoemContent()
     : (poem.poemHtml || renderPoemContent(poem));
   const structuredData = blocked ? "" : renderPoemStructuredData(poem, routePath);
+  const robotsContent = visibilityState === "published"
+    ? "index, follow"
+    : visibilityState === "shareable"
+      ? "noindex, follow"
+      : "noindex, nofollow";
+  const dateMeta = renderDateMeta(poem);
+  const shareMeta = blocked ? "" : renderShareAction(poem, { routePath });
   return withCommonPageAssets(template, routePath, {
     scriptName: "poem",
-    robotsMeta: noindex ? '<meta name="robots" content="noindex, nofollow">' : '<meta name="robots" content="index, follow">',
+    robotsMeta: `<meta name="robots" content="${robotsContent}">`,
     ...(blocked
       ? sharingOptions(routePath)
       : sharingOptions(routePath, {
@@ -1501,7 +1525,8 @@ function renderPoemShell(template, poem, { noindex = true, routePath = "/", defa
     .replaceAll("{{DESCRIPTION}}", htmlEscape(description))
     .replaceAll("{{DATE}}", htmlEscape(poem.date))
     .replaceAll("{{FIRST_POEM_DATE}}", htmlEscape(firstPoemDate))
-    .replaceAll("{{DATE_META}}", renderDateMeta(poem))
+    .replaceAll("{{DATE_META}}", dateMeta)
+    .replaceAll("{{SHARE_META}}", shareMeta)
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
     .replace("{{RUNTIME_AS_OF_ENABLED}}", runtimeAsOfDataValue())
     .replace("{{POEM_BLOCKED}}", blocked ? "1" : "0")
@@ -1536,20 +1561,19 @@ async function copyRoutedFile(routePath, sourcePath) {
 
 async function renderPoemPages(publishedPoems, defaultAsOf = "") {
   const template = await readTemplate("poem.html");
-  const publicationCutoff = effectivePublicationCutoff(defaultAsOf);
   const clientDataCutoff = runtimeDataCutoff(defaultAsOf);
   const firstPoemDate = publishedPoems[0]?.date || "";
 
   for (const poem of publishedPoems) {
-    const blocked = poem.date > publicationCutoff;
+    const visibilityState = poemVisibilityState(poem, defaultAsOf);
+    const blocked = visibilityState === "scheduled";
     const pageDataUrl = blocked && poem.date <= clientDataCutoff
       ? await renderPoemPageData(poem)
       : "";
     const html = renderPoemShell(template, poem, {
-      noindex: blocked,
+      visibilityState,
       routePath: poem.route,
       defaultAsOf,
-      blocked,
       pageDataUrl,
       firstPoemDate
     });
@@ -1603,6 +1627,7 @@ async function renderHome(poems, defaultAsOf = "") {
   const fallbackPoem = fallbackPoems.find((poem) => poem.date === fallbackDate) || fallbackPoems[fallbackPoems.length - 1] || null;
   const firstPoemDate = poems[0]?.date || "";
   const fallbackDateHtml = fallbackPoem ? renderDateMeta(fallbackPoem) : "";
+  const fallbackShareHtml = fallbackPoem ? renderShareAction(fallbackPoem, { routePath: fallbackPoem.route }) : "";
   const fallbackTitle = fallbackPoem ? htmlEscape(fallbackPoem.title) : "A Poem Per Day";
   const fallbackMeta = fallbackPoem ? fallbackPoem.poetMetaHtml || renderPoetMeta(fallbackPoem) : "";
   const fallbackDescription = "A new poem every day, published at midnight in your local time.";
@@ -1622,6 +1647,7 @@ async function renderHome(poems, defaultAsOf = "") {
     .replace("{{FALLBACK_POEM_DATE}}", htmlEscape(fallbackPoem?.date || ""))
     .replace("{{FIRST_POEM_DATE}}", htmlEscape(firstPoemDate))
     .replace("{{FALLBACK_DATE_HTML}}", fallbackDateHtml)
+    .replace("{{FALLBACK_SHARE_HTML}}", fallbackShareHtml)
     .replace("{{FALLBACK_TITLE}}", fallbackTitle)
     .replace("{{FALLBACK_META}}", fallbackMeta)
     .replace("{{FALLBACK_POEM_HTML}}", fallbackBody)
@@ -1659,6 +1685,15 @@ function renderDateMeta(poem) {
     return "";
   }
   return `<time datetime="${htmlEscape(date)}">${htmlEscape(displayDateLabel(date))}</time>`;
+}
+
+function renderShareAction(poem, { routePath = "" } = {}) {
+  if (!routePath) {
+    return "";
+  }
+  const href = routeHref(routePath);
+  const title = String(poem.title || "").trim() || "A Poem Per Day";
+  return `<a class="poem-share-action" href="${htmlEscape(href)}" data-share-link="1" data-share-title="${htmlEscape(title)}">Share</a>`;
 }
 
 function renderArchiveRow(poem, fromRoute) {

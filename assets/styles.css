@@ -27,6 +27,9 @@
   --bg: #EFE2D0;
   --text: #2f2a25;
   --muted: #665f57;
+  --poem-title-size: 2.2rem;
+  --poem-byline-size: calc(var(--poem-title-size) * 0.55);
+  --poem-date-size: calc(var(--poem-title-size) * 0.4);
   --heading-prelude-height: 1rem;
   --heading-prelude-gap: 0.7rem;
   --subtle-meta: color-mix(in oklab, var(--bg) 72%, var(--text));
@@ -163,7 +166,7 @@ main {
 
 main > h1 {
   margin: 0;
-  font-size: 2.2rem;
+  font-size: var(--poem-title-size);
   line-height: 1.15;
 }
 
@@ -186,9 +189,9 @@ main > h1:first-child {
   display: flex;
   align-items: flex-start;
   min-height: var(--heading-prelude-height);
-  margin: 0 0 var(--heading-prelude-gap);
+  margin: 0 0 calc(var(--heading-prelude-gap) + 0.25rem);
   color: var(--subtle-meta);
-  font-size: 0.82rem;
+  font-size: var(--poem-date-size);
   letter-spacing: 0.04em;
   font-variant-numeric: tabular-nums;
 }
@@ -196,7 +199,33 @@ main > h1:first-child {
 .poem-meta {
   margin-top: 0.5rem;
   padding-top: 0.08rem;
-  font-size: 1.06rem;
+  font-size: var(--poem-byline-size);
+}
+
+.content-block + .poem-share {
+  margin-top: 3rem;
+}
+
+.poem-share {
+  color: var(--subtle-meta);
+  font-size: calc(var(--poem-date-size) * 1.12);
+}
+
+.poem-share:empty {
+  display: none;
+}
+
+.poem-share-action {
+  color: inherit;
+  font-style: italic;
+}
+
+.poem-share-action::before {
+  content: "\2197";
+  display: inline-block;
+  margin-right: 0.32rem;
+  font-style: normal;
+  transform: translateY(-0.02em);
 }
 
 .poem-meta-block {
@@ -505,17 +534,13 @@ main > .empty:only-child {
   color: var(--text);
 }
 
-.content-block .publication-note,
-.content-block .published-note {
+.content-block .publication-note {
   margin: 3rem 0 0;
   color: var(--subtle-meta);
   font-size: 0.91rem;
   line-height: 1.6;
-}
-
-.content-block .publication-note {
   position: relative;
-  display: inline-block;
+  display: none;
   max-width: 100%;
   padding-top: 0.9rem;
 }
@@ -565,8 +590,12 @@ main > .empty:only-child {
 }
 
 @media (max-width: 720px) {
+  :root {
+    --poem-title-size: 2.3rem;
+  }
+
   main > h1 {
-    font-size: 2.3rem;
+    font-size: var(--poem-title-size);
   }
 
   .about-grid {

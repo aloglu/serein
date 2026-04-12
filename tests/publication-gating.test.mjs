@@ -156,89 +156,117 @@ after(async () => {
   await removeDirWithRetries(distDir);
 });
 
-test("publication gating keeps future poem HTML out of backdated builds", { concurrency: false }, async () => {
-  const [targetDate] = await nextUnusedPoemDates(1);
-  const blockedAsOf = addDaysToYyyyMmDd(targetDate, -1);
-  const [year, month, day] = targetDate.split("-");
-  const fixture = {
-    relativePath: poemRelativePath(targetDate, "synthetic-publication-gating-fixture"),
-    contents: `---
-title: Synthetic Publication Gating Fixture
+test("share horizon exposes the next poem permalink while keeping later poems gated", { concurrency: false }, async () => {
+  const [shareableDate, scheduledDate] = await nextUnusedPoemDates(2);
+  const blockedAsOf = addDaysToYyyyMmDd(shareableDate, -1);
+  const [shareableYear, shareableMonth, shareableDay] = shareableDate.split("-");
+  const fixtures = [
+    {
+      relativePath: poemRelativePath(shareableDate, "synthetic-share-horizon-fixture"),
+      contents: `---
+title: Synthetic Share Horizon Fixture
 poet: Test Gate
 publication:
-date: ${targetDate}
+date: ${shareableDate}
 source:
 ---
 
-Line one of the synthetic gating fixture.
-Line two of the synthetic gating fixture.
+Line one of the synthetic share horizon fixture.
+Line two of the synthetic share horizon fixture.
 `
-  };
+    },
+    {
+      relativePath: poemRelativePath(scheduledDate, "synthetic-scheduled-horizon-fixture"),
+      contents: `---
+title: Synthetic Scheduled Horizon Fixture
+poet: Test Gate
+publication:
+date: ${scheduledDate}
+source:
+---
+
+Line one of the synthetic scheduled horizon fixture.
+Line two of the synthetic scheduled horizon fixture.
+`
+    }
+  ];
 
   try {
-    const fullPath = path.join(poemsDir, fixture.relativePath);
-    await mkdir(path.dirname(fullPath), { recursive: true });
-    await writeFile(fullPath, fixture.contents, "utf8");
+    for (const fixture of fixtures) {
+      const fullPath = path.join(poemsDir, fixture.relativePath);
+      await mkdir(path.dirname(fullPath), { recursive: true });
+      await writeFile(fullPath, fixture.contents, "utf8");
+    }
 
     await runBuild({ SEREIN_AS_OF: blockedAsOf });
 
-    const futurePageHtml = await readDistFile(...targetDate.split("-").flatMap((part, index) => (
+    const shareablePageHtml = await readDistFile(...shareableDate.split("-").flatMap((part, index) => (
       index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
     )));
-    assert.match(futurePageHtml, /<meta name="robots" content="noindex, nofollow">/);
-    assert.match(futurePageHtml, /<title>Not Available Yet \| A Poem Per Day<\/title>/);
-    assert.match(futurePageHtml, /data-poem-blocked="1"/);
-    assert.match(futurePageHtml, new RegExp(`assets/data/poems/poem-data-${targetDate}-[a-f0-9]{10}\\.json`));
-    assert.doesNotMatch(futurePageHtml, /Line one of the synthetic gating fixture/);
-    assert.doesNotMatch(futurePageHtml, /Line two of the synthetic gating fixture/);
+    assert.match(shareablePageHtml, /<meta name="robots" content="noindex, follow">/);
+    assert.match(shareablePageHtml, /<title>Synthetic Share Horizon Fixture \| A Poem Per Day<\/title>/);
+    assert.match(shareablePageHtml, /data-poem-blocked="0"/);
+    assert.match(shareablePageHtml, /Line one of the synthetic share horizon fixture/);
+    assert.match(shareablePageHtml, /Line two of the synthetic share horizon fixture/);
+    assert.match(shareablePageHtml, new RegExp(`href="/${shareableDate.replaceAll("-", "/")}/" data-share-link="1"`));
 
-    const poemDataFiles = await readdir(path.join(distDir, "assets", "data", "poems"));
-    const targetPoemDataFiles = poemDataFiles.filter((name) => new RegExp(`^poem-data-${targetDate}-[a-f0-9]{10}\\.json$`).test(name));
-    assert.equal(targetPoemDataFiles.length, 1);
+    const scheduledPageHtml = await readDistFile(...scheduledDate.split("-").flatMap((part, index) => (
+      index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
+    )));
+    assert.match(scheduledPageHtml, /<meta name="robots" content="noindex, nofollow">/);
+    assert.match(scheduledPageHtml, /<title>Not Available Yet \| A Poem Per Day<\/title>/);
+    assert.match(scheduledPageHtml, /data-poem-blocked="1"/);
+    assert.doesNotMatch(scheduledPageHtml, /Line one of the synthetic scheduled horizon fixture/);
+    assert.doesNotMatch(scheduledPageHtml, /Line two of the synthetic scheduled horizon fixture/);
+    assert.match(scheduledPageHtml, /data-page-data-url=""/);
+
+    const poemDataFiles = await readDirNamesIfExists(path.join(distDir, "assets", "data", "poems"));
+    assert.doesNotMatch(poemDataFiles.join("\n"), new RegExp(`poem-data-${shareableDate}-[a-f0-9]{10}\\.json`));
+    assert.doesNotMatch(poemDataFiles.join("\n"), new RegExp(`poem-data-${scheduledDate}-[a-f0-9]{10}\\.json`));
 
     const homeDataPath = await findDistFile("assets/data", /^home-data-[a-f0-9]{10}\.json$/);
     const homeData = JSON.parse(await readFile(homeDataPath, "utf8"));
     assert.equal(Array.isArray(homeData.poems), true);
     assert.equal(Array.isArray(homeData.upcoming), true);
-    assert.doesNotMatch(JSON.stringify(homeData), /Line one of the synthetic gating fixture/);
-    assert.equal(homeData.poems.length <= 2, true);
-    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "poemHtml"), true);
-    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "poetMetaHtml"), true);
-    assert.equal(Object.hasOwn(homeData.poems[0] || {}, "pageDataUrl"), false);
+    assert.match(JSON.stringify(homeData.upcoming), new RegExp(shareableDate));
+    assert.doesNotMatch(JSON.stringify(homeData), new RegExp(scheduledDate));
 
     const sitemapXml = await readDistFile("sitemap.xml");
-    const targetRoute = targetDate.replaceAll("-", "/");
-    assert.doesNotMatch(sitemapXml, new RegExp(`https://apoemperday\\.com/${targetRoute}/`));
+    assert.doesNotMatch(sitemapXml, new RegExp(`https://apoemperday\\.com/${shareableDate.replaceAll("-", "/")}/`));
+    assert.doesNotMatch(sitemapXml, new RegExp(`https://apoemperday\\.com/${scheduledDate.replaceAll("-", "/")}/`));
 
     const socialFiles = await readdir(path.join(distDir, "social"));
-    assert.doesNotMatch(socialFiles.join("\n"), new RegExp(`poem-${targetDate}\\.png`));
+    assert.match(socialFiles.join("\n"), new RegExp(`poem-${shareableDate}\\.png`));
+    assert.doesNotMatch(socialFiles.join("\n"), new RegExp(`poem-${scheduledDate}\\.png`));
     assert.equal(
-      (await readDirNamesIfExists(path.join(distDir, year, month))).includes(`${day}.md`),
+      (await readDirNamesIfExists(path.join(distDir, shareableYear, shareableMonth))).includes(`${shareableDay}.md`),
       false
     );
 
-    await runBuild({ SEREIN_AS_OF: targetDate });
+    await runBuild({ SEREIN_AS_OF: shareableDate });
 
-    const publishedPageHtml = await readDistFile(...targetDate.split("-").flatMap((part, index) => (
+    const publishedPageHtml = await readDistFile(...shareableDate.split("-").flatMap((part, index) => (
       index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
     )));
     assert.match(publishedPageHtml, /<meta name="robots" content="index, follow">/);
-    assert.match(publishedPageHtml, /<title>Synthetic Publication Gating Fixture \| A Poem Per Day<\/title>/);
-    assert.match(publishedPageHtml, /Line one of the synthetic gating fixture/);
-    assert.match(publishedPageHtml, /Line two of the synthetic gating fixture/);
+    assert.match(publishedPageHtml, /<title>Synthetic Share Horizon Fixture \| A Poem Per Day<\/title>/);
+    assert.match(publishedPageHtml, /Line one of the synthetic share horizon fixture/);
+    assert.match(publishedPageHtml, /Line two of the synthetic share horizon fixture/);
     assert.match(publishedPageHtml, /data-poem-blocked="0"/);
-    assert.doesNotMatch(publishedPageHtml, new RegExp(`assets/data/poems/poem-data-${targetDate}-`));
+    assert.doesNotMatch(publishedPageHtml, new RegExp(`assets/data/poems/poem-data-${shareableDate}-`));
 
-    const rawMarkdown = await readDistFile(year, month, `${day}.md`);
-    assert.equal(rawMarkdown, fixture.contents);
+    const rawMarkdown = await readDistFile(shareableYear, shareableMonth, `${shareableDay}.md`);
+    assert.equal(rawMarkdown, fixtures[0].contents);
 
     const normalBuildPoemDataFiles = await readDirNamesIfExists(path.join(distDir, "assets", "data", "poems"));
-    assert.doesNotMatch(normalBuildPoemDataFiles.join("\n"), new RegExp(`poem-data-${targetDate}-[a-f0-9]{10}\\.json`));
+    assert.doesNotMatch(normalBuildPoemDataFiles.join("\n"), new RegExp(`poem-data-${shareableDate}-[a-f0-9]{10}\\.json`));
 
     const headersFile = await readDistFile("_headers");
     assert.match(headersFile, /\/\*\.md\s+Content-Type: text\/markdown; charset=utf-8\s+X-Content-Type-Options: nosniff\s+X-Robots-Tag: noindex, nofollow/s);
   } finally {
-    await rm(path.join(poemsDir, fixture.relativePath), { force: true });
+    for (const fixture of fixtures) {
+      await rm(path.join(poemsDir, fixture.relativePath), { force: true });
+    }
   }
 });
 
@@ -276,16 +304,18 @@ Synthetic layout fixture line two.
     const poemPageHtml = await readDistFile(...targetDate.split("-").flatMap((part, index) => (
       index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
     )));
-    assert.match(poemPageHtml, new RegExp(`<p class="meta poem-date"><time datetime="${targetDate}">${expectedDateLabel}<\\/time><\\/p>`));
+    assert.match(poemPageHtml, new RegExp(`<p class="meta poem-date"><time datetime="${targetDate}">${escapeRegex(expectedDateLabel)}<\\/time><\\/p>\\s*<h1>Synthetic Layout Meta Fixture<\\/h1>\\s*<p class="meta poem-meta">`));
     assert.match(poemPageHtml, /<span class="poem-meta-label poem-meta-label-poet">By<\/span><span class="poem-meta-value poem-meta-value-poet"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
     assert.doesNotMatch(poemPageHtml, /translated by/);
     assert.doesNotMatch(poemPageHtml, /Published on/);
     assert.match(poemPageHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
+    assert.match(poemPageHtml, new RegExp(`<p id="poem-share" class="meta poem-share"><a class="poem-share-action" href="/${targetDate.replaceAll("-", "/")}/" data-share-link="1" data-share-title="Synthetic Layout Meta Fixture">Share<\\/a><\\/p>`));
 
     const homeHtml = await readDistFile("index.html");
-    assert.match(homeHtml, new RegExp(`<p id="home-date" class="meta poem-date"><time datetime="${targetDate}">${expectedDateLabel}<\\/time><\\/p>`));
+    assert.match(homeHtml, new RegExp(`<p id="home-date" class="meta poem-date"><time datetime="${targetDate}">${escapeRegex(expectedDateLabel)}<\\/time><\\/p>\\s*<h1 id="home-title">Synthetic Layout Meta Fixture<\\/h1>\\s*<p id="home-meta" class="meta poem-meta">`));
     assert.match(homeHtml, /<span class="poem-meta-label poem-meta-label-poet">By<\/span><span class="poem-meta-value poem-meta-value-poet"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
     assert.match(homeHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
+    assert.match(homeHtml, new RegExp(`<p id="home-share" class="meta poem-share"><a class="poem-share-action" href="/${targetDate.replaceAll("-", "/")}/" data-share-link="1" data-share-title="Synthetic Layout Meta Fixture">Share<\\/a><\\/p>`));
   } finally {
     await rm(path.join(poemsDir, fixture.relativePath), { force: true });
   }
