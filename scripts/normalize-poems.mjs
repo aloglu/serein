@@ -5,6 +5,15 @@ import { pathToFileURL } from "node:url";
 import { duplicatePoemGroups } from "./poem-duplicates.mjs";
 import { expectedPoemFilenameWithExtension } from "./poem-filenames.mjs";
 import { repairMojibakeText as repairWindows1252MojibakeText } from "./mojibake.mjs";
+import {
+  addDaysToYyyyMmDd,
+  buildPoetProximityFixCommand,
+  findNextAvailableDateForPoet,
+  findPoetProximityIssues,
+  normalizePoetProximityTargetPath,
+  planPoetProximityFix,
+  POET_COOLDOWN_DAYS
+} from "./poet-proximity.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
@@ -403,17 +412,6 @@ function parseDateParts(yyyyMmDd) {
   };
 }
 
-function addDaysToYyyyMmDd(yyyyMmDd, dayCount) {
-  const parts = parseDateParts(yyyyMmDd);
-  if (!parts || !Number.isInteger(dayCount)) {
-    return "";
-  }
-
-  const dt = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day)));
-  dt.setUTCDate(dt.getUTCDate() + dayCount);
-  return dt.toISOString().slice(0, 10);
-}
-
 function yyyyMmDdInTimeZone(timeZone) {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone,
@@ -493,16 +491,6 @@ function listAvailableDatesForMonth(year, month, reservedDates) {
   }
 
   return available;
-}
-
-function findNextAvailableDateAfter(cursorDate, reservedDates) {
-  let candidate = addDaysToYyyyMmDd(cursorDate, 1);
-
-  while (reservedDates.has(candidate)) {
-    candidate = addDaysToYyyyMmDd(candidate, 1);
-  }
-
-  return candidate;
 }
 
 function monthFolderName(monthNumber) {
@@ -609,7 +597,20 @@ function resolvePoemDateDirectives(entries) {
       continue;
     }
 
-    const resolvedDate = findNextAvailableDateAfter(nextDateCursor, reservedDates);
+    const resolvedDate = findNextAvailableDateForPoet(
+      addDaysToYyyyMmDd(nextDateCursor, 1),
+      entry.poem.poet,
+      sortedEntries.map((item) => ({
+        date: item.poem.date,
+        poet: item.poem.poet,
+        filepath: item.currentRelPath
+      })),
+      {
+        cooldownDays: POET_COOLDOWN_DAYS,
+        occupiedDates: reservedDates,
+        ignoreFilepaths: new Set([entry.currentRelPath])
+      }
+    );
     reservedDates.add(resolvedDate);
     nextDateCursor = resolvedDate;
     applyResolvedDateToEntry(entry, resolvedDate);
@@ -690,14 +691,7 @@ async function writeReportLines(lines) {
   });
 }
 
-export async function normalizePoems() {
-  const outputLines = [];
-  const logLine = (message) => {
-    outputLines.push(String(message));
-  };
-  const logListItem = (message) => {
-    logLine(`- ${message}`);
-  };
+async function loadPoemEntries() {
   const entries = await collectPoemFiles(poemsDir);
   entries.sort((left, right) => left.relPath.localeCompare(right.relPath));
   const poems = [];
@@ -707,8 +701,10 @@ export async function normalizePoems() {
     poems.push(parsed);
   }
 
-  resolvePoemDateDirectives(poems);
+  return poems;
+}
 
+function assignExpectedPaths(poems) {
   for (const item of poems) {
     const expected = expectedPoemFilenameWithExtension(item.poem, ".md");
     if (!expected) {
@@ -731,19 +727,36 @@ export async function normalizePoems() {
     }
     expectedPaths.set(item.expectedRelPath, item.currentRelPath);
   }
-  const duplicatePoems = duplicatePoemGroups(poems.map((item) => ({
+}
+
+function poemSnapshotsForReport(entries) {
+  return entries.map((item) => ({
     date: item.poem.date,
     title: item.poem.title,
     poet: item.poem.poet,
     poem: item.poem.poem,
-    filepath: item.expectedRelPath
-  })));
+    filepath: item.expectedRelPath || item.currentRelPath
+  }));
+}
 
+function duplicatePoemsForEntries(entries) {
+  return duplicatePoemGroups(poemSnapshotsForReport(entries));
+}
+
+function poetProximityForEntries(entries, asOfDate = yyyyMmDdInTimeZone(PUBLICATION_TIME_ZONE)) {
+  return findPoetProximityIssues(poemSnapshotsForReport(entries), {
+    cooldownDays: POET_COOLDOWN_DAYS,
+    asOfDate
+  });
+}
+
+async function applyEntryChanges(entries, { logListItem }) {
   let renamed = 0;
   let frontmatterUpdated = 0;
   let typographyUpdated = 0;
   let datesResolved = 0;
-  for (const item of poems) {
+
+  for (const item of entries) {
     const expectedPath = path.join(poemsDir, item.expectedRelPath);
     const needsRename = item.currentRelPath !== item.expectedRelPath;
     const needsTypographyUpdate = item.rawContent !== item.typographyNormalizedContent;
@@ -820,28 +833,44 @@ export async function normalizePoems() {
     await removeEmptyPoemDirs(poemsDir);
   }
 
-  if (renamed === 0 && frontmatterUpdated === 0 && typographyUpdated === 0 && datesResolved === 0) {
+  return {
+    renamed,
+    frontmatterUpdated,
+    typographyUpdated,
+    datesResolved
+  };
+}
+
+function logNormalizationSummary(stats, logLine, { dateSummaryText } = {}) {
+  if (
+    stats.renamed === 0
+    && stats.frontmatterUpdated === 0
+    && stats.typographyUpdated === 0
+    && stats.datesResolved === 0
+  ) {
     logLine("No poem path/filename, frontmatter, date, or typography changes needed.");
-  } else {
-    const summary = [];
-    if (renamed > 0) {
-      summary.push(`renamed ${renamed} poem file(s)`);
-    }
-    if (datesResolved > 0) {
-      summary.push(`resolved ${datesResolved} symbolic date(s)`);
-    }
-    if (frontmatterUpdated > 0) {
-      summary.push(`cleaned frontmatter in ${frontmatterUpdated} poem file(s)`);
-    }
-    if (typographyUpdated > 0) {
-      summary.push(`updated typography in ${typographyUpdated} poem file(s)`);
-    }
-    logLine(`Completed: ${summary.join("; ")}.`);
+    return;
   }
 
+  const summary = [];
+  if (stats.renamed > 0) {
+    summary.push(`renamed ${stats.renamed} poem file(s)`);
+  }
+  if (stats.datesResolved > 0) {
+    summary.push(typeof dateSummaryText === "function" ? dateSummaryText(stats.datesResolved) : `resolved ${stats.datesResolved} symbolic date(s)`);
+  }
+  if (stats.frontmatterUpdated > 0) {
+    summary.push(`cleaned frontmatter in ${stats.frontmatterUpdated} poem file(s)`);
+  }
+  if (stats.typographyUpdated > 0) {
+    summary.push(`updated typography in ${stats.typographyUpdated} poem file(s)`);
+  }
+  logLine(`Completed: ${summary.join("; ")}.`);
+}
+
+function logDuplicatePoemReport(duplicatePoems, { logLine, logListItem }) {
   if (duplicatePoems.length === 0) {
     logLine("Duplicate poems: none found.");
-    await writeReportLines(outputLines);
     return;
   }
 
@@ -851,11 +880,118 @@ export async function normalizePoems() {
       `duplicate: ${group.title} by ${group.poet} (${group.count} entries) -> ${group.poems.map((poem) => poem.filepath).join("; ")}`
     );
   }
-  await writeReportLines(outputLines);
+}
+
+function logPoetProximityReport(poetProximity, { logLine, logListItem }) {
+  if (poetProximity.length === 0) {
+    logLine("Poet proximity: none found.");
+    return;
+  }
+
+  const actionableCount = poetProximity.filter((item) => item.actionable).length;
+  logLine(`Poet proximity: found ${poetProximity.length} issue(s); ${actionableCount} actionable.`);
+  for (const item of poetProximity) {
+    logListItem(
+      `proximity: ${item.poet} ${item.earlier.date} -> ${item.later.date} (${item.daysApart} day(s) apart; minimum ${item.minimumSpacingDays})`
+    );
+    logLine(`  ${item.earlier.title} -> ${item.later.title}`);
+    if (item.fixCommand) {
+      logLine(`  Fix: ${item.fixCommand}`);
+    }
+  }
+}
+
+function ensureConcretePoemDates(entries) {
+  const unresolved = entries.filter((item) => describeDateDirective(item.poem.date).type !== "concrete");
+  if (unresolved.length === 0) {
+    return;
+  }
+
+  throw new Error("Cannot fix poet proximity while symbolic poem dates remain. Run `serein poems` first.");
+}
+
+export async function normalizePoems({ quiet = false } = {}) {
+  const outputLines = [];
+  const logLine = (message) => {
+    outputLines.push(String(message));
+  };
+  const logListItem = (message) => {
+    logLine(`- ${message}`);
+  };
+  const poems = await loadPoemEntries();
+  resolvePoemDateDirectives(poems);
+  assignExpectedPaths(poems);
+  const stats = await applyEntryChanges(poems, { logListItem });
+  logNormalizationSummary(stats, logLine);
+  logDuplicatePoemReport(duplicatePoemsForEntries(poems), { logLine, logListItem });
+  logPoetProximityReport(poetProximityForEntries(poems), { logLine, logListItem });
+
+  if (!quiet) {
+    await writeReportLines(outputLines);
+  }
+
+  return {
+    stats,
+    duplicatePoems: duplicatePoemsForEntries(poems),
+    poetProximity: poetProximityForEntries(poems)
+  };
+}
+
+export async function fixPoetProximity(targetPath, { quiet = false, asOfDate = yyyyMmDdInTimeZone(PUBLICATION_TIME_ZONE) } = {}) {
+  const outputLines = [];
+  const logLine = (message) => {
+    outputLines.push(String(message));
+  };
+  const logListItem = (message) => {
+    logLine(`- ${message}`);
+  };
+  const poems = await loadPoemEntries();
+  ensureConcretePoemDates(poems);
+  assignExpectedPaths(poems);
+
+  const plan = planPoetProximityFix(poemSnapshotsForReport(poems), normalizePoetProximityTargetPath(targetPath), {
+    cooldownDays: POET_COOLDOWN_DAYS,
+    asOfDate
+  });
+
+  const moveByPath = new Map(plan.moves.map((move) => [move.filepath, move]));
+  for (const item of poems) {
+    const move = moveByPath.get(item.expectedRelPath || item.currentRelPath);
+    if (!move) {
+      continue;
+    }
+    applyResolvedDateToEntry(item, move.toDate);
+  }
+
+  assignExpectedPaths(poems);
+  const stats = await applyEntryChanges(poems, { logListItem });
+  logLine(`Poet proximity fix: moved ${plan.moves.length} poem(s) for ${plan.poet}.`);
+  logNormalizationSummary(stats, logLine, {
+    dateSummaryText: (count) => `updated dates in ${count} poem file(s)`
+  });
+  const remainingIssues = poetProximityForEntries(poems, asOfDate);
+  logPoetProximityReport(remainingIssues, { logLine, logListItem });
+
+  if (!quiet) {
+    await writeReportLines(outputLines);
+  }
+
+  return {
+    ...plan,
+    stats,
+    remainingIssues
+  };
 }
 
 const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isDirectRun) {
-  await normalizePoems();
+  const [command = "", targetPath = ""] = process.argv.slice(2);
+  if (!command) {
+    await normalizePoems();
+  } else if (command === "fix-proximity") {
+    await fixPoetProximity(targetPath);
+  } else {
+    throw new Error(`Unknown poems command '${command}'.`);
+  }
 }

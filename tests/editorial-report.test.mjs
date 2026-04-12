@@ -65,6 +65,7 @@ test("editorial report includes duplicate poem groups and poet tallies", async (
   assert.equal(report.totals.poets, 2);
   assert.equal(report.totals.publishedPoets, 2);
   assert.equal(report.totals.duplicatePoems, 1);
+  assert.equal(report.totals.poetProximity, 2);
 
   assert.deepEqual(report.duplicatePoems, [
     {
@@ -103,9 +104,60 @@ test("editorial report includes duplicate poem groups and poet tallies", async (
     }
   ]);
 
+  assert.deepEqual(report.poetProximity, [
+    {
+      poet: "Ada Lovelace",
+      cooldownDays: 30,
+      minimumSpacingDays: 31,
+      daysApart: 3,
+      earlier: {
+        date: "2026-04-01",
+        title: "Counting Stars",
+        poet: "Ada Lovelace",
+        filepath: "poems/2026/04-April/2026-04-01-counting-stars.md"
+      },
+      later: {
+        date: "2026-04-04",
+        title: "Counting Stars",
+        poet: "Ada Lovelace",
+        filepath: "poems/2026/04-April/2026-04-04-counting-stars.md"
+      },
+      earliestAllowedDate: "2026-05-02",
+      actionable: false,
+      state: "published",
+      fixCommand: ""
+    },
+    {
+      poet: "Ada Lovelace",
+      cooldownDays: 30,
+      minimumSpacingDays: 31,
+      daysApart: 4,
+      earlier: {
+        date: "2026-04-04",
+        title: "Counting Stars",
+        poet: "Ada Lovelace",
+        filepath: "poems/2026/04-April/2026-04-04-counting-stars.md"
+      },
+      later: {
+        date: "2026-04-08",
+        title: "Ledger",
+        poet: "Ada Lovelace",
+        filepath: "poems/2026/04-April/2026-04-08-ledger.md"
+      },
+      earliestAllowedDate: "2026-05-05",
+      actionable: true,
+      state: "published/upcoming",
+      fixCommand: "serein poems fix-proximity poems/2026/04-April/2026-04-08-ledger.md"
+    }
+  ]);
+
   const textReport = formatEditorialReportText(report);
   assert.match(textReport, /Duplicate poems/);
   assert.match(textReport, /Counting Stars by Ada Lovelace: 2 entries/);
+  assert.match(textReport, /Poet proximity/);
+  assert.match(textReport, /Ada Lovelace: 2026-04-01 -> 2026-04-04 \(3 day\(s\) apart; minimum 31\)/);
+  assert.match(textReport, /Ada Lovelace: 2026-04-04 -> 2026-04-08 \(4 day\(s\) apart; minimum 31\)/);
+  assert.match(textReport, /Fix: serein poems fix-proximity poems\/2026\/04-April\/2026-04-08-ledger\.md/);
   assert.match(textReport, /Poets/);
   assert.match(textReport, /Ada Lovelace: 3 total \| 2 published \| 1 scheduled/);
 });

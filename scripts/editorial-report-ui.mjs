@@ -56,6 +56,38 @@ function renderDuplicateItem(item, width) {
   ];
 }
 
+function poetProximityItems(items) {
+  const actionable = items.filter((item) => item.actionable);
+  const historical = items.filter((item) => !item.actionable);
+  const entries = [];
+
+  if (actionable.length > 0) {
+    entries.push({ kind: "group", label: "Actionable", count: actionable.length });
+    entries.push(...actionable.map((item) => ({ ...item, kind: "issue" })));
+  }
+
+  if (historical.length > 0) {
+    entries.push({ kind: "group", label: "Historical", count: historical.length });
+    entries.push(...historical.map((item) => ({ ...item, kind: "issue" })));
+  }
+
+  return entries;
+}
+
+function renderPoetProximityItem(item, width) {
+  if (item.kind === "group") {
+    return [
+      `${ANSI.bold}${line(item.label, width)}${ANSI.reset}`,
+      line(`${item.count} item${item.count === 1 ? "" : "s"}`, width)
+    ];
+  }
+
+  return [
+    line(`${item.poet}  ${item.later.title}`, width),
+    line(`${item.earlier.date} -> ${item.later.date}  ${item.daysApart} day(s)  ${item.state}${item.actionable ? "  f fix" : ""}`, width)
+  ];
+}
+
 function renderPoetTallyItem(item, width) {
   return [
     line(item.poet, width),
@@ -85,6 +117,14 @@ function createSections(report) {
       description: "Poems sharing the same normalized title, poet, and body.",
       items: report.duplicatePoems,
       renderItem: renderDuplicateItem
+    },
+    {
+      key: "poet-proximity",
+      label: "Poet proximity",
+      description: "Same-poet poems scheduled too close together. Select an actionable item and press f to push it forward.",
+      items: poetProximityItems(report.poetProximity),
+      itemCount: report.poetProximity.length,
+      renderItem: renderPoetProximityItem
     },
     {
       key: "gaps",
@@ -130,8 +170,67 @@ function ensureVisible(index, scroll, visibleCount) {
   return scroll;
 }
 
-function selectLastIndex(items) {
-  return Math.max(0, items.length - 1);
+function isSelectableItem(item) {
+  return item?.kind !== "group";
+}
+
+function normalizedSelectableIndex(items, index) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return 0;
+  }
+
+  const safeIndex = Math.max(0, Math.min(items.length - 1, Number(index) || 0));
+  if (isSelectableItem(items[safeIndex])) {
+    return safeIndex;
+  }
+
+  for (let forward = safeIndex + 1; forward < items.length; forward += 1) {
+    if (isSelectableItem(items[forward])) {
+      return forward;
+    }
+  }
+  for (let backward = safeIndex - 1; backward >= 0; backward -= 1) {
+    if (isSelectableItem(items[backward])) {
+      return backward;
+    }
+  }
+  return safeIndex;
+}
+
+function boundarySelectableIndex(items, direction) {
+  if (!Array.isArray(items) || items.length === 0) {
+    return 0;
+  }
+
+  if (direction === "bottom") {
+    for (let index = items.length - 1; index >= 0; index -= 1) {
+      if (isSelectableItem(items[index])) {
+        return index;
+      }
+    }
+    return Math.max(0, items.length - 1);
+  }
+
+  return normalizedSelectableIndex(items, 0);
+}
+
+function nextSelectableIndex(items, currentIndex, delta) {
+  if (!Array.isArray(items) || items.length === 0 || delta === 0) {
+    return 0;
+  }
+
+  const step = delta < 0 ? -1 : 1;
+  let index = normalizedSelectableIndex(items, currentIndex);
+  while (true) {
+    const nextIndex = index + step;
+    if (nextIndex < 0 || nextIndex >= items.length) {
+      return index;
+    }
+    index = nextIndex;
+    if (isSelectableItem(items[index])) {
+      return index;
+    }
+  }
 }
 
 function styleSelected(text, color, active) {
@@ -175,7 +274,7 @@ function renderApp(report, sections, state, titleText) {
   const leftContentWidth = leftPaneWidth - 1;
   const rightContentWidth = rightPaneWidth - 1;
   const topHeight = 5;
-  const bottomHeight = 3;
+  const bottomHeight = 4;
   const blockHeight = 3;
   const bodyRows = Math.max(6, rows - topHeight - bottomHeight);
   const visibleBlockCount = Math.max(1, Math.floor(bodyRows / blockHeight));
@@ -184,9 +283,14 @@ function renderApp(report, sections, state, titleText) {
     + report.totals.missingSource
     + report.scheduleGaps.length
     + report.totals.duplicatePoems
+    + report.totals.poetProximity
   );
   const currentSection = sections[state.sectionIndex];
-  const currentItemIndex = state.itemIndexBySection[state.sectionIndex] || 0;
+  const currentItemIndex = normalizedSelectableIndex(
+    currentSection.items,
+    state.itemIndexBySection[state.sectionIndex] || 0
+  );
+  state.itemIndexBySection[state.sectionIndex] = currentItemIndex;
 
   state.sectionScroll = ensureVisible(state.sectionIndex, state.sectionScroll, visibleBlockCount);
   state.itemScrollBySection[state.sectionIndex] = ensureVisible(
@@ -206,7 +310,8 @@ function renderApp(report, sections, state, titleText) {
   const visibleItems = currentSection.items.slice(itemStart, itemStart + visibleBlockCount);
 
   const leftHeaderText = line(`Sections | ${sections.length} groups`, leftContentWidth);
-  const rightHeaderText = line(`${currentSection.label} | ${currentSection.items.length} items`, rightContentWidth);
+  const currentSectionItemCount = Number.isInteger(currentSection.itemCount) ? currentSection.itemCount : currentSection.items.length;
+  const rightHeaderText = line(`${currentSection.label} | ${currentSectionItemCount} items`, rightContentWidth);
   const leftHeader = state.activePane === "sections"
     ? `${ANSI.cyan}${ANSI.bold}${leftHeaderText}${ANSI.reset}`
     : `${ANSI.bold}${leftHeaderText}${ANSI.reset}`;
@@ -222,7 +327,8 @@ function renderApp(report, sections, state, titleText) {
     const absoluteSectionIndex = sectionStart + offset;
     const selected = absoluteSectionIndex === state.sectionIndex;
     const primaryText = line(`${absoluteSectionIndex + 1}. ${section.label}`, leftContentWidth);
-    const secondaryText = line(`${section.items.length} items`, leftContentWidth);
+    const sectionItemCount = Number.isInteger(section.itemCount) ? section.itemCount : section.items.length;
+    const secondaryText = line(`${sectionItemCount} items`, leftContentWidth);
     leftLines.push(selected ? styleSelected(primaryText, ANSI.pink, state.activePane === "sections") : primaryText);
     leftLines.push(selected ? styleSelected(secondaryText, ANSI.pink, state.activePane === "sections") : `${ANSI.gray}${secondaryText}${ANSI.reset}`);
     leftLines.push(line("", leftContentWidth));
@@ -271,7 +377,10 @@ function renderApp(report, sections, state, titleText) {
 
   lines.push(divider(cols));
   lines.push(line(currentSection.description, cols));
-  lines.push(`${ANSI.gray}${line("j/k or arrows move  h/l or Tab switch panes  g/G top/bottom  1-9 jump section  q quit", cols)}${ANSI.reset}`);
+  lines.push(state.statusMessage
+    ? `${ANSI.gray}${line(state.statusMessage, cols)}${ANSI.reset}`
+    : line("", cols));
+  lines.push(`${ANSI.gray}${line(state.canApplyFix ? "j/k or arrows move  h/l or Tab switch panes  g/G top/bottom  1-9 jump section  f fix proximity  q quit" : "j/k or arrows move  h/l or Tab switch panes  g/G top/bottom  1-9 jump section  q quit", cols)}${ANSI.reset}`);
 
   writeScreen(lines.slice(0, rows));
 }
@@ -288,18 +397,22 @@ export function canRenderEditorialReportTui() {
   return Boolean(process.stdin.isTTY && process.stdout.isTTY);
 }
 
-export async function runEditorialReportTui(report, { title = "SEREIN EDITORIAL REPORT" } = {}) {
+export async function runEditorialReportTui(initialReport, { title = "SEREIN EDITORIAL REPORT", onApplyPoetProximityFix = null } = {}) {
   if (!canRenderEditorialReportTui()) {
     throw new Error("Interactive report view requires a TTY.");
   }
 
-  const sections = createSections(report);
+  let report = initialReport;
+  let sections = createSections(report);
   const state = {
     activePane: "sections",
     sectionIndex: 0,
     sectionScroll: 0,
-    itemIndexBySection: sections.map(() => 0),
-    itemScrollBySection: sections.map(() => 0)
+    itemIndexBySection: sections.map((section) => normalizedSelectableIndex(section.items, 0)),
+    itemScrollBySection: sections.map(() => 0),
+    statusMessage: "",
+    busy: false,
+    canApplyFix: Boolean(onApplyPoetProximityFix)
   };
 
   let pendingG = false;
@@ -310,24 +423,52 @@ export async function runEditorialReportTui(report, { title = "SEREIN EDITORIAL 
   process.stdout.write("\x1b[?1049h\x1b[?25l\x1b[2J");
 
   const rerender = () => renderApp(report, sections, state, title);
+  const currentItem = () => {
+    const items = sections[state.sectionIndex]?.items || [];
+    return items[state.itemIndexBySection[state.sectionIndex] || 0] || null;
+  };
+  const reloadReport = (nextReport) => {
+    report = nextReport;
+    sections = createSections(report);
+    state.sectionIndex = Math.max(0, Math.min(sections.length - 1, state.sectionIndex));
+    while (state.itemIndexBySection.length < sections.length) {
+      state.itemIndexBySection.push(0);
+      state.itemScrollBySection.push(0);
+    }
+    state.itemIndexBySection.length = sections.length;
+    state.itemScrollBySection.length = sections.length;
+    const items = sections[state.sectionIndex]?.items || [];
+    state.itemIndexBySection[state.sectionIndex] = normalizedSelectableIndex(items, state.itemIndexBySection[state.sectionIndex] || 0);
+  };
 
   const moveSection = (delta) => {
     state.sectionIndex = Math.max(0, Math.min(sections.length - 1, state.sectionIndex + delta));
+    state.itemIndexBySection[state.sectionIndex] = normalizedSelectableIndex(
+      sections[state.sectionIndex].items,
+      state.itemIndexBySection[state.sectionIndex] || 0
+    );
   };
 
   const moveItem = (delta) => {
     const items = sections[state.sectionIndex].items;
-    const nextIndex = (state.itemIndexBySection[state.sectionIndex] || 0) + delta;
-    state.itemIndexBySection[state.sectionIndex] = Math.max(0, Math.min(selectLastIndex(items), nextIndex));
+    state.itemIndexBySection[state.sectionIndex] = nextSelectableIndex(
+      items,
+      state.itemIndexBySection[state.sectionIndex] || 0,
+      delta
+    );
   };
 
   const jumpToBoundary = (direction) => {
     if (state.activePane === "sections") {
       state.sectionIndex = direction === "top" ? 0 : sections.length - 1;
+      state.itemIndexBySection[state.sectionIndex] = normalizedSelectableIndex(
+        sections[state.sectionIndex].items,
+        state.itemIndexBySection[state.sectionIndex] || 0
+      );
       return;
     }
     const items = sections[state.sectionIndex].items;
-    state.itemIndexBySection[state.sectionIndex] = direction === "top" ? 0 : selectLastIndex(items);
+    state.itemIndexBySection[state.sectionIndex] = boundarySelectableIndex(items, direction);
   };
 
   await new Promise((resolve) => {
@@ -341,6 +482,13 @@ export async function runEditorialReportTui(report, { title = "SEREIN EDITORIAL 
     const onKeypress = (str, key = {}) => {
       if (key.ctrl && key.name === "c") {
         stop();
+        return;
+      }
+
+      if (state.busy) {
+        if (str === "q") {
+          stop();
+        }
         return;
       }
 
@@ -358,6 +506,10 @@ export async function runEditorialReportTui(report, { title = "SEREIN EDITORIAL 
         if (index < sections.length) {
           state.sectionIndex = index;
           state.activePane = "sections";
+          state.itemIndexBySection[state.sectionIndex] = normalizedSelectableIndex(
+            sections[state.sectionIndex].items,
+            state.itemIndexBySection[state.sectionIndex] || 0
+          );
           rerender();
         }
         return;
@@ -415,6 +567,45 @@ export async function runEditorialReportTui(report, { title = "SEREIN EDITORIAL 
       if (str === "G") {
         jumpToBoundary("bottom");
         rerender();
+        return;
+      }
+
+      if (str === "f") {
+        const section = sections[state.sectionIndex];
+        const item = currentItem();
+        if (state.activePane === "items" && section?.key === "poet-proximity" && item && !item.actionable) {
+          state.statusMessage = "Historical issue; published poems cannot be moved.";
+          rerender();
+          return;
+        }
+        if (
+          state.activePane !== "items"
+          || section?.key !== "poet-proximity"
+          || !item?.actionable
+          || !onApplyPoetProximityFix
+        ) {
+          state.statusMessage = "Select an actionable poet proximity issue in the items pane to apply a fix.";
+          rerender();
+          return;
+        }
+
+        state.busy = true;
+        state.statusMessage = `Applying fix for ${item.later.title}...`;
+        rerender();
+        Promise.resolve(onApplyPoetProximityFix(item))
+          .then((result) => {
+            if (result?.report) {
+              reloadReport(result.report);
+            }
+            state.statusMessage = result?.message || `Applied fix for ${item.later.title}.`;
+          })
+          .catch((error) => {
+            state.statusMessage = error?.message || String(error);
+          })
+          .finally(() => {
+            state.busy = false;
+            rerender();
+          });
       }
     };
 

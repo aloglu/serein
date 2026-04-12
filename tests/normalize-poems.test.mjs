@@ -12,6 +12,7 @@ const normalizeScriptSource = path.join(root, "scripts", "normalize-poems.mjs");
 const filenameScriptSource = path.join(root, "scripts", "poem-filenames.mjs");
 const mojibakeScriptSource = path.join(root, "scripts", "mojibake.mjs");
 const duplicateScriptSource = path.join(root, "scripts", "poem-duplicates.mjs");
+const poetProximityScriptSource = path.join(root, "scripts", "poet-proximity.mjs");
 const MONTH_DIR_NAMES = {
   "01": "01-January",
   "02": "02-February",
@@ -56,9 +57,9 @@ function runNormalize(workdir) {
   });
 }
 
-function runSereinPoems(workdir, cwd = workdir) {
+function runSereinPoems(workdir, cwd = workdir, args = []) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [path.join(workdir, "scripts", "serein.mjs"), "poems"], {
+    const child = spawn(process.execPath, [path.join(workdir, "scripts", "serein.mjs"), "poems", ...args], {
       cwd,
       env: process.env,
       stdio: ["ignore", "pipe", "pipe"]
@@ -133,6 +134,10 @@ function addDaysToYyyyMmDd(yyyyMmDd, days) {
   return dt.toISOString().slice(0, 10);
 }
 
+function escapeRegex(input) {
+  return String(input).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function poemRelativePath(yyyyMmDd, slug) {
   const match = String(yyyyMmDd).match(/^(\d{4})-(\d{2})-(\d{2})$/);
   assert.ok(match, `Expected a YYYY-MM-DD date, received '${yyyyMmDd}'`);
@@ -171,6 +176,7 @@ async function createNormalizeWorkspace({ baselinePoems = [], fixturePoems = [] 
   await copyFile(filenameScriptSource, path.join(workspace, "scripts", "poem-filenames.mjs"));
   await copyFile(mojibakeScriptSource, path.join(workspace, "scripts", "mojibake.mjs"));
   await copyFile(duplicateScriptSource, path.join(workspace, "scripts", "poem-duplicates.mjs"));
+  await copyFile(poetProximityScriptSource, path.join(workspace, "scripts", "poet-proximity.mjs"));
 
   for (const poem of baselinePoems) {
     await writeWorkspacePoem(
@@ -229,17 +235,20 @@ test("normalize resolves multiple `next` dates from the closest open date, not t
       {
         date: today,
         slug: "occupied-today-fixture",
-        title: "Occupied Today Fixture"
+        title: "Occupied Today Fixture",
+        poet: "Occupied Fixture Poet"
       },
       {
         date: dayAfterTomorrow,
         slug: "occupied-day-after-tomorrow-fixture",
-        title: "Occupied Day After Tomorrow Fixture"
+        title: "Occupied Day After Tomorrow Fixture",
+        poet: "Occupied Fixture Poet"
       },
       {
         date: farFutureDate,
         slug: "far-future-fixture",
-        title: "Far Future Fixture"
+        title: "Far Future Fixture",
+        poet: "Occupied Fixture Poet"
       }
     ],
     fixturePoems: [
@@ -247,6 +256,7 @@ test("normalize resolves multiple `next` dates from the closest open date, not t
         relativePath: path.join("__normalize-fixtures__", "a-alpha.md"),
         contents: buildPoemMarkdown({
           title: "Synthetic Next Queue Alpha Fixture",
+          poet: "Next Queue Alpha Poet",
           date: "next",
           body: "Alpha line."
         })
@@ -255,6 +265,7 @@ test("normalize resolves multiple `next` dates from the closest open date, not t
         relativePath: path.join("__normalize-fixtures__", "b-beta.md"),
         contents: buildPoemMarkdown({
           title: "Synthetic Next Queue Beta Fixture",
+          poet: "Next Queue Beta Poet",
           date: "next",
           body: "Beta line."
         })
@@ -274,6 +285,51 @@ test("normalize resolves multiple `next` dates from the closest open date, not t
 
     assert.equal(parseDateFrontmatter(alphaContents), tomorrow);
     assert.equal(parseDateFrontmatter(betaContents), thirdOpenDay);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("normalize makes `next` poet-aware against both earlier and later poems by the same poet", { concurrency: false }, async () => {
+  const today = currentPublicationDate();
+  const laterSamePoetDate = addDaysToYyyyMmDd(today, 40);
+  const expectedDate = addDaysToYyyyMmDd(laterSamePoetDate, 31);
+  const slug = "poet-aware-next-fixture";
+  const poet = "Test Cooldown Poet";
+  const workspace = await createNormalizeWorkspace({
+    baselinePoems: [
+      {
+        date: today,
+        slug: "poet-aware-baseline-earlier",
+        title: "Poet Aware Baseline Earlier",
+        poet
+      },
+      {
+        date: laterSamePoetDate,
+        slug: "poet-aware-baseline-later",
+        title: "Poet Aware Baseline Later",
+        poet
+      }
+    ],
+    fixturePoems: [
+      {
+        relativePath: path.join("__normalize-fixtures__", "poet-aware-next.md"),
+        contents: buildPoemMarkdown({
+          title: "Poet Aware Next Fixture",
+          poet,
+          date: "next",
+          body: "Cooldown line."
+        })
+      }
+    ]
+  });
+
+  try {
+    await runNormalize(workspace);
+
+    const expectedPath = path.join(workspace, "poems", poemRelativePath(expectedDate, slug));
+    const contents = await readFile(expectedPath, "utf8");
+    assert.equal(parseDateFrontmatter(contents), expectedDate);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }
@@ -346,7 +402,8 @@ test("normalize removes empty frontmatter fields and writes canonical frontmatte
       {
         date: today,
         slug: "occupied-today-frontmatter-fixture",
-        title: "Occupied Today Frontmatter Fixture"
+        title: "Occupied Today Frontmatter Fixture",
+        poet: "Occupied Frontmatter Poet"
       }
     ],
     fixturePoems: [
@@ -506,6 +563,98 @@ test("serein poems resolves the project root when launched from the poems direct
     const contents = await readFile(expectedPath, "utf8");
 
     assert.match(contents, /^title: Nested Cwd CLI Fixture$/m);
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("serein poems reports poet proximity issues and suggests fix commands", { concurrency: false }, async () => {
+  const today = currentPublicationDate();
+  const firstConflictDate = addDaysToYyyyMmDd(today, 10);
+  const secondConflictDate = addDaysToYyyyMmDd(today, 20);
+  const poet = "Test Proximity Poet";
+  const firstConflictPath = poemRelativePath(firstConflictDate, "proximity-first-fixture");
+  const secondConflictPath = poemRelativePath(secondConflictDate, "proximity-second-fixture");
+  const workspace = await createNormalizeWorkspace({
+    baselinePoems: [
+      {
+        date: today,
+        slug: "proximity-anchor-fixture",
+        title: "Proximity Anchor Fixture",
+        poet
+      },
+      {
+        date: firstConflictDate,
+        slug: "proximity-first-fixture",
+        title: "Proximity First Fixture",
+        poet
+      },
+      {
+        date: secondConflictDate,
+        slug: "proximity-second-fixture",
+        title: "Proximity Second Fixture",
+        poet
+      }
+    ]
+  });
+
+  try {
+    const stdout = await captureNormalizeOutput(workspace);
+    assert.match(stdout, /Poet proximity: found 2 issue\(s\); 2 actionable\./);
+    assert.match(stdout, new RegExp(`Fix: serein poems fix-proximity ${escapeRegex(firstConflictPath)}`));
+    assert.match(stdout, new RegExp(`Fix: serein poems fix-proximity ${escapeRegex(secondConflictPath)}`));
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("serein poems fix-proximity pushes later poems by the same poet forward", { concurrency: false }, async () => {
+  const today = currentPublicationDate();
+  const firstConflictDate = addDaysToYyyyMmDd(today, 10);
+  const secondConflictDate = addDaysToYyyyMmDd(today, 20);
+  const firstResolvedDate = addDaysToYyyyMmDd(today, 31);
+  const secondResolvedDate = addDaysToYyyyMmDd(firstResolvedDate, 31);
+  const poet = "Test Proximity Poet";
+  const workspace = await createNormalizeWorkspace({
+    baselinePoems: [
+      {
+        date: today,
+        slug: "proximity-anchor-fixture",
+        title: "Proximity Anchor Fixture",
+        poet
+      },
+      {
+        date: firstConflictDate,
+        slug: "proximity-first-fixture",
+        title: "Proximity First Fixture",
+        poet
+      },
+      {
+        date: secondConflictDate,
+        slug: "proximity-second-fixture",
+        title: "Proximity Second Fixture",
+        poet
+      }
+    ]
+  });
+
+  try {
+    await runSereinPoems(workspace, workspace, [
+      "fix-proximity",
+      poemRelativePath(firstConflictDate, "proximity-first-fixture")
+    ]);
+
+    const firstResolvedPath = path.join(workspace, "poems", poemRelativePath(firstResolvedDate, "proximity-first-fixture"));
+    const secondResolvedPath = path.join(workspace, "poems", poemRelativePath(secondResolvedDate, "proximity-second-fixture"));
+    const [firstContents, secondContents] = await Promise.all([
+      readFile(firstResolvedPath, "utf8"),
+      readFile(secondResolvedPath, "utf8")
+    ]);
+
+    assert.equal(parseDateFrontmatter(firstContents), firstResolvedDate);
+    assert.equal(parseDateFrontmatter(secondContents), secondResolvedDate);
+    assert.equal((await findPoemFilesBySlug(workspace, "proximity-first-fixture")).length, 1);
+    assert.equal((await findPoemFilesBySlug(workspace, "proximity-second-fixture")).length, 1);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }

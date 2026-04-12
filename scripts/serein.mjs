@@ -32,6 +32,7 @@ function printUsage() {
 
 Usage:
   serein poems
+  serein poems fix-proximity <poem-path>
   serein build [YYYY-MM-DD]
   serein preview [YYYY-MM-DD]
   serein preview watch [YYYY-MM-DD]
@@ -39,6 +40,7 @@ Usage:
 
 Examples:
   serein poems
+  serein poems fix-proximity 2026/04-April/2026-04-12-when-i-am-among-trees.md
   serein build 2026-03-07
   serein preview watch 2026-03-07
 `);
@@ -84,6 +86,33 @@ function commandForBuild(tokens) {
     script: "scripts/build.mjs",
     args: date ? ["--as-of", date] : []
   };
+}
+
+function commandForPoems(tokens) {
+  const extras = [...tokens];
+  if (extras.length === 0) {
+    return {
+      script: "scripts/normalize-poems.mjs",
+      args: []
+    };
+  }
+
+  const subcommand = extras.shift();
+  if (subcommand === "fix-proximity") {
+    const targetPath = String(extras.shift() || "").trim();
+    if (!targetPath) {
+      throw new Error("Missing poem path for 'serein poems fix-proximity'.");
+    }
+    if (extras.length > 0) {
+      throw new Error(`Unexpected poems argument '${extras[0]}'.`);
+    }
+    return {
+      script: "scripts/normalize-poems.mjs",
+      args: ["fix-proximity", targetPath]
+    };
+  }
+
+  throw new Error(`Unexpected poems argument '${subcommand}'.`);
 }
 
 function commandForPreview(tokens) {
@@ -145,13 +174,7 @@ function resolveCommand(argv) {
   }
 
   if (area === "poems") {
-    if (rest.length > 0) {
-      throw new Error(`Unexpected poems argument '${rest[0]}'.`);
-    }
-    return {
-      script: "scripts/normalize-poems.mjs",
-      args: []
-    };
+    return commandForPoems(rest);
   }
 
   if (area === "build") {

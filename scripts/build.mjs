@@ -6,6 +6,7 @@ import { pathToFileURL } from "node:url";
 import { marked } from "marked";
 import { expectedPoemFilename } from "./poem-filenames.mjs";
 import { duplicatePoemGroups } from "./poem-duplicates.mjs";
+import { findPoetProximityIssues, POET_COOLDOWN_DAYS } from "./poet-proximity.mjs";
 import { parsePoetryLineDirective } from "./poetry-line.mjs";
 
 const root = process.cwd();
@@ -2314,6 +2315,10 @@ export async function createEditorialReport(poems, { asOfDate = "", poetPagesLis
   const missingSource = [];
   const customMarkup = [];
   const duplicatePoems = duplicatePoemGroups(poems);
+  const poetProximity = findPoetProximityIssues(poems, {
+    cooldownDays: POET_COOLDOWN_DAYS,
+    asOfDate: effectiveAsOf
+  });
   const poetTallies = poetTalliesForReport(poems, effectiveAsOf);
 
   for (const poem of poems) {
@@ -2363,7 +2368,8 @@ export async function createEditorialReport(poems, { asOfDate = "", poetPagesLis
       missingPublication: missingPublication.length,
       missingSource: missingSource.length,
       customMarkup: customMarkup.length,
-      duplicatePoems: duplicatePoems.length
+      duplicatePoems: duplicatePoems.length,
+      poetProximity: poetProximity.length
     },
     upcomingPoems: upcomingPoems.map((poem) => ({
       date: poem.date,
@@ -2376,6 +2382,7 @@ export async function createEditorialReport(poems, { asOfDate = "", poetPagesLis
     missingSource,
     customMarkup,
     duplicatePoems,
+    poetProximity,
     poetTallies
   };
 }
@@ -2396,6 +2403,7 @@ export function formatEditorialReportText(report) {
     `- Missing source fields: ${report.totals.missingSource}`,
     `- Duplicate poem groups: ${report.totals.duplicatePoems}`,
     `- Poems using custom markup: ${report.totals.customMarkup}`,
+    `- Poet proximity issues: ${report.totals.poetProximity}`,
     "",
     "Schedule gaps"
   ];
@@ -2416,6 +2424,21 @@ export function formatEditorialReportText(report) {
       lines.push(`- ${group.title} by ${group.poet}: ${group.count} entries`);
       for (const poem of group.poems) {
         lines.push(`  ${poem.date}: ${poem.filepath}`);
+      }
+    }
+  }
+
+  lines.push("", "Poet proximity");
+  if (report.poetProximity.length === 0) {
+    lines.push("- None");
+  } else {
+    for (const item of report.poetProximity) {
+      lines.push(
+        `- ${item.poet}: ${item.earlier.date} -> ${item.later.date} (${item.daysApart} day(s) apart; minimum ${item.minimumSpacingDays})`
+      );
+      lines.push(`  ${item.earlier.title} -> ${item.later.title}`);
+      if (item.fixCommand) {
+        lines.push(`  Fix: ${item.fixCommand}`);
       }
     }
   }

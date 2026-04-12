@@ -1,7 +1,7 @@
 ---
 title: cruelty. don’t talk to me about cruelty
 poet: Lucille Clifton
-date: 2026-04-20
+date: 2026-04-29
 ---
 
 cruelty. don’t talk to me about cruelty.

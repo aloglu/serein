@@ -27,7 +27,7 @@ That pipeline is responsible for:
 
 The project targets Node.js 24.x LTS and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` are checked in so local Node version managers can select the expected runtime.
 
-In an interactive terminal, `serein editorial` opens a keyboard-first report viewer. When output is redirected or piped, it falls back to the plain-text report.
+In an interactive terminal, `serein editorial` opens a keyboard-first report viewer. When output is redirected or piped, it falls back to the plain-text report. The editorial report also flags same-poet proximity issues, and the TUI can apply the suggested fix with `f` on an actionable proximity item.
 
 ## Content model
 
@@ -64,10 +64,12 @@ Poem files follow the path pattern `poems/YYYY/MM-Month/YYYY-MM-DD-slug.md`. Dat
 
 Before running `npm run poems:sync` (alias: `npm run normalize:poems`), the `date` frontmatter may also use symbolic values:
 
-- `next` picks the closest unused date on or after the current publication date. Multiple `next` values in one normalize run are resolved sequentially in alphabetical path order.
+- `next` picks the closest unused date on or after the current publication date while respecting the poet cooldown rule described below. Multiple `next` values in one normalize run are resolved sequentially in alphabetical path order.
 - `random-<month>` such as `random-may` picks an unused day in that month of the current publication year.
 
 The normalizer rewrites those symbolic values to concrete `YYYY-MM-DD` dates, removes empty optional frontmatter fields, rewrites frontmatter in the canonical order (`title`, `poet`, `translator`, `publication`, `source`, `date`), and then renames the poem file/path to match.
+
+Serein also enforces a poet cooldown of 30 days for newly assigned `next` dates and reports any existing same-poet pairs that are scheduled too close together. If `serein poems` finds an actionable issue, it prints a suggested command such as `serein poems fix-proximity 2026/04-April/2026-04-12-example.md`, which moves the selected poem and any later poems by the same poet far enough forward to clear the cooldown.
 
 The poem renderer also supports one small piece of custom markup:
 
