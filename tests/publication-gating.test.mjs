@@ -310,12 +310,22 @@ Synthetic layout fixture line two.
     assert.doesNotMatch(poemPageHtml, /Published on/);
     assert.match(poemPageHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
     assert.match(poemPageHtml, new RegExp(`<p id="poem-share" class="meta poem-share"><a class="poem-share-action" href="/${targetDate.replaceAll("-", "/")}/" data-share-link="1" data-share-title="Synthetic Layout Meta Fixture">Share<\\/a><\\/p>`));
+    assert.match(poemPageHtml, /"@type":"CreativeWork"/);
+    assert.match(poemPageHtml, /"author":\{"@type":"Person","name":"Test Layout Fixture Poet","url":"https:\/\/apoemperday\.com\/poets\/test-layout-fixture-poet\/"\}/);
 
     const homeHtml = await readDistFile("index.html");
     assert.match(homeHtml, new RegExp(`<p id="home-date" class="meta poem-date"><time datetime="${targetDate}">${escapeRegex(expectedDateLabel)}<\\/time><\\/p>\\s*<h1 id="home-title">Synthetic Layout Meta Fixture<\\/h1>\\s*<p id="home-meta" class="meta poem-meta">`));
     assert.match(homeHtml, /<span class="poem-meta-label poem-meta-label-poet">By<\/span><span class="poem-meta-value poem-meta-value-poet"><a href="\/poets\/test-layout-fixture-poet\/">Test Layout Fixture Poet<\/a><\/span><span aria-hidden="true" class="separator-mark poem-meta-separator">&#8729;<\/span><span class="poem-meta-label poem-meta-label-translator">Tr\.<\/span><span class="poem-meta-value poem-meta-value-translator">Test Layout Fixture Translator<\/span>/);
     assert.match(homeHtml, /<p class="publication-note"><span class="publication-label">Source: <\/span>Synthetic Review<span aria-hidden="true" class="separator-mark meta-separator">&middot;<\/span><a href="https:\/\/example\.com\/layout-source" target="_blank" rel="noreferrer">Link<\/a><\/p>/);
+    assert.match(homeHtml, /<section id="home-content" class="content-block" data-nosnippet>/);
     assert.match(homeHtml, new RegExp(`<p id="home-share" class="meta poem-share"><a class="poem-share-action" href="/${targetDate.replaceAll("-", "/")}/" data-share-link="1" data-share-title="Synthetic Layout Meta Fixture">Share<\\/a><\\/p>`));
+    assert.match(homeHtml, /"@type":"WebSite"/);
+    assert.match(homeHtml, /"name":"A Poem Per Day"/);
+    assert.match(homeHtml, /"url":"https:\/\/apoemperday\.com\/"/);
+
+    const poetPageHtml = await readDistFile("poets", "test-layout-fixture-poet", "index.html");
+    assert.match(poetPageHtml, /"@type":"ProfilePage"/);
+    assert.match(poetPageHtml, /"mainEntity":\{"@type":"Person","name":"Test Layout Fixture Poet","url":"https:\/\/apoemperday\.com\/poets\/test-layout-fixture-poet\/"\}/);
   } finally {
     await rm(path.join(poemsDir, fixture.relativePath), { force: true });
   }

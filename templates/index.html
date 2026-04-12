@@ -42,6 +42,7 @@
   <meta name="twitter:title" content="{{PAGE_TITLE}}">
   <meta name="twitter:description" content="{{PAGE_DESCRIPTION}}">
   {{SOCIAL_META}}
+  {{HEAD_EXTRA}}
   <title>{{PAGE_TITLE}}</title>
   <link rel="stylesheet" href="{{ASSET_PATH}}">
   {{FONT_PRELOADS}}
@@ -56,7 +57,7 @@
     <p id="home-date" class="meta poem-date">{{FALLBACK_DATE_HTML}}</p>
     <h1 id="home-title">{{FALLBACK_TITLE}}</h1>
     <p id="home-meta" class="meta poem-meta">{{FALLBACK_META}}</p>
-    <article id="home-content" class="content-block">{{FALLBACK_POEM_HTML}}</article>
+    <section id="home-content" class="content-block" data-nosnippet>{{FALLBACK_POEM_HTML}}</section>
     <p id="home-share" class="meta poem-share">{{FALLBACK_SHARE_HTML}}</p>
   </main>
 

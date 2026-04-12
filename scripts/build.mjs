@@ -1358,7 +1358,7 @@ function renderPoetMeta(poem) {
   return `<span class="poem-meta-block">${parts.join("")}</span>`;
 }
 
-function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "", twitterCard = "summary", socialMeta = "" } = {}) {
+function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta = "", twitterCard = "summary", socialMeta = "", headExtra = "" } = {}) {
   let html = template
     .replace("{{ASSET_PATH}}", assetPath(routePath))
     .replace("{{FONT_PRELOADS}}", fontPreloads(routePath))
@@ -1371,6 +1371,7 @@ function withCommonPageAssets(template, routePath, { scriptName = "", robotsMeta
     .replace("{{OG_URL_TAG}}", ogUrlTag(routePath))
     .replace("{{TWITTER_CARD}}", twitterCard)
     .replace("{{SOCIAL_META}}", socialMeta)
+    .replace("{{HEAD_EXTRA}}", headExtra)
     .replace("{{FOOTER}}", renderFooter(routePath));
 
   if (scriptName) {
@@ -1405,16 +1406,36 @@ function renderBlockedPoemContent() {
   return '<p>This poem will become available in <strong id="future-availability-countdown">--</strong> in your local time.</p>';
 }
 
+function renderWebsiteStructuredData() {
+  if (!siteUrl) {
+    return "";
+  }
+
+  return jsonLdScript({
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "A Poem Per Day",
+    url: `${siteUrl}/`
+  });
+}
+
 function renderPoemStructuredData(poem, routePath) {
   const url = absoluteRouteUrl(routePath);
+  const poetUrl = absoluteRouteUrl(poem.poetRoute);
+  const author = {
+    "@type": "Person",
+    name: poem.poet
+  };
+
+  if (poetUrl) {
+    author.url = poetUrl;
+  }
+
   const data = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
     name: poem.title,
-    author: {
-      "@type": "Person",
-      name: poem.poet
-    },
+    author,
     description: poemMetaDescription(poem),
     datePublished: poem.date,
     dateModified: poem.sourceModifiedAt || poem.date
@@ -1434,6 +1455,38 @@ function renderPoemStructuredData(poem, routePath) {
       "@id": url
     };
   }
+
+  if (siteUrl) {
+    data.isPartOf = {
+      "@type": "WebSite",
+      name: "A Poem Per Day",
+      url: `${siteUrl}/`
+    };
+  }
+
+  return jsonLdScript(data);
+}
+
+function renderPoetStructuredData(poetPage, poemCount = 0) {
+  const url = absoluteRouteUrl(poetPage.route);
+  if (!url) {
+    return "";
+  }
+
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    url,
+    name: `${poetPage.poet} | A Poem Per Day`,
+    description: poemCount > 0
+      ? `Poems by ${poetPage.poet} published on A Poem Per Day.`
+      : `${poetPage.poet} on A Poem Per Day.`,
+    mainEntity: {
+      "@type": "Person",
+      name: poetPage.poet,
+      url
+    }
+  };
 
   if (siteUrl) {
     data.isPartOf = {
@@ -1513,6 +1566,7 @@ function renderPoemShell(template, poem, { visibilityState = "published", routeP
   return withCommonPageAssets(template, routePath, {
     scriptName: "poem",
     robotsMeta: `<meta name="robots" content="${robotsContent}">`,
+    headExtra: structuredData,
     ...(blocked
       ? sharingOptions(routePath)
       : sharingOptions(routePath, {
@@ -1532,7 +1586,6 @@ function renderPoemShell(template, poem, { visibilityState = "published", routeP
     .replace("{{POEM_BLOCKED}}", blocked ? "1" : "0")
     .replace("{{PAGE_DATA_URL}}", pageDataUrl ? routeRelativeAssetUrl(routePath, pageDataUrl) : "")
     .replaceAll("{{POET_META}}", poetMeta)
-    .replace("{{STRUCTURED_DATA}}", structuredData)
     .replaceAll("{{POEM_TEXT}}", poemHtml);
 }
 
@@ -1637,6 +1690,7 @@ async function renderHome(poems, defaultAsOf = "") {
   const html = withCommonPageAssets(template, "/", {
     scriptName: "home",
     robotsMeta: '<meta name="robots" content="index, follow">',
+    headExtra: renderWebsiteStructuredData(),
     ...sharingOptions("/")
   })
     .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
@@ -1995,6 +2049,7 @@ async function renderPoetPages(poems, defaultAsOf = "") {
       robotsMeta: fallbackPoems.length > 0
         ? '<meta name="robots" content="index, follow">'
         : '<meta name="robots" content="noindex, nofollow">',
+      headExtra: fallbackPoems.length > 0 ? renderPoetStructuredData(poetPage, fallbackPoems.length) : "",
       ...sharingOptions(poetPage.route)
     })
       .replaceAll("{{POET}}", htmlEscape(poetPage.poet))
