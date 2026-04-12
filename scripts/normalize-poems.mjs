@@ -882,15 +882,24 @@ function logDuplicatePoemReport(duplicatePoems, { logLine, logListItem }) {
   }
 }
 
-function logPoetProximityReport(poetProximity, { logLine, logListItem }) {
-  if (poetProximity.length === 0) {
+function logPoetProximityReport(poetProximity, { logLine, logListItem }, { actionableOnly = false } = {}) {
+  const visibleIssues = actionableOnly
+    ? poetProximity.filter((item) => item.actionable)
+    : poetProximity;
+
+  if (visibleIssues.length === 0) {
     logLine("Poet proximity: none found.");
     return;
   }
 
-  const actionableCount = poetProximity.filter((item) => item.actionable).length;
-  logLine(`Poet proximity: found ${poetProximity.length} issue(s); ${actionableCount} actionable.`);
-  for (const item of poetProximity) {
+  if (actionableOnly) {
+    logLine(`Poet proximity: found ${visibleIssues.length} actionable issue(s).`);
+  } else {
+    const actionableCount = poetProximity.filter((item) => item.actionable).length;
+    logLine(`Poet proximity: found ${poetProximity.length} issue(s); ${actionableCount} actionable.`);
+  }
+
+  for (const item of visibleIssues) {
     logListItem(
       `proximity: ${item.poet} ${item.earlier.date} -> ${item.later.date} (${item.daysApart} day(s) apart; minimum ${item.minimumSpacingDays})`
     );
@@ -924,7 +933,7 @@ export async function normalizePoems({ quiet = false } = {}) {
   const stats = await applyEntryChanges(poems, { logListItem });
   logNormalizationSummary(stats, logLine);
   logDuplicatePoemReport(duplicatePoemsForEntries(poems), { logLine, logListItem });
-  logPoetProximityReport(poetProximityForEntries(poems), { logLine, logListItem });
+  logPoetProximityReport(poetProximityForEntries(poems), { logLine, logListItem }, { actionableOnly: true });
 
   if (!quiet) {
     await writeReportLines(outputLines);

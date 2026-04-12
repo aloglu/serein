@@ -600,9 +600,40 @@ test("serein poems reports poet proximity issues and suggests fix commands", { c
 
   try {
     const stdout = await captureNormalizeOutput(workspace);
-    assert.match(stdout, /Poet proximity: found 2 issue\(s\); 2 actionable\./);
+    assert.match(stdout, /Poet proximity: found 2 actionable issue\(s\)\./);
     assert.match(stdout, new RegExp(`Fix: serein poems fix-proximity ${escapeRegex(firstConflictPath)}`));
     assert.match(stdout, new RegExp(`Fix: serein poems fix-proximity ${escapeRegex(secondConflictPath)}`));
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("serein poems hides historical poet proximity issues", { concurrency: false }, async () => {
+  const today = currentPublicationDate();
+  const earlierDate = addDaysToYyyyMmDd(today, -10);
+  const laterDate = addDaysToYyyyMmDd(today, -3);
+  const poet = "Historical Proximity Poet";
+  const workspace = await createNormalizeWorkspace({
+    baselinePoems: [
+      {
+        date: earlierDate,
+        slug: "historical-proximity-earlier",
+        title: "Historical Proximity Earlier",
+        poet
+      },
+      {
+        date: laterDate,
+        slug: "historical-proximity-later",
+        title: "Historical Proximity Later",
+        poet
+      }
+    ]
+  });
+
+  try {
+    const stdout = await captureNormalizeOutput(workspace);
+    assert.match(stdout, /Poet proximity: none found\./);
+    assert.doesNotMatch(stdout, /Historical Proximity Poet/);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }
