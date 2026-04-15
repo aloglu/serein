@@ -216,8 +216,13 @@ main > h1:first-child {
 }
 
 .poem-share-action {
-  color: inherit;
+  color: var(--byline-poet);
   font-style: italic;
+}
+
+.poem-share-action:hover,
+.poem-share-action:focus-visible {
+  color: var(--byline-link-hover);
 }
 
 .poem-share-action::before {
@@ -577,8 +582,14 @@ main > .empty:only-child {
 .site-footer {
   margin-top: auto;
   text-align: center;
-  color: var(--muted);
+  color: var(--subtle-meta);
   padding: 2rem 1rem 2.5rem;
+  transition: color 160ms ease;
+}
+
+.site-footer:hover,
+.site-footer:focus-within {
+  color: var(--muted);
 }
 
 .site-footer-nav {

@@ -1316,6 +1316,7 @@ function renderFooter(routePath) {
   if (routePath !== "/") {
     links.push(`<a href="${prefix}" data-prefetch="eager">Today</a>`);
   }
+  links.push(`<a href="${prefix}poets/" data-prefetch="eager">Poets</a>`);
   links.push(`<a href="${prefix}archive/" data-prefetch="eager">Archive</a>`);
   links.push(`<a href="${prefix}about/" data-prefetch="eager">About</a>`);
   return `<footer class="site-footer"><nav class="site-footer-nav" aria-label="Footer">${links.join('<span aria-hidden="true" class="separator-mark site-footer-separator">&bull;</span>')}</nav></footer>`;
