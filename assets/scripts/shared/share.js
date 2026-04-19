@@ -1,4 +1,5 @@
 let sharingBound = false;
+const canonicalShareOrigin = "https://apoemperday.com";
 
 function isPlainPrimaryActivation(event) {
   return event.button === 0 && !event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey;
@@ -39,8 +40,13 @@ function setTemporaryLabel(anchor, nextLabel) {
   anchor.dataset.shareTimerId = String(timerId);
 }
 
+function canonicalShareUrl(rawUrl) {
+  const url = new URL(rawUrl || window.location.href, window.location.href);
+  return `${canonicalShareOrigin}${url.pathname}${url.search}${url.hash}`;
+}
+
 async function handleShare(anchor) {
-  const shareUrl = anchor.href || window.location.href;
+  const shareUrl = canonicalShareUrl(anchor.getAttribute("href") || anchor.href);
   const shareTitle = anchor.dataset.shareTitle || document.title.replace(/\s+\|\s+A Poem Per Day$/, "");
 
   if (navigator.share) {
