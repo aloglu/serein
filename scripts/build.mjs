@@ -8,6 +8,7 @@ import { expectedPoemFilename } from "./poem-filenames.mjs";
 import { duplicatePoemGroups } from "./poem-duplicates.mjs";
 import { findPoetProximityIssues, POET_COOLDOWN_DAYS } from "./poet-proximity.mjs";
 import { parsePoetryLineDirective } from "./poetry-line.mjs";
+import { renderPoetsIndex } from "../assets/scripts/shared/poets-index.mjs";
 
 const root = process.cwd();
 const poemsDir = path.join(root, "poems");
@@ -917,8 +918,21 @@ function shareablePoemsForDate(poems, defaultAsOf = "") {
 }
 
 function poetPagesWithPublishedPoems(publishedPoems) {
-  const publishedAuthors = new Set(publishedPoems.map((poem) => poem.poet));
-  return poetPages.filter((entry) => publishedAuthors.has(entry.poet));
+  const publishedByPoet = new Map();
+  for (const poem of publishedPoems) {
+    const poet = String(poem.poet || "").trim() || "Unknown";
+    if (!publishedByPoet.has(poet)) {
+      publishedByPoet.set(poet, []);
+    }
+    publishedByPoet.get(poet).push(poem);
+  }
+
+  return poetPages
+    .filter((entry) => publishedByPoet.has(entry.poet))
+    .map((entry) => ({
+      ...entry,
+      poems: publishedByPoet.get(entry.poet).slice().sort(comparePoemsByDateDesc)
+    }));
 }
 
 async function templateModifiedAt(name) {
@@ -1784,17 +1798,6 @@ function poetSortParts(poet) {
   };
 }
 
-function poetIndexLabel(poet) {
-  const raw = String(poet || "").trim();
-  const tokens = raw.split(/\s+/).filter(Boolean);
-  if (tokens.length <= 1) {
-    return raw;
-  }
-  const primary = tokens[tokens.length - 1];
-  const secondary = tokens.slice(0, -1).join(" ");
-  return `${primary}, ${secondary}`;
-}
-
 function comparePoetsBySurname(left, right) {
   const leftParts = poetSortParts(left);
   const rightParts = poetSortParts(right);
@@ -1840,26 +1843,6 @@ async function mapWithConcurrency(items, mapper, concurrency = BACKGROUND_TASK_C
 
   await Promise.all(workers);
   return results;
-}
-
-function poetInitial(poet) {
-  const { initialSource } = poetSortParts(poet);
-  const firstChar = initialSource.charAt(0).toUpperCase();
-  return /^[A-Z]$/.test(firstChar) ? firstChar : "#";
-}
-
-function comparePoetInitials(left, right) {
-  if (left === "#") {
-    return 1;
-  }
-  if (right === "#") {
-    return -1;
-  }
-  return poetCollator.compare(left, right);
-}
-
-function sortPoetInitials(values) {
-  return Array.from(values).sort(comparePoetInitials);
 }
 
 function sortPoetsBySurname(values) {
@@ -1909,23 +1892,6 @@ export function buildPoetPages(poems) {
 
 function poetRouteMap(poetPagesList) {
   return new Map(poetPagesList.map((entry) => [entry.poet, entry.route]));
-}
-
-function groupPoetPagesByInitial(poetPagesList) {
-  const groups = new Map();
-  const sorted = poetPagesList
-    .slice()
-    .sort((left, right) => comparePoetsBySurname(left.poet, right.poet));
-
-  for (const poetPage of sorted) {
-    const initial = poetInitial(poetPage.poet);
-    if (!groups.has(initial)) {
-      groups.set(initial, []);
-    }
-    groups.get(initial).push(poetPage);
-  }
-
-  return groups;
 }
 
 function groupPoemsByYearMonth(publishedPoems) {
@@ -1980,37 +1946,11 @@ function renderArchiveTree(publishedPoems, today, fromRoute = "/archive") {
     .join("");
 }
 
-function renderPoetsTree(poetPagesList) {
-  const grouped = groupPoetPagesByInitial(poetPagesList);
-  const letters = sortPoetInitials(grouped.keys());
-
-  if (letters.length === 0) {
-    return "<p>No published poets yet.</p>";
-  }
-
-  return letters
-    .map((letter) => {
-      const poetPagesForLetter = grouped.get(letter);
-      const poetBlocks = poetPagesForLetter
-        .map((poetPage) => {
-          const label = poetIndexLabel(poetPage.poet);
-          const poetLabel = poetPage.route
-            ? routeLink(poetPage.route, label)
-            : htmlEscape(label);
-          return `<li class="poet-authors-item">${poetLabel}</li>`;
-        })
-        .join("");
-
-      return `<details class="archive-year poet-letter"><summary>${htmlEscape(letter)}</summary><div class="archive-months poet-groups"><ul class="poet-authors">${poetBlocks}</ul></div></details>`;
-    })
-    .join("");
-}
-
 async function renderPoets(poems, defaultAsOf = "") {
   const template = await readTemplate("poets.html");
   const fallbackDate = effectivePublicationCutoff(defaultAsOf);
   const fallbackPoems = filterPoemsOnOrBefore(poems, fallbackDate);
-  const rows = renderPoetsTree(poetPagesWithPublishedPoems(fallbackPoems));
+  const rows = renderPoetsIndex(fallbackPoems);
   const html = withCommonPageAssets(template, "/poets", {
     scriptName: "poets",
     robotsMeta: '<meta name="robots" content="index, follow">',

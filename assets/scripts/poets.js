@@ -1,14 +1,11 @@
 import {
   effectiveDiscoveryDate,
   escapeHtml,
-  formatPoetIndexLabel,
-  groupByPoetInitial,
   loadJsonData,
-  sortPoetInitials,
-  sortPoets,
   selectPoemForDate
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
+import { renderPoetsIndex } from "./shared/poets-index.mjs";
 
 initLinkPrefetching();
 
@@ -19,32 +16,7 @@ function renderPoets(poems, effectiveDate) {
   }
 
   const { visible } = selectPoemForDate(poems, effectiveDate);
-  if (visible.length === 0) {
-    treeEl.innerHTML = "<p>No published poets yet.</p>";
-    return;
-  }
-
-  const grouped = groupByPoetInitial(visible);
-  const letters = sortPoetInitials(grouped.keys());
-
-  treeEl.innerHTML = letters
-    .map((letter) => {
-      const poetsMap = grouped.get(letter);
-      const poets = sortPoets(poetsMap.keys());
-      const poetBlocks = poets
-        .map((poet) => {
-          const poemsByPoet = poetsMap.get(poet);
-          const poetRoute = poemsByPoet[0]?.poetRoute || "";
-          const label = formatPoetIndexLabel(poet);
-          const poetLabel = poetRoute
-            ? `<a href="${escapeHtml(`${poetRoute}/`)}">${escapeHtml(label)}</a>`
-            : escapeHtml(label);
-          return `<li class="poet-authors-item">${poetLabel}</li>`;
-        })
-        .join("");
-      return `<details class="archive-year poet-letter"><summary>${escapeHtml(letter)}</summary><div class="archive-months poet-groups"><ul class="poet-authors">${poetBlocks}</ul></div></details>`;
-    })
-    .join("");
+  treeEl.innerHTML = renderPoetsIndex(visible);
 }
 
 async function init() {
