@@ -73,7 +73,7 @@ export function renderPoetsIndex(poems) {
   const letters = sortPoetInitials(grouped.keys());
 
   const letterNav = `<nav class="poets-letter-nav" aria-label="Poet initials">${letters
-    .map((letter) => `<a href="/poets#${escapeHtml(poetInitialId(letter))}">${escapeHtml(letter)}</a>`)
+    .map((letter) => `<a href="#${escapeHtml(poetInitialId(letter))}">${escapeHtml(letter)}</a>`)
     .join("")}</nav>`;
 
   const directory = letters
