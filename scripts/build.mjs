@@ -8,6 +8,7 @@ import { expectedPoemFilename } from "./poem-filenames.mjs";
 import { duplicatePoemGroups } from "./poem-duplicates.mjs";
 import { findPoetProximityIssues, POET_COOLDOWN_DAYS } from "./poet-proximity.mjs";
 import { parsePoetryLineDirective } from "./poetry-line.mjs";
+import { comparePoemsByDateDesc, comparePoets, normalizedAlphaText, sortPoets } from "../assets/scripts/shared/poet-utils.mjs";
 import { renderPoetsIndex } from "../assets/scripts/shared/poets-index.mjs";
 
 const root = process.cwd();
@@ -1215,7 +1216,7 @@ function poetTalliesForReport(poems, effectiveAsOf) {
 
   return Array.from(byPoet.values()).sort((left, right) => (
     right.totalPoems - left.totalPoems
-    || comparePoetsBySurname(left.poet, right.poet)
+    || comparePoets(left.poet, right.poet)
   ));
 }
 
@@ -1773,45 +1774,6 @@ function renderArchiveRow(poem, fromRoute) {
   return `<li><span class="archive-day">${htmlEscape(day)}</span><span aria-hidden="true" class="separator-mark">&middot;</span><a href="${htmlEscape(href)}">${htmlEscape(poem.title)}</a></li>`;
 }
 
-const poetCollator = new Intl.Collator("en", { sensitivity: "base", numeric: true });
-
-function normalizedAlphaText(input) {
-  return String(input || "")
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .trim();
-}
-
-function poetSortParts(poet) {
-  const normalized = normalizedAlphaText(poet);
-  const tokens = normalized.split(/\s+/).filter(Boolean);
-  if (tokens.length === 0) {
-    return { initialSource: "", primary: "", secondary: "" };
-  }
-
-  const primary = tokens[tokens.length - 1];
-  const secondary = tokens.slice(0, -1).join(" ");
-  return {
-    initialSource: primary,
-    primary,
-    secondary
-  };
-}
-
-function comparePoetsBySurname(left, right) {
-  const leftParts = poetSortParts(left);
-  const rightParts = poetSortParts(right);
-  return (
-    poetCollator.compare(leftParts.primary, rightParts.primary)
-    || poetCollator.compare(leftParts.secondary, rightParts.secondary)
-    || poetCollator.compare(left, right)
-  );
-}
-
-function comparePoemsByDateDesc(left, right) {
-  return right.date.localeCompare(left.date) || left.title.localeCompare(right.title);
-}
-
 function sortDesc(values) {
   return Array.from(values).sort((left, right) => right.localeCompare(left));
 }
@@ -1845,10 +1807,6 @@ async function mapWithConcurrency(items, mapper, concurrency = BACKGROUND_TASK_C
   return results;
 }
 
-function sortPoetsBySurname(values) {
-  return Array.from(values).sort(comparePoetsBySurname);
-}
-
 function slugifySegment(input) {
   const base = normalizedAlphaText(input)
     .toLowerCase()
@@ -1867,7 +1825,7 @@ export function buildPoetPages(poems) {
     poemsByPoet.get(poet).push(poem);
   }
 
-  const poets = sortPoetsBySurname(poemsByPoet.keys());
+  const poets = sortPoets(poemsByPoet.keys());
   const slugCounts = new Map();
 
   return poets.map((poet) => {

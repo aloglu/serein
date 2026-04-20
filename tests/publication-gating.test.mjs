@@ -415,8 +415,13 @@ Synthetic future route collision fixture.
     await runBuild({ SEREIN_AS_OF: publishedDate });
 
     const poetsIndexHtml = await readDistFile("poets", "index.html");
+    assert.match(poetsIndexHtml, /<nav class="poets-letter-nav" aria-label="Poet initials">/);
+    assert.match(poetsIndexHtml, /href="\/poets#z">Z<\/a>/);
+    assert.match(poetsIndexHtml, /<section id="z" class="poet-letter"><h3>Z<\/h3>/);
+    assert.match(poetsIndexHtml, /href="\/poets\/test-zebra-2\/">Zebra, Test<\/a><span class="poet-count">\(1\)<\/span>/);
     assert.match(poetsIndexHtml, /href="\/poets\/test-zebra-2\/">Zebra, Test<\/a>/);
     assert.doesNotMatch(poetsIndexHtml, /href="\/poets\/test-zebra\/">Zebra, Test<\/a>/);
+    assert.doesNotMatch(poetsIndexHtml, /poets-letter-z|Latest:|Recently Added|All Poets|poets-back-top/);
 
     const publishedPoetPage = await readDistFile("poets", "test-zebra-2", "index.html");
     assert.match(publishedPoetPage, /<title>Test Zebra \| A Poem Per Day<\/title>/);
