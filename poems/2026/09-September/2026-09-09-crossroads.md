@@ -1,7 +1,7 @@
 ---
 title: Crossroads
 poet: Joyce Sutphen
-date: 2026-09-08
+date: 2026-09-09
 ---
 
 The second half of my life will be black 
