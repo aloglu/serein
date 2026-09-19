@@ -1,0 +1,15 @@
+---
+title: The Heart of a Woman
+poet: Georgia Douglas Johnson
+date: 2026-10-20
+---
+
+The heart of a woman goes forth with the dawn,
+As a lone bird, soft winging, so restlessly on,
+Afar o’er life’s turrets and vales does it roam
+In the wake of those echoes the heart calls home.
+
+The heart of a woman falls back with the night,
+And enters some alien cage in its plight,
+And tries to forget it has dreamed of the stars
+While it breaks, breaks, breaks on the sheltering bars.
