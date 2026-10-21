@@ -4,7 +4,7 @@ poet: William Butler Yeats
 date: 2026-12-15
 ---
 
-<span style=“font-variant: small-caps;”>When</span> you are old and gray and full of sleep,
+When you are old and gray and full of sleep,
 And nodding by the fire, take down this book,
 And slowly read, and dream of the soft look
 Your eyes had once, and of their shadows deep;

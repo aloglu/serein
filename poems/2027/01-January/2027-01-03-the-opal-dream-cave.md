@@ -4,7 +4,7 @@ poet: Katherine Mansfield
 date: 2027-01-03
 ---
 
-<span style=“font-variant: small-caps;”>In</span> an opal dream cave I found a fairy:
+In an opal dream cave I found a fairy:
 Her wings were frailer than flower petals,
 Frailer far than snowflakes.
 She was not frightened, but poised on my finger,
