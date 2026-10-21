@@ -1,7 +1,6 @@
 ---
 title: You Cooked For Me
 poet: Caitlin Conlon
-publication: The Surrender Theory
 date: 2026-07-12
 ---
 

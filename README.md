@@ -38,8 +38,6 @@ Each poem is stored as a Markdown file with frontmatter.
 title: The Title
 poet: The Poet
 translator:
-publication:
-source:
 date: 2026-03-10
 ---
 
@@ -57,10 +55,14 @@ Required fields:
 Optional fields:
 
 - `translator`
-- `publication`
-- `source`
+
+Leave ordinary frontmatter text unquoted. Use double quotes when YAML requires them, such as for a value containing `: ` or a comment-forming ` #`, beginning with a YAML indicator/quote, or resembling a number or boolean instead of text. Escape embedded double quotes and backslashes inside quoted values. Preserve quotation marks that belong to the value itself; the project’s custom parser must read the same text.
+
+Do not include `source` or `publication` in poem frontmatter. Keep source editions, publication details, and rights evidence in the curation documents instead.
 
 Poem files follow the path pattern `poems/YYYY/MM-Month/YYYY-MM-DD-slug.md`. Dates are unique across the collection. Missing optional metadata is still surfaced by the editorial checks.
+
+A file named `YYYY-MM-DD-slug.md` must carry that same `YYYY-MM-DD` value in its `date` frontmatter. Use `next` only for files still awaiting date assignment.
 
 Before running `npm run poems:sync` (alias: `npm run normalize:poems`), the `date` frontmatter may also use symbolic values:
 

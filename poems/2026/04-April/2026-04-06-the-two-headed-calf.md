@@ -1,7 +1,6 @@
 ---
 title: The Two-headed Calf
 poet: Laura Gilpin
-publication: The Hocus Pocus of the Universe
 date: 2026-04-06
 ---
 

@@ -1,7 +1,6 @@
 ---
 title: A Dream Dreamt by Fernando Pessoa in Which I Play the Role of Fernando Pessoa
 poet: Momina Mela
-publication: The New Yorker (October 14, 2024)
 date: 2026-03-05
 ---
 

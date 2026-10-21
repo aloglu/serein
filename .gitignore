@@ -10,6 +10,7 @@ dist/
 reports/
 .DS_Store
 Thumbs.db
-docs/
+docs/*
+!docs/poetry-curation-guide.md
 Guide.md
 guide.md

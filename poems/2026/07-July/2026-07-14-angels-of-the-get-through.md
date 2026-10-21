@@ -1,7 +1,6 @@
 ---
 title: Angels of the Get Through
 poet: Andrea Gibson
-publication: The Best of Write Bloody Anthology
 date: 2026-07-14
 ---
 

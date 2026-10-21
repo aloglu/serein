@@ -1,0 +1,22 @@
+---
+title: The Diameter of the Bomb
+poet: Yehuda Amichai
+translator: Chana Bloch
+date: 2026-11-28
+---
+
+The diameter of the bomb was thirty centimeters
+and the diameter of its effective range about seven meters,
+with four dead and eleven wounded.
+And around these, in a larger circle
+of pain and time, two hospitals are scattered
+and one graveyard. But the young woman
+who was buried in the city she came from,
+at a distance of more than a hundred kilometers,
+enlarges the circle considerably,
+and the solitary man mourning her death
+at the distant shores of a country far across the sea
+includes the entire world in the circle.
+And I won’t even mention the crying of orphans
+that reaches up to the throne of God and
+beyond, making a circle with no end and no God.

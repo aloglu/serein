@@ -2,7 +2,6 @@
 title: Let This Darkness Be a Bell Tower
 poet: Rainer Maria Rilke
 translator: Joanna Macy
-publication: Sonnets to Orpheus II, 29
 date: 2026-04-08
 ---
 

@@ -1,0 +1,20 @@
+---
+title: Death, be not proud
+poet: John Donne
+date: 2026-12-05
+---
+
+DEATH be not proud, though some have called thee
+::line |~3em| |<Mighty and dreadfull, for, thou art not soe,|
+For, those, whom thou think’st, thou dost overthrow,
+Die not, poore death, nor yet canst thou kill mee.
+From rest and sleepe, which but thy pictures bee,
+Much pleasure, then from thee, much more must flow,
+And soonest our best men with thee doe goe,
+Rest of their bones, and soules deliverie.
+Thou art slave to Fate, Chance, kings, and desperate men,
+And dost with poyson, warre, and sicknesse dwell,
+And poppie, or charmes can make us sleepe as well,
+And better then thy stroake; why swell’st thou then?
+One short sleepe past, wee wake eternally,
+And death shall be no more; death, thou shalt die.

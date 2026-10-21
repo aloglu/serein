@@ -1,7 +1,6 @@
 ---
 title: What Resembles The Grave But Isn’t
 poet: Anne Boyer
-publication: The Hocus Pocus of the Universe
 date: 2026-04-07
 ---
 
