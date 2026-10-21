@@ -16,21 +16,24 @@
     "preview:asof": "node scripts/preview.mjs --watch"
   },
   "engines": {
-    "node": ">=24 <26"
+    "node": ">=24.22.1 <25"
   },
   "dependencies": {
-    "marked": "^17.0.5"
+    "marked": "^17.0.6"
   },
   "devDependencies": {
-    "esbuild": "^0.27.4",
+    "esbuild": "^0.28.2",
     "html-minifier-terser": "^7.2.0",
-    "serve": "^14.2.5",
-    "sharp": "^0.34.5",
-    "svgo": "^4.0.1",
+    "serve": "^14.2.6",
+    "sharp": "^0.35.5",
+    "svgo": "^4.1.0",
     "ttf2woff2": "^8.0.1"
   },
   "overrides": {
     "node-gyp": "^12.2.0",
-    "tar": "^7.5.11"
+    "tar": "^7.5.22",
+    "serve": {
+      "compression": "^1.8.2"
+    }
   }
 }

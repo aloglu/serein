@@ -25,7 +25,9 @@ That pipeline is responsible for:
 - generating social cards and editorial reports
 - generating RSS and sitemap files when `SITE_URL` is present
 
-The project targets Node.js 24.x LTS and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` are checked in so local Node version managers can select the expected runtime.
+The project targets Node.js 24.x LTS (currently 24.22.1) and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` select the expected runtime locally, and GitHub Actions reads `.node-version` directly. Keep both version files and the minimum version in `package.json` aligned when updating Node.
+
+Dependabot checks npm dependencies and GitHub Actions monthly, grouping compatible npm updates into one pull request. Node runtime pins still need to be reviewed separately. The `serve` dependency has a scoped override for patched `compression`; remove that override once `serve` itself requires a patched version.
 
 In an interactive terminal, `serein editorial` opens a keyboard-first report viewer. When output is redirected or piped, it falls back to the plain-text report. The editorial report also flags same-poet proximity issues, and the TUI can apply the suggested fix with `f` on an actionable proximity item.
 
@@ -92,9 +94,11 @@ The build system also supports date-controlled previews through `--as-of` and `S
 
 ## Deployment
 
-GitHub Actions validates the site on pushes and pull requests. A separate scheduled workflow triggers the Cloudflare Pages deploy hook at the publication rollover.
+GitHub Actions validates the site on pushes and pull requests. A separate scheduled workflow triggers the Cloudflare Pages deploy hook at the publication rollover. It then waits for the public homepage to show a new build marker and the expected Istanbul publication date and poem date. An accepted hook alone does not count as success. This uses the existing `CF_PAGES_DEPLOY_HOOK` secret; no additional credentials are required.
 
 Production environments provide `SITE_URL` so canonical URLs, RSS, and the sitemap can be emitted with the correct domain.
+
+Cloudflare Pages can select Node from the checked-in `.node-version` or `.nvmrc`. If the project has a `NODE_VERSION` dashboard override, keep it aligned with these files or remove it so the repository controls the version.
 
 ## License
 

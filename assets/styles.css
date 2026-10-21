@@ -33,7 +33,7 @@
   --heading-prelude-height: 1rem;
   --heading-prelude-gap: 0.7rem;
   --subtle-meta: color-mix(in oklab, var(--bg) 72%, var(--text));
-  --byline-poet: color-mix(in oklab, var(--muted) 72%, var(--bg));
+  --byline-poet: var(--muted);
   --byline-translator: color-mix(in oklab, var(--muted) 48%, var(--bg));
   --border: #d8cbb8;
   --source-divider: color-mix(in oklab, var(--border), transparent 52%);

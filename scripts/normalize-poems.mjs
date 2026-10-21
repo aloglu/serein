@@ -302,19 +302,17 @@ function normalizePoemFields(poem) {
 }
 
 function needsFrontmatterQuoting(value) {
-  return /:\s/.test(value) || /^\s|\s$/.test(value);
+  return /:(?:\s|$)|(?:^|\s)#/.test(value)
+    || /^[\s\-?:,\[\]{}#&*!|>'"%@`]|\s$/.test(value)
+    || /^(?:null|~|true|false|yes|no|on|off|y|n)$/i.test(value)
+    || /^[+-]?(?:0[xob][\da-f_]+|(?:[\d_]+(?::[\d_]+)*(?:\.[\d_]*)?|\.[\d_]+)(?:e[+-]?[\d_]+)?|\.inf|\.nan)$/i.test(value)
+    || /^\d{4}-\d{1,2}-\d{1,2}(?:[Tt ]|$)/.test(value);
 }
 
 function serializeFrontmatterValue(value) {
   const raw = String(value ?? "").trim();
   if (!needsFrontmatterQuoting(raw)) {
     return raw;
-  }
-  if (!raw.includes('"')) {
-    return `"${raw}"`;
-  }
-  if (!raw.includes("'")) {
-    return `'${raw}'`;
   }
   return `"${raw.replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
 }
@@ -327,7 +325,7 @@ function renderNormalizedPoemMarkdown(poem, lineEnding = "\n") {
     if (!value && !REQUIRED_FRONTMATTER_FIELDS.has(field)) {
       continue;
     }
-    frontmatterLines.push(`${field}: ${serializeFrontmatterValue(value)}`);
+    frontmatterLines.push(`${field}: ${field === "date" ? value : serializeFrontmatterValue(value)}`);
   }
 
   frontmatterLines.push("---");

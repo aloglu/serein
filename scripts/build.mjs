@@ -1,5 +1,5 @@
 import { mkdir, readdir, readFile, rm, writeFile, copyFile, stat } from "node:fs/promises";
-import { createHash } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
@@ -19,6 +19,7 @@ const reportsDir = path.join(root, "reports");
 const templatesDir = path.join(root, "templates");
 const assetsDir = path.join(root, "assets");
 const siteUrl = String(process.env.SITE_URL || "").trim().replace(/\/+$/, "");
+let buildId = "";
 
 function resolveDistDir(env = process.env) {
   const raw = String(env.SEREIN_DIST_DIR || "").trim();
@@ -1710,6 +1711,7 @@ async function renderHome(poems, defaultAsOf = "") {
     headExtra: renderWebsiteStructuredData(),
     ...sharingOptions("/")
   })
+    .replace("{{BUILD_ID}}", buildId)
     .replaceAll("{{PAGE_TITLE}}", "A Poem Per Day")
     .replaceAll("{{PAGE_DESCRIPTION}}", htmlEscape(fallbackDescription))
     .replaceAll("{{DEFAULT_AS_OF}}", htmlEscape(defaultAsOf))
@@ -2583,6 +2585,7 @@ function buildRenderTasks(poems, asOfDate) {
 }
 
 export async function build() {
+  buildId = randomUUID();
   await ensureDist();
   socialCardStats = { generated: 0, cached: 0 };
   homePoemDataCache = new Map();

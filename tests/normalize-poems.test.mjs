@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import test from "node:test";
+import { expectedPoemFilename } from "../scripts/poem-filenames.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const sereinCliSource = path.join(root, "scripts", "serein.mjs");
@@ -755,6 +756,40 @@ Second same line.
       stdout,
       /- duplicate: Repeated Poem Fixture by Test Normalize \(2 entries\) -> 2026\/03-March\/2026-03-11-repeated-poem-fixture\.md; 2026\/03-March\/2026-03-12-repeated-poem-fixture\.md/
     );
+  } finally {
+    await rm(workspace, { recursive: true, force: true });
+  }
+});
+
+test("normalize preserves YAML string quoting and leaves ordinary titles unquoted", { concurrency: false }, async () => {
+  const cases = [
+    ['"Hope" is the thing with feathers', true],
+    ['15.', true], ['true', true], ['null', true], ['ON', true],
+    ['Poem # One', true], ['# One', true], ['*One', true],
+    ['Poem: One', true], ['Poem:', true], ['1999-12-31', true],
+    ['1e3', true], ['0xFF', true], ['.inf', true],
+    ['A Poem', false], ['20th Century', false], ['Hope & Light', false],
+    ['Poem: "One" \\ Two', true]
+  ];
+  const fixturePoems = cases.map(([title], i) => ({
+    relativePath: `fixture-${i}.md`,
+    contents: `---\ntitle: ${JSON.stringify(title)}\npoet: Test Poet ${i}\ndate: 2026-01-${String(i + 1).padStart(2, '0')}\n---\n\nA line.\n`
+  }));
+  const workspace = await createNormalizeWorkspace({ fixturePoems });
+  try {
+    await runNormalize(workspace);
+    const firstPass = [];
+    for (const [i, [title, quoted]] of cases.entries()) {
+      const date = `2026-01-${String(i + 1).padStart(2, '0')}`;
+      const file = path.join(workspace, 'poems', '2026', '01-January', expectedPoemFilename({ title, date }));
+      const text = await readFile(file, 'utf8');
+      const value = text.match(/^title: (.*)$/m)[1];
+      assert.equal(value, quoted ? JSON.stringify(title) : title);
+      assert.match(text, new RegExp(`^date: ${date}$`, 'm'));
+      firstPass.push([file, text]);
+    }
+    await runNormalize(workspace);
+    for (const [file, text] of firstPass) assert.equal(await readFile(file, 'utf8'), text);
   } finally {
     await rm(workspace, { recursive: true, force: true });
   }

@@ -6,6 +6,7 @@ import {
 } from "./shared/common.js";
 import { initLinkPrefetching } from "./shared/prefetch.js";
 import { initSharing } from "./shared/share.js";
+import { watchForDateChange } from "./shared/date-refresh.mjs";
 
 initLinkPrefetching();
 initSharing();
@@ -188,6 +189,10 @@ async function init() {
   };
 
   const defaultAsOf = main.dataset.defaultAsOf || "";
+  watchForDateChange({
+    getDate: () => effectiveDiscoveryDate({ defaultAsOf }),
+    onChange: () => window.location.reload()
+  });
   const renderedAsOf = main.dataset.renderedAsOf || "";
   const effectiveDate = effectiveDiscoveryDate({ defaultAsOf });
   if (/^\d{4}-\d{2}-\d{2}$/.test(renderedAsOf) && renderedAsOf === effectiveDate) {

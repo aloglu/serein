@@ -1,5 +1,5 @@
 ---
-title: "Hope" is the thing with feathers
+title: "\"Hope\" is the thing with feathers"
 poet: Emily Dickinson
 date: 2026-09-29
 ---

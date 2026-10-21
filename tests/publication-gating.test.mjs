@@ -4,6 +4,7 @@ import { mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import test, { after } from "node:test";
+import { homepageStatus } from "../scripts/daily-deploy.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const distDir = path.join(root, ".cache", "test-dist", String(process.pid));
@@ -199,6 +200,9 @@ Line two of the synthetic scheduled horizon fixture.
     }
 
     await runBuild({ SEREIN_AS_OF: blockedAsOf });
+    const firstBuild = homepageStatus(await readDistFile("index.html"));
+    assert.match(firstBuild.buildId, /^[a-f0-9-]{36}$/);
+    assert.equal(firstBuild.renderedDate, blockedAsOf);
 
     const shareablePageHtml = await readDistFile(...shareableDate.split("-").flatMap((part, index) => (
       index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
@@ -244,6 +248,11 @@ Line two of the synthetic scheduled horizon fixture.
     );
 
     await runBuild({ SEREIN_AS_OF: shareableDate });
+    const nextBuild = homepageStatus(await readDistFile("index.html"));
+    assert.ok(nextBuild.buildId);
+    assert.notEqual(nextBuild.buildId, firstBuild.buildId);
+    assert.equal(nextBuild.renderedDate, shareableDate);
+    assert.equal(nextBuild.poemDate, shareableDate);
 
     const publishedPageHtml = await readDistFile(...shareableDate.split("-").flatMap((part, index) => (
       index === 0 ? [part] : index === 1 ? [part] : [part, "index.html"]
