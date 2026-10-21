@@ -25,7 +25,9 @@ That pipeline is responsible for:
 - generating social cards and editorial reports
 - generating RSS and sitemap files when `SITE_URL` is present
 
-The project targets Node.js 24.x LTS (currently 24.22.1) and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` select the expected runtime locally, and GitHub Actions reads `.node-version` directly. Keep both version files and the minimum version in `package.json` aligned when updating Node.
+The project targets Node.js 24.x LTS (currently 24.22.0) and uses npm scripts as the execution layer for build, watch, preview, normalization, and editorial checks. `.nvmrc` and `.node-version` select the expected runtime locally, and GitHub Actions reads `.node-version` directly. Keep both version files and the minimum version in `package.json` aligned when updating Node.
+
+As of 2026-10-21, the 24.22.0 pin is a temporary Cloudflare installer compatibility fallback: node-build does not yet provide the 24.22.1 definition. This defers the 24.22.1 Node security fixes. Restore 24.22.1 or a newer supported security release once the hosting installer supports it.
 
 Dependabot checks npm dependencies and GitHub Actions monthly, grouping compatible npm updates into one pull request. Node runtime pins still need to be reviewed separately. The `serve` dependency has a scoped override for patched `compression`; remove that override once `serve` itself requires a patched version.
 
