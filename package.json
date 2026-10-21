@@ -19,7 +19,7 @@
     "node": ">=24.22.0 <25"
   },
   "dependencies": {
-    "marked": "^17.0.6"
+    "marked": "^18.1.1"
   },
   "devDependencies": {
     "esbuild": "^0.28.2",
